@@ -34,12 +34,6 @@ module.exports = {
     { src: '~/plugins/google-map', ssr: false}
   ],
 
-  // scripts: [
-  //   { src: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyCMWVZ2htAxF65lh9Hgh3lPmynbOhAWfQU',
-  //     async: true,
-  //     defer: true}
-  // ],
-
   loading: { color: '#fff' },
 
   css: ['~assets/scss/style.scss'],
