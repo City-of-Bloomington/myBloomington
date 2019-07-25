@@ -1,0 +1,97 @@
+@import             'cobDS-tokens.scss';
+
+
+$text-color:        darken($color-grey, 55%);
+
+// these are totaly random, no rhyme or reason
+$color-cycl: #1e5aae;
+$color-rein: #31C77D;
+$color-comp: darken(#F4E554, 20%);
+$color-fire: #F8B137;
+$color-tv:   #DE5B42;
+$color-ee:   darken(#D4DCFF, 20%);
+$color-home: #7D83FF;
+$color-prmt: #007FFF;
+$color-shtr: darken(#1AFFD5, 20%);
+
+html,
+body {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.main-wrapper {
+  position: relative;
+  top: 120px;
+}
+
+@mixin visuallyHidden() {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+@mixin clearfix {
+  &:after {
+    clear: both;
+    content: '';
+    display: table;
+  }
+}
+
+// Create a tint
+//
+// @param  {Color}  $color to tint
+// @param  {Number} $percentage of `$color` in returned color
+// @return {Color}
+@function tint($color, $percentage) {
+  @return mix(white, $color, $percentage);
+}
+
+// Create a shade
+//
+// @param  {Color}  $color to shade
+// @param  {Number} $percentage of `$color` in returned color
+// @return {Color}
+@function shade($color, $percentage) {
+  @return mix(black, $color, $percentage);
+}
+
+body, html {
+  font-family: $font-text;
+}
+
+h1, h2, h3, h4, p, ol, ul {
+  color: $text-color;
+}
+
+hr {
+  margin: $space-m 0;
+  border-bottom: 1px solid lighten($text-color, 50%);
+}
+
+pre, code {
+  border-radius: $radius-default;
+  background-color: $color-blue;
+  color: white;
+  padding: 1px 10px;
+  font-size: $size-s;
+  font-weight: $weight-semi-bold;
+}
