@@ -24,6 +24,7 @@ module.exports = {
 
   env: {
     repo:           pkg.repository.url,
+    googleApiKey:   process.env.GOOGLE_API_KEY,
     nuxtPort:       process.env.NUXT_PORT || 9090,
   },
 
