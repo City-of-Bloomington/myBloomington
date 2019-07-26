@@ -76,17 +76,30 @@ Vue.mixin({
      */
     getAddress(address) {
       return new Promise((resolve, reject) => {
-        axios.get(`https://bloomington.in.gov/master_address/addresses?format=json&address=${address}`)
-        .then((res) => {
-          console.dir();
-          if(res.data.length == 1) {
-            resolve(res.data[0])
-          } else {
-            reject(`We didn't find an Address for '${address}'.`)
-            console.dir(`getAddress() Search Result Count: ${res.data.length}`);
-          }
-        })
-        .catch((e)  => reject(e))
+        let regExTest = /\d+\s+\w+/,
+            addressTest = regExTest.test(address);
+
+        console.dir(addressTest);
+
+        if(addressTest) {
+          axios.get(`https://bloomington.in.gov/master_address/addresses?format=json&address=${address}`)
+          .then((res) => {
+            console.dir();
+            if(res.data.length == 1) {
+              resolve(res.data[0])
+            } else if(res.data.length <= 20) {
+              resolve(res.data)
+              console.dir(`getAddress() Search Result Count: ${res.data.length}`);
+            } else {
+              reject(`We didn't find an Address for '${address}'.`)
+              console.dir(`getAddress() Search Result Count: ${res.data.length}`);
+              console.table(JSON.stringify(res.data));
+            }
+          })
+          .catch((e)  => reject(e))
+        } else {
+          reject('Please refine your Address Search.')
+        }
       })
       // axios.get(`https://bloomington.in.gov/master_address/addresses?format=json&address=${address}`)
       // .then((res) => {

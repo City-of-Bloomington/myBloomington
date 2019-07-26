@@ -81,66 +81,86 @@
       </form>
     </GmapMap>
 
+    <div class="overview">
+      <div class="container">
+        <ul v-if="locationResData">
+          <li><strong>Address:</strong> {{ locationResData.address.streetAddress }} {{ locationResData.address.city }}, {{ locationResData.address.state }} {{ locationResData.address.zip }}</li>
+          <li><strong>Latitude:</strong> {{ locationResData.address.latitude }}</li>
+          <li><strong>Longitude:</strong> {{ locationResData.address.longitude }}</li>
+        </ul>
+      </div>
+    </div>
+
     <div class="wrapper">
-      <fn1-alert v-if="errors.addressRes"
-               dismissible
-               variant="warning">
-        <p>{{ errors.addressRes }}</p>
-      </fn1-alert>
+      <div class="container">
+        <fn1-alert v-if="errors.addressRes"
+                 dismissible
+                 variant="warning">
+          <p>{{ errors.addressRes }}</p>
+        </fn1-alert>
 
-      <details v-if="contacts.mayor">
-        <summary>City Mayor</summary>
-        <pre>{{ contacts.mayor }}</pre>
-      </details>
+        <ul v-if="addressResChoices">
+          <li v-for="a, i in addressResChoices"
+              :key="i"
+              @click="searchSubmit(a.streetAddress)">
+            {{a.streetAddress}} {{a.city}}, {{ a.state }} {{ a.zip }}
+          </li>
+        </ul>
 
-      <hr>
+        <details v-if="contacts.mayor">
+          <summary>City Mayor</summary>
+          <pre>{{ contacts.mayor }}</pre>
+        </details>
 
-      <details v-if="contacts.clerk">
-        <summary>City Clerk</summary>
-        <pre>{{ contacts.clerk }}</pre>
-      </details>
+        <hr v-if="contacts.mayor">
 
-      <hr>
+        <details v-if="contacts.clerk">
+          <summary>City Clerk</summary>
+          <pre>{{ contacts.clerk }}</pre>
+        </details>
 
-      <details v-if="contacts.council">
-        <summary>City Council</summary>
-        <pre>{{ contacts.council }}</pre>
-      </details>
+        <hr v-if="contacts.clerk">
 
-      <hr>
+        <details v-if="contacts.council">
+          <summary>City Council</summary>
+          <pre>{{ contacts.council }}</pre>
+        </details>
 
-      <details v-if="councilDistrict">
-        <summary>Council District</summary>
-        <pre>{{ councilDistrict }}</pre>
-      </details>
+        <hr v-if="contacts.council">
 
-      <hr>
+        <details v-if="councilDistrict">
+          <summary>Council District</summary>
+          <pre>{{ councilDistrict }}</pre>
+        </details>
 
-      <details v-if="councilAtLargeReps">
-        <summary>Council at Large</summary>
-        <pre>{{ councilAtLargeReps }}</pre>
-      </details>
+        <hr v-if="councilDistrict">
 
-      <hr>
+        <details v-if="councilAtLargeReps">
+          <summary>Council at Large</summary>
+          <pre>{{ councilAtLargeReps }}</pre>
+        </details>
 
-      <details v-if="districtRep">
-        <summary>Council District Rep</summary>
-        <pre>{{ districtRep }}</pre>
-      </details>
+        <hr v-if="councilAtLargeReps">
 
-      <hr>
+        <details v-if="districtRep">
+          <summary>Council District Rep</summary>
+          <pre>{{ districtRep }}</pre>
+        </details>
 
-      <details v-if="addressResData">
-        <summary>Address Data</summary>
-        <pre>{{ addressResData }}</pre>
-      </details>
+        <hr v-if="districtRep">
 
-      <hr>
+        <details v-if="addressResData">
+          <summary>Address Data</summary>
+          <pre>{{ addressResData }}</pre>
+        </details>
 
-      <details v-if="locationResData">
-        <summary>Location Data</summary>
-        <pre>{{ locationResData }}</pre>
-      </details>
+        <hr v-if="addressResData">
+
+        <details v-if="locationResData">
+          <summary>Location Data</summary>
+          <pre>{{ locationResData }}</pre>
+        </details>
+      </div>
     </div>
   </div>
 </template>
@@ -161,11 +181,13 @@ export default {
   },
   data() {
     return {
+      cityName:           'City of Bloomington',
       cityHallLatLong:    { lat: 39.16992723, lng: -86.53680559 },
       latLong:            {},
-      zoom:               16,
+      zoom:               13,
       addressSearch:      null,
       addressResData:     null,
+      addressResChoices:  null,
       locationResData:    null,
       councilDistrict:    null,
       councilAtLargeReps: null,
@@ -253,59 +275,71 @@ export default {
       /* */
       this.getAddress(input)
       .then((res) => {
-        this.addressResData     = res;
-        this.errors.addressRes  = null;
-        console.log(`%c getAddress 👌 `,
-                    this.consoleLog.success);
+        if(res.length > 1) {
+          this.addressResChoices = res;
+        } else {
+          this.addressResData     = res;
+          this.errors.addressRes  = null;
+          console.log(`%c getAddress 👌 `,
+                      this.consoleLog.success);
+        }
       })
       .then(() => {
         /* */
-        this.getLocation(this.addressResData.id)
-        .then((res) => {
-          this.$router.push({query : { address: this.addressSearch}});
-
-          this.locationResData    = res;
-          this.errors.locationRes = null;
-
-          console.log(`%c getLocation 👌 `,
-                      this.consoleLog.success);
-
-          if(this.locationResData) {
-            let locationLat = this.locationResData.address.latitude,
-                locationLng = this.locationResData.address.longitude;
-
-            this.latLong = {
-              lat: locationLat,
-              lng: locationLng
-            };
-
-            this.zoom = 17;
-
-            console.log(`%c updated latLng (gMap) 👌 `,
-                        this.consoleLog.success);
-          }
-
-          this.getCouncilDistrict()
+        if(this.addressResData.id) {
+          this.getLocation(this.addressResData.id)
           .then((res) => {
-            this.councilDistrict = res;
-            console.log(`%c getCouncilDistrict 👌 `,
+            this.addressResChoices = null;
+
+            this.locationResData    = res;
+            this.errors.locationRes = null;
+
+            alert(this.locationResData.address.streetAddress)
+
+            this.$router.push({query : { address: this.locationResData.address.streetAddress}});
+
+            console.log(`%c getLocation 👌 `,
                         this.consoleLog.success);
 
-            this.councilDistrictRep(this.councilDistrict.id);
+            if(this.locationResData) {
+              let locationLat = this.locationResData.address.latitude,
+                  locationLng = this.locationResData.address.longitude;
+
+              this.latLong = {
+                lat: locationLat,
+                lng: locationLng
+              };
+
+              this.zoom = 17;
+
+              console.log(`%c updated latLng (gMap) 👌 `,
+                          this.consoleLog.success);
+            }
+
+            this.getCouncilDistrict()
+            .then((res) => {
+              this.councilDistrict = res;
+              console.log(`%c getCouncilDistrict 👌 `,
+                          this.consoleLog.success);
+
+              this.councilDistrictRep(this.councilDistrict.id);
+            })
+            .catch((e)  => {
+              console.log(`%c getCouncilDistrict 🛑 `,
+                          this.consoleLog.error,
+                          `\n\n ${e} \n\n`);
+            });
           })
-          .catch((e)  => {
-            console.log(`%c getCouncilDistrict 🛑 `,
+          .catch((e) => {
+            this.locationResData    = null;
+            this.errors.locationRes = e;
+            console.log(`%c getLocation 🛑 `,
                         this.consoleLog.error,
                         `\n\n ${e} \n\n`);
-          });
-        })
-        .catch((e) => {
-          this.locationResData    = null;
-          this.errors.locationRes = e;
-          console.log(`%c getLocation 🛑 `,
-                      this.consoleLog.error,
-                      `\n\n ${e} \n\n`);
-        })
+          })
+        } else {
+          console.dir('Need to select an Address first');
+        }
       })
       .catch((e)  => {
         this.addressSearch      = null;
@@ -370,10 +404,49 @@ export default {
     padding: 15px 20px;
   }
 
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
   .wrapper {
-    background-color: red;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     margin: 20px;
     padding: 20px;
+  }
+
+  .container {
+    width: 1024px;
+  }
+
+  .overview {
+    z-index: 1;
+    position: relative;
+    top: -40px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    background-color: $color-blue;
+    color: white;
+    padding: 20px 0;
+
+    h4 {
+      margin: 0 0 15px 0;
+    }
+
+    h4, p, ul, li {
+      color: white;
+    }
+
+    .container {
+
+      ul {
+        display: flex;
+        justify-content: space-between;
+      }
+    }
   }
 
   .vue-map-container {
@@ -417,7 +490,12 @@ export default {
 
         button[type=submit] {
           background-color: $color-green;
-          border-color: $color-green;
+          border-color: $text-color;
+
+          &:hover,
+          &:focus {
+            background-color: darken($color-green, 5%);
+          }
         }
       }
     }
