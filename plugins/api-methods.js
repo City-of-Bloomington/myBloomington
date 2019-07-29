@@ -87,6 +87,8 @@ Vue.mixin({
             console.dir();
             if(res.data.length == 1) {
               resolve(res.data[0])
+            } else if(res.data.length == 0) {
+                reject(`No results for ${address}.`)
             } else if(res.data.length <= 20) {
               resolve(res.data)
               console.dir(`getAddress() Search Result Count: ${res.data.length}`);
@@ -101,27 +103,13 @@ Vue.mixin({
           reject('Please refine your Address Search.')
         }
       })
-      // axios.get(`https://bloomington.in.gov/master_address/addresses?format=json&address=${address}`)
-      // .then((res) => {
-      //   if(res.data.length > 1) {
-      //     alert('pick one!!')
-      //   } else {
-      //     axios.get(`https://bloomington.in.gov/master_address/addresses/${res.data[0].id}?format=json`)
-      //     .then((res) => {
-      //       this.addressResData = res.data;
-      //     })
-      //     .catch((e)  => {
-      //       console.log(`%c addressLocation 🛑 `,
-      //                   this.consoleLog.error,
-      //                   `\n\n ${e} \n\n`);
-      //     })
-      //   }
-      // })
-      // .catch((e)  => {
-      //   console.log(`%c addressSearch 🛑 `,
-      //               this.consoleLog.error,
-      //               `\n\n ${e} \n\n`);
-      // })
+    },
+    getWeather(lat, lng) {
+      return new Promise((resolve, reject) => {
+        axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&units=imperial&appid=${process.env.weatherApiKey}`)
+        .then((res) => resolve(res.data))
+        .catch((e)  => reject(e))
+      })
     }
   }
 })

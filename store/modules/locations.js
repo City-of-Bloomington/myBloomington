@@ -4,6 +4,7 @@ import {
 
 export const locationsState = () => ({
   indianapolis: {
+    type: 'State',
     location: 'Indianapolis',
     website: {
       url: 'http://www.in.gov',
@@ -32,6 +33,7 @@ export const locationsState = () => ({
     }
   },
   monroeCounty: {
+    type: 'County',
     location: 'Monroe County',
     website: {
       url: 'http://www.co.monroe.in.us',
@@ -52,6 +54,7 @@ export const locationsState = () => ({
     }
   },
   bloomington: {
+    type: 'City',
     location: 'Bloomington',
     website: {
       url: 'http://bloomington.in.gov',
@@ -72,20 +75,11 @@ export const locationsState = () => ({
     }
   },
   ellettsville: {
+    type: 'City',
     location: 'Ellettsville',
     website: {
       url: 'http://www.ellettsville.in.us',
       text: 'ellettsville.in.us'
-    },
-    socials: {
-      facebook: {
-        url: 'https://www.facebook.com/cityofbloomington',
-        text: '@cityofbloomington'
-      },
-      twitter: {
-        url: 'http://twitter.com/citybloomington',
-        text: '@citybloomington'
-      },
     },
     phone: {
       number: '812-876-3860'
