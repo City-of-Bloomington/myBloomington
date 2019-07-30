@@ -81,42 +81,54 @@
       </form>
     </GmapMap>
 
-    <div class="overview">
-      <div class="container">
-        <ul v-if="locationResData">
-          <li>
-            <div class="weather">
-              <div>
-                <img :src="`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`"
-                     :alt="weather.weather[0].main">
-                <span>
-                  <strong>Weather:</strong>
-                  {{ weather.weather[0].main }} ~ {{ weather.main.temp }} &#176;F
-                </span>
-              </div>
-            </div>
-          </li>
-          <li>
-            <strong>Address:</strong>
-            {{ locationResData.address.streetAddress }}<br>
-            {{ locationResData.address.city }}, {{ locationResData.address.state }} {{ locationResData.address.zip }}
-          </li>
+    <div class="overview" v-if="locationResData">
+      <div class="row">
+        <div class="container">
+          <div class="weather">
+              <img :src="`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`"
+                   :alt="weather.weather[0].main">
+              <p>
+                <strong>Weather:</strong>
+                {{ weather.weather[0].main }} ~ {{ weather.main.temp }} &#176;F
+              </p>
+          </div>
 
-          <li>
-            <strong>Township:</strong>
-            {{ locationResData.address.township_name }}
-          </li>
+          <div>
+            <fn1-badge :class="[{'inside': locationResData.address.jurisdiction_name === 'Bloomington', 'outside': locationResData.address.jurisdiction_name != 'Bloomington'}]">
+              <template v-if="locationResData.address.jurisdiction_name === 'Bloomington'">
+                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-check fa-w-16 fa-3x"><path fill="currentColor" d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" class=""></path></svg>
+                Inside
+              </template>
 
-          <li>
-            <strong>Latitude:</strong>
-            {{ locationResData.address.latitude }}
-          </li>
+              <template v-else>
+                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512" class="svg-inline--fa fa-times fa-w-11 fa-3x"><path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" class=""></path></svg>
+                Outside
+              </template>
+              Bloomington City Limits
+            </fn1-badge>
+          </div>
+        </div>
+      </div>
 
-          <li>
-            <strong>Longitude:</strong>
-            {{ locationResData.address.longitude }}
-          </li>
-        </ul>
+      <div class="row">
+        <div class="container">
+          <div>
+            <p>
+              <strong>Address:</strong>
+              {{ locationResData.address.streetAddress }}
+              {{ locationResData.address.city }}, {{ locationResData.address.state }} {{ locationResData.address.zip }}
+            </p>
+          </div>
+
+          <div>
+            <p>
+              <strong>Latitude:</strong>
+              {{ locationResData.address.latitude }}<!-- <br> -->
+              <strong>Longitude:</strong>
+              {{ locationResData.address.longitude }}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -141,52 +153,100 @@
         </template>
 
         <template v-if="!addressResChoices && locationResData">
-          <h2>About this Address</h2>
-          <hr>
+          <div class="row data" v-if="locationResData.purposes">
+            <header>
+              <h2>About this Address</h2>
 
-          <template v-if="locationResData.address.jurisdiction_name">
-            <p>
-              <strong>Address is:</strong>
-              <template v-if="locationResData.address.jurisdiction_name === 'Bloomington'">
-                Inside
-              </template>
-              <template v-else>
-                Outside
-              </template>
-              City Limits
-            </p>
-            <hr>
-          </template>
+              <div>
+                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="map-marked-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="svg-inline--fa fa-map-marked-alt fa-w-18 fa-3x"><path fill="currentColor" d="M288 0c-69.59 0-126 56.41-126 126 0 56.26 82.35 158.8 113.9 196.02 6.39 7.54 17.82 7.54 24.2 0C331.65 284.8 414 182.26 414 126 414 56.41 357.59 0 288 0zm0 168c-23.2 0-42-18.8-42-42s18.8-42 42-42 42 18.8 42 42-18.8 42-42 42zM20.12 215.95A32.006 32.006 0 0 0 0 245.66v250.32c0 11.32 11.43 19.06 21.94 14.86L160 448V214.92c-8.84-15.98-16.07-31.54-21.25-46.42L20.12 215.95zM288 359.67c-14.07 0-27.38-6.18-36.51-16.96-19.66-23.2-40.57-49.62-59.49-76.72v182l192 64V266c-18.92 27.09-39.82 53.52-59.49 76.72-9.13 10.77-22.44 16.95-36.51 16.95zm266.06-198.51L416 224v288l139.88-55.95A31.996 31.996 0 0 0 576 426.34V176.02c0-11.32-11.43-19.06-21.94-14.86z"></path></svg>
 
-          <template v-if="locationResData.purposes">
-            <ul>
-              <li v-for="p, i in locationResData.purposes">
-                <strong>{{ p.purpose_type }}:</strong> {{ p.name }}
-              </li>
-            </ul>
-            <hr>
-          </template>
+                <blockquote>
+                  <p>Here is an overview of services offered by the City of Bloomington to the address you've requested.</p>
+                </blockquote>
+              </div>
+            </header>
 
-          <template v-if="locationResData.locations[0]">
-            <ul>
-              <li v-if="locationResData.locations[0].trash_day">
-                <strong>Trash &amp; Recyling Pickup Day:</strong>
-                {{ locationResData.locations[0].trash_day }}
-              </li>
+            <table>
+              <caption class="sr-only">
+                Address Location Purposes
+              </caption>
+              <thead class="sr-only">
+                <tr>
+                  <th scope="col">Purpose Type</th>
+                  <th scope="col">Purpose Name</th>
+                </tr>
+              </thead>
 
-              <li v-if="locationResData.locations[0].recycle_week">
-                <strong>Next Yard Waste Pickup Day:</strong>
-                Week {{ locationResData.locations[0].recycle_week }}
-              </li>
-            </ul>
-            <hr>
-          </template>
+              <tbody>
+                <tr>
+                  <th scope="row">Township:</th>
+                  <td>{{ locationResData.address.township_name }}</td>
+                </tr>
 
-          <h2>Find Your Government Online</h2>
-          <hr>
+                <tr v-for="p, i in locationResData.purposes">
+                  <th scope="row">{{ p.purpose_type }}:</th>
+                  <td>
+                    {{ p.name }}
 
-          <template v-if="locations">
-            <div style="display: flex; justify-content: space-between;">
+                    <template v-if="p.purpose_type === 'RESIDENTIAL PARKING ZONE'"><br>
+                      <small>
+                        Permit required Monday – Friday, 8:00am – 5:00pm
+                      </small>
+                    </template>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="row data">
+            <header>
+              <h2>Pickup Days</h2>
+
+              <div>
+                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="trash" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-trash fa-w-14 fa-3x"><path fill="currentColor" d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z" class=""></path></svg>
+
+                <blockquote>
+                  <p>Yard waste pickups are between April and December only. Some conditions may cause delays to the schedule. Please see <a href="https://bloomington.in.gov/trash">Trash &amp; Recycling Pickup</a> for details.</p>
+                </blockquote>
+              </div>
+            </header>
+
+            <table>
+              <caption class="sr-only">
+                  Address Location Waste Pickup
+                </caption>
+                <thead class="sr-only">
+                  <tr>
+                    <th scope="col">Type</th>
+                    <th scope="col">Day/Week</th>
+                  </tr>
+                </thead>
+
+              <tbody>
+                <tr>
+                  <th scope="row">Trash &amp; Recyling:</th>
+                  <td>{{ locationResData.locations[0].trash_day }}</td>
+                </tr>
+
+                <tr>
+                  <th scope="row">Yard Waste:</th>
+                  <td>
+                    <a :href="trashLink(locationResData.locations[0].recycle_week, locationResData.locations[0].trash_day)">
+                      Week {{ locationResData.locations[0].recycle_week }}
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="row data" v-if="locations">
+            <header>
+              <h2>Find Your Government Online</h2>
+            </header>
+
+            <div class="locations">
               <ul v-for="l, i in locations">
                 <li>{{ l.type }}</li>
                 <li>{{ l.location }}</li>
@@ -199,76 +259,37 @@
                   <strong>Phone:</strong>
                   {{ l.phone.number }}
                 </li>
-                <!-- <li>
-                  <strong>Socials:</strong>
-                  <template v-for="s, i in l.socials">
-                    {{ s }}
-                    <a :href="l.website.url"
-                       :alt="l.website.text">{{ l.website.text }}</a>
-
-                  </template>
-
-                </li> -->
               </ul>
             </div>
-            <hr>
-          </template>
-        </template>
+          </div>
 
-        <template v-if="!addressResChoices">
-          <details v-if="contacts.mayor">
-            <summary>City Mayor</summary>
-            <pre>{{ contacts.mayor }}</pre>
-          </details>
+          <div class="row data">
+            <header>
+              <h2>Elected Officials</h2>
+            </header>
 
-          <hr v-if="contacts.mayor">
+            <div class="contacts" v-if="contacts.mayor">
+              <h3>{{ contacts.mayor.name }}</h3>
+              <h3>{{ contacts.mayor.displayname }}</h3>
 
-          <details v-if="contacts.clerk">
-            <summary>City Clerk</summary>
-            <pre>{{ contacts.clerk }}</pre>
-          </details>
-
-          <hr v-if="contacts.clerk">
-
-          <details v-if="contacts.council">
-            <summary>City Council</summary>
-            <pre>{{ contacts.council }}</pre>
-          </details>
-
-          <hr v-if="contacts.council">
-
-          <details v-if="councilDistrict">
-            <summary>Council District</summary>
-            <pre>{{ councilDistrict }}</pre>
-          </details>
-
-          <hr v-if="councilDistrict">
-
-          <details v-if="councilAtLargeReps">
-            <summary>Council at Large</summary>
-            <pre>{{ councilAtLargeReps }}</pre>
-          </details>
-
-          <hr v-if="councilAtLargeReps">
-
-          <details v-if="districtRep">
-            <summary>Council District Rep</summary>
-            <pre>{{ districtRep }}</pre>
-          </details>
-
-          <hr v-if="districtRep">
-
-          <details v-if="addressResData">
-            <summary>Address Data</summary>
-            <pre>{{ addressResData }}</pre>
-          </details>
-
-          <hr v-if="addressResData">
-
-          <details v-if="locationResData">
-            <summary>Location Data</summary>
-            <pre>{{ locationResData }}</pre>
-          </details>
+              <ul>
+                <li>
+                  <strong>Email:</strong>{{ contacts.mayor.email }}
+                </li>
+                <li>
+                  <strong>Mailing Address:</strong>
+                  {{ contacts.mayor.department }}<br>
+                  {{ contacts.mayor.department }}<br>
+                  401 N Morton St<br>
+                  Bloomington, IN 47404
+                </li>
+                <li>
+                  <strong>Telephone:</strong>
+                  {{ contacts.mayor.pager }}
+                </li>
+              </ul>
+            </div>
+          </div>
         </template>
       </div>
     </div>
@@ -399,6 +420,39 @@ export default {
     ])
   },
   methods: {
+    trashLink(week, day) {
+      if(week === 'A'){
+        switch(day) {
+          case 'Monday':
+            return this.sanitation.A.Monday;
+            break;
+          case 'Tuesday':
+            return this.sanitation.A.Tuesday;
+            break;
+          case 'Wednesday':
+            return this.sanitation.A.Wednesday;
+            break;
+          case 'Thursday':
+            return this.sanitation.A.Thursday;
+            break;
+        }
+      } else if(week === 'B'){
+        switch(day) {
+          case 'Monday':
+            return this.sanitation.B.Monday;
+            break;
+          case 'Tuesday':
+            return this.sanitation.B.Tuesday;
+            break;
+          case 'Wednesday':
+            return this.sanitation.B.Wednesday;
+            break;
+          case 'Thursday':
+            return this.sanitation.B.Thursday;
+            break;
+        }
+      }
+    },
     councilAtLarge() {
       return new Promise((resolve, reject) => {
         if(this.contacts.council) {
@@ -504,7 +558,7 @@ export default {
         lng: locationLng
       };
 
-      this.zoom = 17;
+      this.zoom = 18;
 
       console.log(`%c updated latLng (gMap) 👌 `,
                   this.consoleLog.success);
@@ -564,14 +618,49 @@ export default {
     padding: 0;
   }
 
+  a {
+    color: $color-blue;
+
+    &:hover,
+    &:focus {
+      color: darken($color-blue, 5%);
+    }
+  }
+
+  h2 {
+    position: relative;
+    text-transform: uppercase;
+    font-weight: $weight-semi-bold;
+    letter-spacing: .5px;
+    font-size: 24px;
+    color: lighten($text-color, 15%);
+    border-bottom: 2px solid $color-grey;
+    padding: 0 0 10px 0;
+    margin: 0 0 40px 0;
+
+    &:after {
+      position: absolute;
+      content: '';
+      bottom: -2px;
+      left: 0;
+      height: 4px;
+      width: 125px;
+      background-color: $color-orange-light;
+    }
+  }
+
+  blockquote {
+    letter-spacing: .5px;
+    font-weight: 500;
+    font-style: italic;
+    border-left: 2px solid $color-grey-light;
+  }
+
   h5 {
     margin: 20px 0;
-    // padding: 5px 15px;
     color: lighten($text-color, 20%);
     font-style: italic;
     font-weight: $weight-semi-bold;
-    // border-top: 1px solid darken($color-grey, 5%);
-    // border-bottom: 1px solid darken($color-grey, 5%);
   }
 
   .wrapper {
@@ -583,6 +672,124 @@ export default {
 
   .container {
     width: 1024px;
+    margin: 0 auto;
+  }
+
+  .row {
+    width: 100%;
+
+    &.data {
+      margin: 0 0 40px 0;
+      padding: 0 0 40px 0;
+      // border-bottom: 1px dashed lighten($color-grey, 5%);
+
+      header {
+        // background-color: green;
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 0 40px 0;
+        padding: 0;
+
+        div {
+          align-items: center;
+        }
+
+        blockquote {
+          width: calc(100% - 90px);
+          margin: 0;
+          padding: 0 0 0 40px;
+          font-size: 18px;
+
+          p {
+            color: lighten($text-color, 5%);
+          }
+        }
+      }
+
+      div:not(.locations):not(.contacts) {
+        display: flex;
+        // align-items: flex-start;
+        flex-wrap: wrap;
+        width: 100%;
+        // background-color: green;
+      }
+
+      .locations {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      // strong {
+      //   display: inline-block;
+      //   min-width: 350px;
+      //   letter-spacing: .5px;
+      //   text-transform: uppercase;
+      //   color: lighten($text-color, 20%);
+      //   font-size: 16px;
+      // }
+
+      svg {
+        color: $color-silver;
+        width: 50px;
+        height: 50px;
+        margin: 0 40px 0 0;
+      }
+
+      table {
+        width: 100%;
+
+
+        tbody {
+          tr {
+            th, td {
+              padding: 20px 15px;
+              text-align: left;
+              letter-spacing: .5px;
+              font-weight: $weight-semi-bold;
+
+              small {
+                font-weight: $weight-normal;
+              }
+            }
+
+            th {
+              width: 450px;
+              color: lighten($text-color, 20%);
+            }
+
+            td {
+              color: lighten($text-color, 10%);
+            }
+          }
+        }
+      }
+
+      // ul {
+      //   // background-color: red;
+      //   width: 100%;
+
+      //   li {
+      //     letter-spacing: .5px;
+      //     font-weight: $weight-semi-bold;
+      //     color: lighten($text-color, 10%);
+      //     margin: 0;
+      //     padding: 20px 15px;
+      //     border-bottom: 1px solid lighten($color-grey, 5%);
+
+      //     &:first-child {
+      //       padding: 0 15px 20px 15px;
+      //     }
+
+      //     &:nth-child(even) {
+      //       background-color: rgba($color-cloud, 0.3);
+      //     }
+
+      //     // &:last-of-type {
+      //     //   border-bottom: none;
+      //     // }
+      //   }
+      // }
+    }
   }
 
   .overview {
@@ -592,31 +799,98 @@ export default {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    background-color: $color-blue;
     color: white;
-    padding: 20px 0;
+    letter-spacing: .5px;
 
     h4 {
       margin: 0 0 15px 0;
     }
 
-    h4, p, ul, li {
-      color: white;
+    .badge {
+      svg {
+        width: 15px;
+        margin: 0 10px 0 0;
+      }
+
+      &.inside {
+        background-color: $color-green;
+      }
+
+      &.outside {
+        background-color: $color-vermilion;
+      }
     }
 
-    .container {
-
-      ul {
+    .row {
+      .container {
         display: flex;
-        align-items: center;
         justify-content: space-between;
+      }
 
-        li {
+      &:first-of-type {
+        border-top: 1px solid $color-grey-dark;
+        background-color: white;
+        color: $text-color;
+
+        div {
+          display: flex;
+          align-items: center;
+        }
+      }
+
+      &:nth-of-type(2) {
+        padding: 25px 0;
+        background-color: $color-blue;
+        // background-image: -webkit-linear-gradient(rgba($color-blue, 0), rgba($color-blue, 0.5));
+        // background-image: linear-gradient(rgba($color-blue, 0), rgba($color-blue, 0.5));
+        // -webkit-animation-duration: 7s;
+        // -moz-animation-duration: 7s;
+        // animation-duration: 7s;
+        // -webkit-animation-iteration-count: infinite;
+        // -moz-animation-iteration-count: infinite;
+        // animation-iteration-count: infinite;
+        // -webkit-animation-name: solidColor;
+        // -moz-animation-name: solidColor;
+        // animation-name: solidColor;
+        // background-blend-mode: multiply;
+        // background-repeat: no-repeat;
+        // background-attachment: fixed;
+
+        // @-webkit-keyframes solidColor {
+        //   0%    { background-color: lighten($color-blue, 15%); }
+        //   50%   { background-color: $color-blue; }
+        //   100%  { background-color: lighten($color-blue, 15%); }
+        // }
+
+        // @-moz-keyframes solidColor {
+        //   0%    { background-color: $color-blue-light; }
+        //   50%   { background-color: $color-blue; }
+        //   100%  { background-color: $color-blue-light; }
+        // }
+
+        // @keyframes solidColor {
+        //   0%    { background-color: lighten($color-blue, 15%); }
+        //   50%   { background-color: $color-blue; }
+        //   100%  { background-color: lighten($color-blue, 15%); }
+        // }
+        p {
+          color: white;
+
           strong {
-            display: block;
-            margin: 0 0 5px 0;
+            &:nth-child(2n) {
+              margin: 0 0 0 10px;
+            }
           }
         }
+      }
+    }
+
+    .weather {
+      display: flex;
+      align-items: center;
+
+      img {
+        width: 50px;
       }
     }
   }
@@ -632,12 +906,6 @@ export default {
       width: 100%;
       background-color: rgba($color-blue-darker, 0.15);
     }
-
-    // &:hover {
-    //   &:before {
-    //     background-color: rgba($color-blue-darker, 0.2);
-    //   }
-    // }
 
     ::v-deep .vue-map-hidden {
       display: flex;
@@ -669,15 +937,6 @@ export default {
             background-color: darken($color-green, 5%);
           }
         }
-      }
-    }
-  }
-
-  .weather {
-    div {
-      &:first-of-type {
-        display: flex;
-        align-items: center;
       }
     }
   }

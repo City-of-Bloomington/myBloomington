@@ -3,13 +3,13 @@ import {
   updateField }     from 'vuex-map-fields';
 
 export const sanitationState = () => ({
-  a: {
+  A: {
     Monday:         'https://bloomington.in.gov/sanitation/trash/monday-a',
     Tuesday:        'https://bloomington.in.gov/sanitation/trash/tuesday-a',
     Wednesday:      'https://bloomington.in.gov/sanitation/trash/wednesday-a',
     Thursday:       'https://bloomington.in.gov/sanitation/trash/thursday-a'
   },
-  b: {
+  B: {
     Monday:         'https://bloomington.in.gov/sanitation/trash/monday-b',
     Tuesday:        'https://bloomington.in.gov/sanitation/trash/tuesday-b',
     Wednesday:      'https://bloomington.in.gov/sanitation/trash/wednesday-b',

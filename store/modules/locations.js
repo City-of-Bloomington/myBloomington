@@ -74,17 +74,17 @@ export const locationsState = () => ({
       number: '812-849-3400'
     }
   },
-  ellettsville: {
-    type: 'City',
-    location: 'Ellettsville',
-    website: {
-      url: 'http://www.ellettsville.in.us',
-      text: 'ellettsville.in.us'
-    },
-    phone: {
-      number: '812-876-3860'
-    }
-  }
+  // ellettsville: {
+  //   type: 'City',
+  //   location: 'Ellettsville',
+  //   website: {
+  //     url: 'http://www.ellettsville.in.us',
+  //     text: 'ellettsville.in.us'
+  //   },
+  //   phone: {
+  //     number: '812-876-3860'
+  //   }
+  // }
 })
 
 const state = () => locationsState();
