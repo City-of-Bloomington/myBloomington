@@ -310,15 +310,13 @@ export default {
       }
     });
   },
-  // beforeRouteUpdate (to, from, next) {
-  //   // console.dir('changed route');
-  //   // let addressQueryParam = from.query.address;
-  //   // if(addressQueryParam){
-  //   //   this.addressSearch = addressQueryParam;
-  //   //   this.searchSubmit(addressQueryParam);
-  //   // }
-  //   // next(false)
-  // },
+  beforeRouteUpdate (to, from, next) {
+    let addressQueryParam = from.query.address;
+    if(addressQueryParam){
+      this.addressSearch = addressQueryParam;
+      this.searchSubmit(addressQueryParam);
+    }
+  },
   // filters: {
   //   capitalize: function (str) {
   //     return str.toLowerCase().replace(/^\w|\s\w/g, (value) => {
