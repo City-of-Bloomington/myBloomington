@@ -12,18 +12,22 @@ export const locationsState = () => ({
     },
     socials: {
       facebook: {
+        type: 'facebook',
         url: 'https://www.facebook.com/IndianaGovernment',
         text: '@IndianaGovernment'
       },
       twitter: {
+        type: 'twitter',
         url: 'https://twitter.com/IN_gov',
         text: '@in_gov'
       },
       instagram: {
+        type: 'instgram',
         url: 'https://www.instagram.com/in_gov/',
         text: '@in_gov'
       },
       youtube: {
+        type: 'youtube',
         url: 'https://www.youtube.com/user/IndianaGovernment/videos',
         text: 'IndianaGovernment YouTube'
       }
@@ -41,10 +45,12 @@ export const locationsState = () => ({
     },
     socials: {
       facebook: {
+        type: 'facebook',
         url: 'https://www.facebook.com/monroecoboardofcommissioners',
         text: '@monroecoboardofcommissioners'
       },
       twitter: {
+        type: 'twitter',
         url: 'https://twitter.com/MonroeCoBoC',
         text: '@MonroeCoBoC'
       },
@@ -62,10 +68,12 @@ export const locationsState = () => ({
     },
     socials: {
       facebook: {
+        type: 'facebook',
         url: 'https://www.facebook.com/cityofbloomington',
         text: '@cityofbloomington'
       },
       twitter: {
+        type: 'twitter',
         url: 'http://twitter.com/citybloomington',
         text: '@citybloomington'
       },

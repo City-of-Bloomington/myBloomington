@@ -241,25 +241,57 @@
             </table>
           </div>
 
-          <div class="row data" v-if="locations">
+          <div class="row data" v-if="false">
+          <!-- <div class="row data" v-if="locations"> -->
             <header>
-              <h2>Find Your Government Online</h2>
+              <h2>Government Online</h2>
             </header>
 
             <div class="locations">
-              <ul v-for="l, i in locations">
-                <li>{{ l.type }}</li>
-                <li>{{ l.location }}</li>
-                <li>
-                  <strong>Website:</strong>
-                  <a :href="l.website.url"
-                     :alt="l.website.text">{{ l.website.text }}</a>
-                </li>
-                <li>
-                  <strong>Phone:</strong>
-                  {{ l.phone.number }}
-                </li>
-              </ul>
+              <div class="location" v-for="l, i in locations">
+                <ul>
+                  <li>{{ l.type }}</li>
+                  <li>{{ l.location }}</li>
+                  <!-- <li>
+                    <strong>Website:</strong>
+                    <a :href="l.website.url"
+                       :alt="l.website.text">{{ l.website.text }}</a>
+                  </li>
+                  <li>
+                    <strong>Phone:</strong>
+                    {{ l.phone.number }}
+                  </li> -->
+                </ul>
+
+                <table>
+                  <caption class="sr-only">
+                    Online Government Information
+                  </caption>
+                  <thead class="sr-only">
+                    <tr>
+                      <th scope="col">Key/Value</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr>
+                      <th scope="row">
+                        Website:<br>
+                        <a :href="l.website.url"
+                           :alt="l.website.text">{{ l.website.text }}</a>
+                      </th>
+                    </tr>
+
+                    <tr v-for="s, i in l.socials">
+                      <th scope="row">
+                        {{ s.type }}:<br>
+                        <a :href="s.url"
+                           :alt="s.text">{{ s.text }}</a>
+                      </th>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
 
@@ -269,30 +301,315 @@
             </header>
 
             <div class="contacts" v-if="contacts.mayor">
-              <h3>{{ contacts.mayor.name }}</h3>
-              <h3>{{ contacts.mayor.displayname }}</h3>
+              <div class="row contact mayor">
+                <div class="img">
+                  <img src="contacts/mayor/john-hamilton.jpg" :alt="`Mayor ${contacts.mayor.displayname}`">
+                </div>
 
-              <ul>
-                <li>
-                  <strong>Email:</strong>{{ contacts.mayor.email }}
-                </li>
-                <li>
-                  <strong>Mailing Address:</strong>
-                  {{ contacts.mayor.department }}<br>
-                  {{ contacts.mayor.department }}<br>
-                  401 N Morton St<br>
-                  Bloomington, IN 47404
-                </li>
-                <li>
-                  <strong>Telephone:</strong>
-                  {{ contacts.mayor.pager }}
-                </li>
-              </ul>
+                <div class="about">
+
+                  <h2>{{ contacts.mayor.displayname }}</h2>
+                  <h4>{{ contacts.mayor.name }}</h4>
+
+                  <table>
+                    <caption class="sr-only">
+                      Address Location Purposes
+                    </caption>
+                    <thead class="sr-only">
+                      <tr>
+                        <th scope="col">Purpose Type</th>
+                        <th scope="col">Purpose Name</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr>
+                        <th scope="row">Email:</th>
+                        <td>{{ contacts.mayor.email }}</td>
+                      </tr>
+
+                      <tr>
+                        <th scope="row">Telephone:</th>
+                        <td>{{ contacts.mayor.pager }}</td>
+                      </tr>
+
+                      <tr>
+                        <th scope="row">Mailing Address:</th>
+                        <td>
+                          {{ contacts.mayor.department }}<br>
+                          401 N Morton St<br>
+                          Bloomington, IN 47404
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row data">
+            <header>
+              <h2>City Council</h2>
+            </header>
+
+            <div class="contacts">
+              <div class="row council">
+                <div class="contact">
+                  <div class="img" style="background-image: url('contacts/city-council/andy-ruff.jpg');"></div>
+
+                  <div class="about">
+                    <h2>
+                      {{ councilAtLargeReps[0].currentMember.firstname }}
+                      {{ councilAtLargeReps[0].currentMember.lastname }}
+                    </h2>
+                    <h4>At Large</h4>
+
+                    <table>
+                      <caption class="sr-only">
+                        City Council Member {{ councilAtLargeReps[0].currentMember.firstname }} {{ councilAtLargeReps[0].currentMember.lastname }}
+                      </caption>
+                      <thead class="sr-only">
+                        <tr>
+                          <th scope="col">Purpose Type</th>
+                          <th scope="col">Purpose Name</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        <tr>
+                          <th scope="row">Email:</th>
+                          <td>ruffa@bloomington.in.gov</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row">Address:</th>
+                          <td>1414 E University</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row">Phone:</th>
+                          <td>812-349-3409</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row">Fax:</th>
+                          <td>812-349-3570</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="contact">
+                  <div class="img" style="background-image: url('contacts/city-council/susan-sandberg.jpg');"></div>
+
+                  <div class="about">
+                    <h2>
+                      {{ councilAtLargeReps[1].currentMember.firstname }}
+                      {{ councilAtLargeReps[1].currentMember.lastname }}
+                    </h2>
+                    <h4>At Large</h4>
+
+                    <table>
+                      <caption class="sr-only">
+                        City Council Member {{ councilAtLargeReps[1].currentMember.firstname }} {{ councilAtLargeReps[1].currentMember.lastname }}
+                      </caption>
+                      <thead class="sr-only">
+                        <tr>
+                          <th scope="col">Purpose Type</th>
+                          <th scope="col">Purpose Name</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        <tr>
+                          <th scope="row">Email:</th>
+                          <td>sandbers@bloomington.in.gov</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row">Address:</th>
+                          <td>2201 N Fritz Dr</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row">Phone:</th>
+                          <td>812-349-3409</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row">Fax:</th>
+                          <td>812-349-3570</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="contact">
+                  <div class="img" style="background-image: url('contacts/city-council/jim-sims.jpg');"></div>
+
+                  <div class="about">
+                    <h2>
+                      {{ councilAtLargeReps[2].currentMember.firstname }}
+                      {{ councilAtLargeReps[2].currentMember.lastname }}
+                    </h2>
+                    <h4>At Large</h4>
+
+                    <table>
+                      <caption class="sr-only">
+                        City Council Member {{ councilAtLargeReps[2].currentMember.firstname }} {{ councilAtLargeReps[2].currentMember.lastname }}
+                      </caption>
+                      <thead class="sr-only">
+                        <tr>
+                          <th scope="col">Purpose Type</th>
+                          <th scope="col">Purpose Name</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        <tr>
+                          <th scope="row">Email:</th>
+                          <td>simsji@bloomington.in.gov</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row">Phone:</th>
+                          <td>812-349-3409</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row">Fax:</th>
+                          <td>812-349-3570</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row data" v-if="districtRep">
+            <header>
+              <h2>District Representative</h2>
+            </header>
+
+            <GmapMap
+              :center="latLong"
+              :zoom="zoom"
+              map-type-id="roadmap"
+              style="width: 100%; height: 315px"
+              :options="{
+                zoomControl:        false,
+                mapTypeControl:     false,
+                scaleControl:       false,
+                streetViewControl:  false,
+                rotateControl:      false,
+                fullscreenControl:  false,
+                disableDefaultUi:   true,
+                draggable:          false,
+                styles: [
+                  {
+                    featureType:    'landscape',
+                    stylers: [
+                      {
+                        color:      '#f2f2f2',
+                        visibility: 'on'
+                      }
+                    ]
+                  },
+                  {
+                    featureType:    'poi',
+                    stylers: [
+                      {
+                        visibility: 'off'
+                      }
+                    ]
+                  },
+                  // {
+                  //   featureType:    'poi.park',
+                  //   elementType:    'geometry',
+                  //   stylers: [
+                  //     {
+                  //       color:      '#C8ACA3',
+                  //       visibility: 'on'
+                  //     }
+                  //   ]
+                  // },
+                ]
+
+              }">
+              <GmapMarker
+                :position="latLong"
+                :clickable="false"
+                :draggable="false"
+              />
+            </GmapMap>
+
+            <div class="contacts">
+              <div class="row council">
+                <div class="contact">
+                  <div class="img" :style="`background-image: url( ${districtRepImage} );`"></div>
+
+                  <div class="about">
+                    <h2>
+                      {{ districtRep[0].currentMember.firstname }}
+                      {{ districtRep[0].currentMember.lastname }}
+                    </h2>
+                    <h4>{{ districtRep[0].name }} Representative</h4>
+
+                    <table>
+                      <caption class="sr-only">
+                        City Council District Representative {{ districtRep[0].currentMember.firstname }}
+                      {{ districtRep[0].currentMember.lastname }}
+                      </caption>
+                      <thead class="sr-only">
+                        <tr>
+                          <th scope="col">Purpose Type</th>
+                          <th scope="col">Purpose Name</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        <tr>
+                          <th scope="row">Email:</th>
+                          <td>ruffa@bloomington.in.gov</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row">Address:</th>
+                          <td>1414 E University</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row">Phone:</th>
+                          <td>812-349-3409</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row">Fax:</th>
+                          <td>812-349-3570</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </template>
       </div>
     </div>
+
+    <footer>
+      <div class="container">
+        <p>The information reported comes from the <strong>City of Bloomington Geographic Information Systems (GIS)</strong> and related databases.</p>
+
+        <p>City staff strives to keep complete and accurate information and regrets any errors or omissions. To report missing City of Bloomington addresses or other profile errors, please contact the City of Bloomington GIS Staff at <strong>812-349-3454</strong> or <strong>email</strong> us at <a href="mailto: gis@bloomington.in.gov">gis@bloomington.in.gov</a>.</p>
+      </div>
+    </footer>
   </div>
 </template>
 
@@ -415,7 +732,31 @@ export default {
       'locations',
       'sanitation',
       'contacts'
-    ])
+    ]),
+    districtRepImage() {
+      let rep = this.councilDistrict.id;
+      switch(rep) {
+        case 1:
+          return 'contacts/district-representatives/1/chris-sturbaum.jpg';
+          break;
+        case 2:
+          return 'contacts/district-representatives/2/dorothy-granger.jpg';
+          break;
+        case 3:
+          return 'contacts/district-representatives/3/allison-chopra.jpg';
+          break;
+        case 4:
+          return 'contacts/district-representatives/4/dave-rollo.jpg';
+          break;
+        case 5:
+          return 'contacts/district-representatives/5/isabel-piedmont-smith.jpg';
+          break;
+        case 6:
+          return 'contacts/district-representatives/6/stephen-volan.jpg';
+          break;
+      }
+
+    },
   },
   methods: {
     trashLink(week, day) {
@@ -611,6 +952,15 @@ export default {
     padding: 15px 20px;
   }
 
+  footer {
+    margin: 0 0 60px 0;
+
+    p {
+      color: $text-color;
+      margin: 0 0 20px 0;
+    }
+  }
+
   ul {
     list-style: none;
     padding: 0;
@@ -630,7 +980,7 @@ export default {
     text-transform: uppercase;
     font-weight: $weight-semi-bold;
     letter-spacing: .5px;
-    font-size: 24px;
+    font-size: 28px;
     color: lighten($text-color, 15%);
     border-bottom: 2px solid $color-grey;
     padding: 0 0 10px 0;
@@ -677,19 +1027,23 @@ export default {
     width: 100%;
 
     &.data {
-      margin: 0 0 40px 0;
-      padding: 0 0 40px 0;
+      margin: 0;
+      padding: 0 0 60px 0;
       // border-bottom: 1px dashed lighten($color-grey, 5%);
 
       header {
         // background-color: green;
         display: flex;
         flex-wrap: wrap;
-        margin: 0 0 40px 0;
+        margin: 0;
         padding: 0;
 
         div {
+          display: flex;
+          flex-wrap: wrap;
           align-items: center;
+          width: 100%;
+          margin: 0 0 40px 0;
         }
 
         blockquote {
@@ -704,17 +1058,226 @@ export default {
         }
       }
 
-      div:not(.locations):not(.contacts) {
-        display: flex;
-        // align-items: flex-start;
-        flex-wrap: wrap;
-        width: 100%;
-        // background-color: green;
+      .vue-map-container {
+        margin: 0 0 40px 0;
       }
 
+      // div:not(.contacts):not(.locations):not(.location) {
+      //   display: flex;
+      //   // align-items: flex-start;
+      //   flex-wrap: wrap;
+      //   width: 100%;
+      //   // background-color: green;
+      // }
+
       .locations {
+        // background-color: red;
         display: flex;
         justify-content: space-between;
+
+        .location {
+          padding: 0 20px;
+          // background-color: blue;
+
+          &:first-child {
+            padding: 0 20px 0 0;
+          }
+
+          &:last-child {
+            padding: 0 0 0 20px;
+          }
+        }
+
+        ul {
+          li {
+            color: lighten($text-color, 5%);
+
+            &:nth-child(1) {
+              letter-spacing: 1px;
+              text-transform: uppercase;
+              font-weight: $weight-semi-bold;
+              border-bottom: 1px solid $color-grey;
+              padding: 0 0 10px 0;
+              margin: 0 0 10px 0;
+            }
+
+            &:nth-child(2) {
+              letter-spacing: .5px;
+              font-size: 28px;
+              margin: 10px 0;
+            }
+
+            &:nth-child(n+3) {
+              color: red;
+            }
+          }
+        }
+      }
+
+      .contacts {
+        // background-color: green;
+
+        table tbody tr th {
+          width: 225px;
+        }
+
+        .mayor {
+          display: flex;
+          // background-color: red;
+
+          .img {
+            position: relative;
+            width: 300px;
+            margin: 0 40px 0 0;
+
+            img {
+              width: 100%;
+              position: relative;
+              z-index: 1;
+            }
+
+            &:before {
+              position: absolute;
+              content: '';
+              left: -25px;
+              bottom: -22px;
+              width: 100%;
+              height: 100%;
+              display: block;
+              border-radius: $radius-default*3;
+              background-color: $color-grey-lighter;
+            }
+          }
+
+          .about {
+            width: calc(100% - 300px);
+
+            h2 {
+              font-size: 24px;
+              margin: 0 0 20px 0;
+
+              &:after {
+                background-color: $color-blue;
+              }
+            }
+
+            h4 {
+              color: lighten($text-color, 20%);
+              // font-weight: $weight-semi-bold;
+              font-size: 20px;
+              letter-spacing: 1px;
+              text-transform: uppercase;
+              margin: 0 0 20px 20px;
+              padding: 0 0 0 20px;
+              border-left: 2px solid $color-grey;
+            }
+          }
+        }
+
+        .council {
+          // background-color: red;
+          display: flex;
+          flex-wrap: wrap;
+          // justify-content: space-between;
+
+          .contact {
+            display: flex;
+            // background-color: green;
+            width: 100%;
+            margin: 0 0 80px 0;
+
+            h4 {
+              margin: 0 0 20px 20px;
+              padding: 0 0 0 20px;
+              border-left: 2px solid $color-grey;
+            }
+
+            .img {
+              position: relative;
+              display: block;
+              margin: 0 40px 0 0;
+              width: 225px;
+              height: 225px;
+              border-radius: 50%;
+              background-position: top center;
+              background-repeat: no-repeat;
+              background-size: cover;
+
+              &:after {
+                z-index: -1;
+                position: absolute;
+                content: '';
+                width: 225px;
+                height: 225px;
+                left: -10px;
+                bottom: -15px;
+                display: block;
+                border-radius: 50%;
+                background-color: $color-grey-lighter;
+              }
+            }
+
+            // &:nth-child(odd) {
+            //   h4 {
+            //     margin: 0 0 20px 20px;
+            //     padding: 0 0 0 20px;
+            //     border-left: 2px solid $color-grey;
+            //   }
+
+            //   .img {
+            //     margin: 0 40px 0 0;
+            //   }
+            // }
+
+            // &:nth-child(even) {
+            //   flex-direction: row-reverse;
+
+            //   h2, h4 {
+            //     text-align: right;
+            //   }
+
+            //   h2 {
+            //     &:after {
+            //       left: auto;
+            //       right: 0;
+            //     }
+            //   }
+
+            //   h4 {
+            //     position: relative;
+            //     right: 20px;
+            //     margin: 0 0 20px 0;
+            //     padding: 0 20px 0 0;
+            //     border-right: 2px solid $color-grey;
+            //   }
+
+            //   .img {
+            //     margin: 0 0 0 40px;
+            //   }
+            // }
+          }
+
+          .about {
+            width: calc(100% - 265px);
+
+            h2 {
+              font-size: 24px;
+              margin: 0 0 20px 0;
+
+              &:after {
+                background-color: $color-blue;
+              }
+            }
+
+            h4 {
+              color: lighten($text-color, 20%);
+              // font-weight: $weight-semi-bold;
+              font-size: 20px;
+              letter-spacing: 1px;
+              text-transform: uppercase;
+            }
+          }
+        }
       }
 
       // strong {
