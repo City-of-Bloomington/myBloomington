@@ -7,7 +7,7 @@ export const locationsState = () => ({
     type: 'State',
     location: 'Indianapolis',
     website: {
-      url: 'http://www.in.gov',
+      url: 'https://www.in.gov/',
       text: 'www.in.gov'
     },
     socials: {
@@ -22,7 +22,7 @@ export const locationsState = () => ({
         text: '@in_gov'
       },
       instagram: {
-        type: 'instgram',
+        type: 'instagram',
         url: 'https://www.instagram.com/in_gov/',
         text: '@in_gov'
       },

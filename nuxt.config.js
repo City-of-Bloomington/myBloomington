@@ -43,6 +43,7 @@ module.exports = {
   plugins: [
     { src: '~/plugins/api-methods' },
     { src: '~/plugins/design-system' },
+    { src: '~/plugins/filters' },
     { src: '~/plugins/google-map', ssr: false}
   ],
 

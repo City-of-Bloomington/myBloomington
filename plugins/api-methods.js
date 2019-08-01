@@ -76,15 +76,13 @@ Vue.mixin({
      */
     getAddress(address) {
       return new Promise((resolve, reject) => {
-        let regExTest = /\d+\s+\w+/,
-            addressTest = regExTest.test(address);
-
-        console.dir(addressTest);
+        let regExTest     = /\d+\s+\w+/,
+            addressTest   = regExTest.test(address),
+            encodeAddress = encodeURIComponent(address).replace(/%20/g, "+");
 
         if(addressTest) {
-          axios.get(`https://bloomington.in.gov/master_address/addresses?format=json&address=${address}`)
+          axios.get(`https://bloomington.in.gov/master_address/addresses?format=json&address=${encodeAddress}`)
           .then((res) => {
-            console.dir();
             if(res.data.length == 1) {
               resolve(res.data[0])
             } else if(res.data.length == 0) {
@@ -95,7 +93,6 @@ Vue.mixin({
             } else {
               reject(`We didn't find an Address for '${address}'.`)
               console.dir(`getAddress() Search Result Count: ${res.data.length}`);
-              console.table(JSON.stringify(res.data));
             }
           })
           .catch((e)  => reject(e))
@@ -107,6 +104,13 @@ Vue.mixin({
     getWeather(lat, lng) {
       return new Promise((resolve, reject) => {
         axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&units=imperial&appid=${process.env.weatherApiKey}`)
+        .then((res) => resolve(res.data))
+        .catch((e)  => reject(e))
+      })
+    },
+    getCouncilDistrictsGeoJson() {
+      return new Promise((resolve, reject) => {
+        axios.get(`https://bloomington.in.gov/geoserver/publicgis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=publicgis:CityCouncilDistricts&maxFeatures=50&outputFormat=application%2Fjson`)
         .then((res) => resolve(res.data))
         .catch((e)  => reject(e))
       })
