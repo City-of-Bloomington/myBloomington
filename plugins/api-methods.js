@@ -25,7 +25,7 @@ Vue.mixin({
      */
     getCityCouncil() {
       return new Promise((resolve, reject) => {
-        axios.get(`https://bloomington.in.gov/onboard/committees/members?committee_id=1&format=json`)
+        axios.get(`${process.env.baseUrl}${process.env.onBoardCityCouncilPath}`)
         .then((res) => resolve(res.data.seats))
         .catch(e    => reject(e))
       })
@@ -42,7 +42,7 @@ Vue.mixin({
      */
     getDirectoryUser(username){
       return new Promise((resolve, reject) => {
-        axios.get(`https://bloomington.in.gov/directory/people/view?format=json&username=${username}`)
+        axios.get(`${process.env.baseUrl}${process.env.directoryUsernamePath}${username}`)
         .then(res => resolve(res.data))
         .catch(e  => reject(e))
       })
@@ -59,7 +59,7 @@ Vue.mixin({
      */
     getLocation(id) {
       return new Promise((resolve, reject) => {
-        axios.get(`https://bloomington.in.gov/master_address/addresses/${id}?format=json`)
+        axios.get(`${process.env.baseUrl}${process.env.MAAddressesPath}/${id}?format=json`)
         .then((res) => resolve(res.data))
         .catch((e)  => reject(e))
       })
@@ -81,7 +81,7 @@ Vue.mixin({
             encodeAddress = encodeURIComponent(address).replace(/%20/g, "+");
 
         if(addressTest) {
-          axios.get(`https://bloomington.in.gov/master_address/addresses?format=json&address=${encodeAddress}`)
+          axios.get(`${process.env.baseUrl}${process.env.MAAddressesPath}?format=json&address=${encodeAddress}`)
           .then((res) => {
             if(res.data.length == 1) {
               resolve(res.data[0])
@@ -103,14 +103,14 @@ Vue.mixin({
     },
     getWeather(lat, lng) {
       return new Promise((resolve, reject) => {
-        axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&units=imperial&appid=${process.env.weatherApiKey}`)
+        axios.get(`${process.env.weatherUrl}weather?lat=${lat}&lon=${lng}&units=imperial&appid=${process.env.weatherApiKey}`)
         .then((res) => resolve(res.data))
         .catch((e)  => reject(e))
       })
     },
     getCouncilDistrictsGeoJson() {
       return new Promise((resolve, reject) => {
-        axios.get(`https://bloomington.in.gov/geoserver/publicgis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=publicgis:CityCouncilDistricts&maxFeatures=50&outputFormat=application%2Fjson`)
+        axios.get(`${process.env.baseUrl}${process.env.councilDistrictsGeoJson}`)
         .then((res) => resolve(res.data))
         .catch((e)  => reject(e))
       })

@@ -2,19 +2,19 @@
   <div>
     <fn1-header
       :logo="{
-        url:      'https://bloomington.in.gov/',
-        image:    'city-of-bloomington-logo.svg',
-        imageAlt: 'City of Bloomington, IN'
+        url:      `${baseUrl}`,
+        image:    `${headerLogo}`,
+        imageAlt: `${cityName}`
       }"
 
       :logoHeadings="{
-        topHeading:   'Bloomington.in.gov',
-        subHeading:   'John Hamilton, Mayor',
+        topHeading:   `${logoHeading}`,
+        subHeading:   `${logoSubHeading}`,
       }"
 
       :application="{
-        name: 'My Bloomington',
-        url:  'https://bloomington.in.gov/mybloomington/'
+        name: `${appName}`,
+        url:  `${baseUrl}${frontEndBase}`
       }"
 
       :navItems="null"
@@ -771,7 +771,13 @@ export default {
   // },
   data() {
     return {
-      cityName:           'City of Bloomington',
+      appName:            process.env.appName,
+      baseUrl:            process.env.baseUrl,
+      frontEndBase:       process.env.frontEndBase,
+      cityName:           process.env.cityName,
+      logoHeading:        process.env.logoHeading,
+      logoSubHeading:     process.env.logoSubHeading,
+      headerLogo:         'city-of-bloomington-logo.svg',
       cityHallLatLong:    { lat: 39.16992723, lng: -86.53680559 },
       latLong:            {},
       weather:            null,

@@ -2,24 +2,21 @@ const pkg = require('./package')
 require('dotenv').config()
 
 module.exports = {
-  mode: 'universal',
-
-  dev:  (process.env.NODE_ENV !== 'production'),
-
+  mode:             'universal',
+  dev:              (process.env.NODE_ENV !== 'production'),
   router: {
-    base: `/mybloomington/`
+    base:           `/${process.env.FE_BASE}`
   },
-
   head: {
-    title: pkg.prettyName,
+    title:          pkg.prettyName,
     meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport',
-        content: 'width=device-width, initial-scale=1'
+      { charset:    'utf-8' },
+      { name:       'viewport',
+        content:    'width=device-width, initial-scale=1'
       },
-      { hid: 'description',
-        name: 'description',
-        content: process.env.npm_package_description || ''
+      { hid:        'description',
+        name:       'description',
+        content:     process.env.npm_package_description || ''
       }
     ],
     link: [
@@ -27,24 +24,40 @@ module.exports = {
         type:       'image/x-icon',
         href:       '/favicon.ico'
       },
-      { rel:      'stylesheet',
-        href:     'https://fonts.googleapis.com/css?family=Abel'
+      { rel:        'stylesheet',
+        href:       'https://fonts.googleapis.com/css?family=Abel'
       }
     ]
   },
 
   env: {
-    repo:           pkg.repository.url,
-    googleApiKey:   process.env.GOOGLE_API_KEY,
-    weatherApiKey:  process.env.WEATHER_API_KEY,
-    nuxtPort:       process.env.NUXT_PORT || 9090,
+    repo:                     pkg.repository.url,
+    appName:                  process.env.APP_NAME,
+    cityName:                 process.env.CITY_NAME,
+    logoHeading:              process.env.LOGO_HEADING,
+    logoSubHeading:           process.env.LOGO_SUB_HEADING,
+    nuxtPort:                 process.env.NUXT_PORT || 9090,
+    frontEndBase:             process.env.FE_BASE,
+    baseUrl:                  process.env.BASE_URL,
+    weatherUrl:               process.env.WEATHER_URL,
+    councilDistrictsGeoJson:  process.env.COUNCIL_DISTRICTS_GEOJSON_PATH,
+    MAAddressesPath:          process.env.MASTER_ADDRESS_ADDRESS_PATH,
+    directoryUsernamePath:    process.env.DIRECTORY_USERNAME_PATH,
+    onBoardCityCouncilPath:   process.env.ONBOARD_CITY_COUNCIL_PATH,
+    googleApiKey:             process.env.GOOGLE_API_KEY,
+    weatherApiKey:            process.env.WEATHER_API_KEY,
+    districtReps:             process.env.DISTRICT_REPRESENTATIVES,
+    sanitation:               process.env.SANITATION,
+    indianapolis:             process.env.INDIANAPOLIS,
+    monroeCounty:             process.env.MONROE_COUNTY,
+    bloomington:              process.env.BLOOMINGTON
   },
 
   plugins: [
-    { src: '~/plugins/api-methods' },
-    { src: '~/plugins/design-system' },
-    { src: '~/plugins/filters' },
-    { src: '~/plugins/google-map', ssr: false}
+    { src:          '~/plugins/api-methods' },
+    { src:          '~/plugins/design-system' },
+    { src:          '~/plugins/filters' },
+    { src:          '~/plugins/google-map', ssr: false}
   ],
 
   loading: { color: '#fff' },

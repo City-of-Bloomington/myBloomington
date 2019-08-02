@@ -2,20 +2,7 @@ import {
   getField,
   updateField }     from 'vuex-map-fields';
 
-export const sanitationState = () => ({
-  A: {
-    Monday:         'https://bloomington.in.gov/sanitation/trash/monday-a',
-    Tuesday:        'https://bloomington.in.gov/sanitation/trash/tuesday-a',
-    Wednesday:      'https://bloomington.in.gov/sanitation/trash/wednesday-a',
-    Thursday:       'https://bloomington.in.gov/sanitation/trash/thursday-a'
-  },
-  B: {
-    Monday:         'https://bloomington.in.gov/sanitation/trash/monday-b',
-    Tuesday:        'https://bloomington.in.gov/sanitation/trash/tuesday-b',
-    Wednesday:      'https://bloomington.in.gov/sanitation/trash/wednesday-b',
-    Thursday:       'https://bloomington.in.gov/sanitation/trash/thursday-b'
-  }
-})
+export const sanitationState = () => JSON.parse(process.env.sanitation);
 
 const state = () => sanitationState();
 
