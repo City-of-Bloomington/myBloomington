@@ -543,7 +543,7 @@
               :center="latLong"
               :zoom="14"
               map-type-id="roadmap"
-              style="width: 100%; height: 315px"
+              style="width: 100%; height: 550px"
               :options="{
                 zoomControl:        10,
                 mapTypeControl:     false,
@@ -571,16 +571,6 @@
                       }
                     ]
                   },
-                  // {
-                  //   featureType:    'poi.park',
-                  //   elementType:    'geometry',
-                  //   stylers: [
-                  //     {
-                  //       color:      '#C8ACA3',
-                  //       visibility: 'on'
-                  //     }
-                  //   ]
-                  // },
                 ]
 
               }">
@@ -591,57 +581,38 @@
               />
 
               <GmapPolygon
-                :paths="[...testPaths]"
-                :options="{
-                  strokeColor:    'rgb(30, 90, 174)',
-                  strokeOpacity:  0.8,
-                  strokeWeight:   2,
-                  fillColor:      'rgb(30, 90, 174)',
-                  fillOpacity:    0.35
-                }"
+                  :paths="paths"
+                  :options="{
+                    strokeColor:    'rgb(30, 90, 174)',
+                    strokeOpacity:  0.8,
+                    strokeWeight:   2,
+                    fillColor:      'rgb(30, 90, 174)',
+                    fillOpacity:    0.35
+                  }"
               />
 
-              <GmapPolygon
-                :paths="[...testPaths2]"
-                :options="{
-                  strokeColor:    'rgb(30, 90, 174)',
-                  strokeOpacity:  0.8,
-                  strokeWeight:   2,
-                  fillColor:      'rgb(30, 90, 174)',
-                  fillOpacity:    0.35
-                }"
-              />
-
-              <GmapPolygon
-                :paths="[[...testPaths3],[...testPaths4],[...testPaths5]]"
-                :options="{
-                  strokeColor:    'rgb(30, 90, 174)',
-                  strokeOpacity:  0.8,
-                  strokeWeight:   2,
-                  fillColor:      'rgb(30, 90, 174)',
-                  fillOpacity:    0.35
-                }"/>
-
-              <!-- <GmapPolygon
-                :paths="[...testPaths4]"
-                :options="{
-                  strokeColor:    'rgb(30, 90, 174)',
-                  strokeOpacity:  0.8,
-                  strokeWeight:   2,
-                  fillColor:      'purple',
-                  fillOpacity:    0.35,
-                  zIndex: 10000
-                }"/> -->
-
-             <!--  <GmapPolygon
-                :paths="[...testPaths5]"
-                :options="{
-                  strokeColor:    'rgb(30, 90, 174)',
-                  strokeOpacity:  0.8,
-                  strokeWeight:   2,
-                  fillColor:      'orange',
-                  fillOpacity:    0.35
-                }"/> -->
+              <!-- <template v-if="councilDistrict.id == 1">
+                <GmapPolygon
+                  :paths="[[...testPaths],[...testPaths2],[...testPaths3],[...testPaths4],[...testPaths5]]"
+                  :options="{
+                    strokeColor:    'rgb(30, 90, 174)',
+                    strokeOpacity:  0.8,
+                    strokeWeight:   2,
+                    fillColor:      'rgb(30, 90, 174)',
+                    fillOpacity:    0.35
+                  }"/>
+              </template>
+              <template v-else>
+                <GmapPolygon
+                  :paths="paths"
+                  :options="{
+                    strokeColor:    'rgb(30, 90, 174)',
+                    strokeOpacity:  0.8,
+                    strokeWeight:   2,
+                    fillColor:      'rgb(30, 90, 174)',
+                    fillOpacity:    0.35
+                  }"/>
+              </template> -->
             </GmapMap>
 
             <div class="contacts">
@@ -948,20 +919,47 @@ export default {
           secondProjection = "+proj=tmerc +lat_0=37.5 +lon_0=-87.08333333333333 +k=0.999966667 +x_0=900000 +y_0=249999.9998983998 +datum=NAD83 +units=us-ft +no_defs";
 
       let lngLat  = [],
-        geoCoords = [],
-          repJson = this.councilDistrictRepGeoJson[2].geometry.coordinates[0][2]
+        geoCoords = [];
 
-      // this.districRepGeoCoords.forEach((p) => {
-      repJson.forEach((p) => {
-        let pair = proj4(secondProjection).inverse(p)
-        lngLat.push(pair)
-      });
+      if(this.councilDistrictRepGeoJson.length > 1) {
+        let raw = [];
+        this.councilDistrictRepGeoJson.forEach((r) => {
+          raw.push(r.geometry.coordinates)
+        })
+        var repJson = [].concat.apply([],[].concat.apply([], raw));
 
-      lngLat.forEach((p) => {
-        geoCoords.push({lat: p[1], lng: p[0]})
-      });
+      } else {
+        var repJson = this.councilDistrictRepGeoJson[0].geometry.coordinates[0][0];
+      }
 
-      return geoCoords;
+      // to-do: use the data and not the district
+      //        to make this distinction
+      if(this.councilDistrict.id === 1) {
+        let projCoords = repJson.map((p) => {
+          return p.map((e) => {
+            return proj4(secondProjection).inverse(e);
+          })
+        });
+
+        let projCoordsLatLng = projCoords.map((p) => {
+          return p.map((e) => {
+            return {lat: e[1], lng: e[0]}
+          })
+        });
+
+        return projCoordsLatLng;
+      } else {
+        repJson.forEach((p) => {
+          let pair = proj4(secondProjection).inverse(p);
+          lngLat.push(pair)
+        });
+
+        lngLat.forEach((p) => {
+          geoCoords.push({lat: p[1], lng: p[0]})
+        });
+
+        return geoCoords;
+      }
     },
     districtRepInfo() {
       switch(this.councilDistrict.id) {
@@ -1168,8 +1166,8 @@ export default {
       })
     },
     getCouncilDistrictRepFeature(district) {
-      this.councilDistrictRepGeoJson = this.councilDistrictsGeoJson.features.filter((e) => {
-          return e.properties.DISTRICT === district;
+      this.councilDistrictRepGeoJson = this.councilDistrictsGeoJson.features.filter((d) => {
+          return d.properties.DISTRICT === district;
       })
 
       // if(this.councilDistrictRepGeoJson.length > 1) {
