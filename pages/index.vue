@@ -205,7 +205,7 @@
 
                     <template v-else>
                       <tr v-for="e, i in p">
-                        <th scope="row">4
+                        <th scope="row">
                           {{e.purpose_type | capitalizeFirst}}:
                         </th>
                         <td>
@@ -234,7 +234,7 @@
             </table>
           </div>
 
-          <div class="row data" v-if="locationResData.locations[0].trash_day || locationResData.locations[0].recycle_week">
+          <div class="row data" v-if="locationResData.address.jurisdiction_name === 'Bloomington'">
             <header>
               <h2>Pickup Days</h2>
 
@@ -247,33 +247,39 @@
               </div>
             </header>
 
-            <table>
-              <caption class="sr-only">
-                  Address Location Waste Pickup
-                </caption>
-                <thead class="sr-only">
-                  <tr>
-                    <th scope="col">Type</th>
-                    <th scope="col">Day/Week</th>
+            <template v-if="locationResData.locations[0].trash_day || locationResData.locations[0].recycle_week">
+              <table>
+                <caption class="sr-only">
+                    Address Location Waste Pickup
+                  </caption>
+                  <thead class="sr-only">
+                    <tr>
+                      <th scope="col">Type</th>
+                      <th scope="col">Day/Week</th>
+                    </tr>
+                  </thead>
+
+                <tbody>
+                  <tr v-if="locationResData.locations[0].trash_day">
+                    <th scope="row">Trash &amp; Recyling:</th>
+                    <td>{{ locationResData.locations[0].trash_day | capitalizeFirst }}</td>
                   </tr>
-                </thead>
 
-              <tbody>
-                <tr v-if="locationResData.locations[0].trash_day">
-                  <th scope="row">Trash &amp; Recyling:</th>
-                  <td>{{ locationResData.locations[0].trash_day | capitalizeFirst }}</td>
-                </tr>
+                  <tr v-if="locationResData.locations[0].recycle_week">
+                    <th scope="row">Yard Waste:</th>
+                    <td>
+                      <a :href="trashLink(locationResData.locations[0].recycle_week, locationResData.locations[0].trash_day)">
+                        Week {{ locationResData.locations[0].recycle_week | capitalizeFirst }}
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </template>
 
-                <tr v-if="locationResData.locations[0].recycle_week">
-                  <th scope="row">Yard Waste:</th>
-                  <td>
-                    <a :href="trashLink(locationResData.locations[0].recycle_week, locationResData.locations[0].trash_day)">
-                      Week {{ locationResData.locations[0].recycle_week | capitalizeFirst }}
-                    </a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <template v-else>
+              <p>Expecting a sanitation pickup? Contact us: <a href="mailto:sanitation@bloomington.in.gov">sanitation@bloomington.in.gov</a></p>
+            </template>
           </div>
 
           <div class="row data">
