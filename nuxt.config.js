@@ -5,7 +5,14 @@ module.exports = {
   mode:             'universal',
   dev:              (process.env.NODE_ENV !== 'production'),
   router: {
-    base:           `/${process.env.FE_BASE}`
+    base:           `/${process.env.FE_BASE}`,
+    scrollBehavior: function (to, from, savedPosition) {
+      if (to.hash) {
+        return { selector: to.hash }
+      } else {
+        return { x: 0, y: 0 }
+      }
+    },
   },
   head: {
     title:          pkg.prettyName,

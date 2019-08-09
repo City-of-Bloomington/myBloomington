@@ -223,18 +223,29 @@
                         </td>
                       </tr>
                     </template>
+
                     <template v-else>
                       <tr v-for="e, i in p">
-                        <th scope="row">
+                        <th scope="row">4
                           {{e.purpose_type | capitalizeFirst}}:
                         </th>
                         <td>
-                          {{e.name | capitalizeFirst}}
+                          <template v-if="e.purpose_type === 'CITY COUNCIL DISTRICT'">
+                            <nuxt-link :to="{path: `/?address=${locationResData.address.streetAddress}`, hash: 'districtRep'}"
+                                        v-scroll-to="{el: '#districtRep'}">
+                              {{e.name | capitalizeFirst}}
+                            </nuxt-link>
+                          </template>
 
-                          <template v-if="e.purpose_type === 'RESIDENTIAL PARKING ZONE'"><br>
+                          <template v-else-if="e.purpose_type === 'RESIDENTIAL PARKING ZONE'">
+                            {{e.name | capitalizeFirst}}<br>
                             <small>
                               - Permit required Monday – Friday, 8:00am – 5:00pm
                             </small>
+                          </template>
+
+                          <template v-else>
+                            {{e.name | capitalizeFirst}}
                           </template>
                         </td>
                       </tr>
@@ -554,7 +565,10 @@
             </div>
           </div>
 
-          <div class="row data" v-if="districtRep">
+          <div v-if="districtRep"
+              class="row data"
+              id="districtRep"
+              ref="districtRep">
             <header>
               <h2>District Representative</h2>
             </header>
