@@ -147,3 +147,26 @@ pre, code {
     font-weight: $weight-semi-bold;
   }
 }
+
+table {
+  width: 100%;
+
+  tbody {
+    tr {
+      th, td {
+        vertical-align: top;
+        padding: 20px 15px;
+        text-align: left;
+        letter-spacing: .5px;
+        font-weight: $weight-semi-bold;
+        color: lighten($text-color, 20%);
+
+        small {
+          display: block;
+          margin: 5px 0;
+          font-weight: $weight-normal;
+        }
+      }
+    }
+  }
+}

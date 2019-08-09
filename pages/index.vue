@@ -1,5 +1,20 @@
 <template>
   <div>
+    <!-- <gmap-street-view-panorama
+        style="width: 100%; height: 415px"
+        ref="streetViewRef"
+        :position="latLong"
+        :pov="{heading: 0, pitch: 10}"
+        :zoom="1">
+      <form @submit.stop.prevent="searchSubmit(addressSearch)">
+        <fn1-search v-model="addressSearch"
+                    buttonValue="Search"
+                    placeholder="Search Address"
+                    name="address-search"
+                    id="address-search" />
+      </form>
+    </gmap-street-view-panorama> -->
+
     <GmapMap
       :center="latLong"
       :zoom="zoom"
@@ -50,6 +65,7 @@
         :clickable="false"
         :draggable="false"
       />
+
 
       <form @submit.stop.prevent="searchSubmit(addressSearch)">
         <fn1-search v-model="addressSearch"
@@ -280,6 +296,69 @@
             <template v-else>
               <p>Expecting a sanitation pickup? Contact us: <a href="mailto:sanitation@bloomington.in.gov">sanitation@bloomington.in.gov</a></p>
             </template>
+          </div>
+
+          <div class="row data">
+            <header>
+              <h2>Coordinate Details</h2>
+
+              <div>
+                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="location-arrow" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-location-arrow fa-w-16 fa-3x"><path fill="currentColor" d="M444.52 3.52L28.74 195.42c-47.97 22.39-31.98 92.75 19.19 92.75h175.91v175.91c0 51.17 70.36 67.17 92.75 19.19l191.9-415.78c15.99-38.39-25.59-79.97-63.97-63.97z" class=""></path></svg>
+
+                <blockquote>
+                  <p> The <a href="https://bloomington.in.gov/gis" alt="City of Bloomington GIS">City of Bloomington GIS</a> staff maintains spatial data and provides mapping and spatial analysis services to support operations of City Departments, Boards and Commissions.</p>
+                </blockquote>
+              </div>
+            </header>
+
+            <table>
+              <caption class="sr-only">
+                  Address Location Coordinate Details
+                </caption>
+                <thead class="sr-only">
+                  <tr>
+                    <th scope="col">Type</th>
+                    <th scope="col">Day/Week</th>
+                  </tr>
+                </thead>
+
+              <tbody>
+                <tr>
+                  <th scope="row">Projection:</th>
+                  <td>NAD83 / Indiana West (ftUS)</td>
+                </tr>
+
+                <tr>
+                  <th scope="row">Authority:</th>
+                  <td>EPSG:2966</td>
+                </tr>
+
+                <tr>
+                  <th scope="row">Unit:</th>
+                  <td>US survey foot</td>
+                </tr>
+
+                <tr v-if="locationResData.address.latitude">
+                  <th scope="row">Latitude:</th>
+                  <td>{{ locationResData.address.latitude }}</td>
+                </tr>
+
+                <tr v-if="locationResData.address.longitude">
+                  <th scope="row">Longitude:</th>
+                  <td>{{ locationResData.address.longitude }}</td>
+                </tr>
+
+                <tr v-if="locationResData.address.state_plane_x">
+                  <th scope="row">State Plane (x):</th>
+                  <td>{{ locationResData.address.state_plane_x }}</td>
+                </tr>
+
+                <tr v-if="locationResData.address.state_plane_y">
+                  <th scope="row">State Plane (y):</th>
+                  <td>{{ locationResData.address.state_plane_y }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <div class="row data">
@@ -752,6 +831,7 @@ import { mapFields }  from 'vuex-map-fields'
 import proj4          from 'proj4'
 
 export default {
+  layout:           'result',
   beforeRouteEnter (to, from, next) {
     next(vm => {
       let addressQueryParam = to.query.address;
@@ -1211,28 +1291,7 @@ export default {
     100%  { background-color: $color-blue-darker }
   }
 
-  table {
-    width: 100%;
 
-    tbody {
-      tr {
-        th, td {
-          vertical-align: top;
-          padding: 20px 15px;
-          text-align: left;
-          letter-spacing: .5px;
-          font-weight: $weight-semi-bold;
-          color: lighten($text-color, 20%);
-
-          small {
-            display: block;
-            margin: 5px 0;
-            font-weight: $weight-normal;
-          }
-        }
-      }
-    }
-  }
 
 
   ul {
@@ -1515,6 +1574,16 @@ export default {
         }
       }
 
+      table {
+        tbody {
+          tr {
+            th {
+              width: 400px;
+            }
+          }
+        }
+      }
+
       // strong {
       //   display: inline-block;
       //   min-width: 350px;
@@ -1619,7 +1688,8 @@ export default {
     }
   }
 
-  .vue-map-container {
+  .vue-map-container,
+  .vue-street-view-pano-container {
     position: relative;
 
     &:before {
@@ -1631,7 +1701,8 @@ export default {
       background-color: rgba($color-blue-darker, 0.15);
     }
 
-    ::v-deep .vue-map-hidden {
+    ::v-deep .vue-map-hidden,
+    ::v-deep .vue-street-view-pano {
       display: flex;
       align-items: center;
       justify-content: center;
