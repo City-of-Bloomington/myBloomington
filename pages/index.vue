@@ -1,26 +1,5 @@
 <template>
   <div>
-    <fn1-header
-      :logo="{
-        url:      `${baseUrl}`,
-        image:    `${headerLogo}`,
-        imageAlt: `${cityName}`
-      }"
-
-      :logoHeadings="{
-        topHeading:   `${logoHeading}`,
-        subHeading:   `${logoSubHeading}`,
-      }"
-
-      :application="{
-        name: `${appName}`,
-        url:  `${baseUrl}${frontEndBase}`
-      }"
-
-      :navItems="null"
-      :subNavItems="null">
-    </fn1-header>
-
     <GmapMap
       :center="latLong"
       :zoom="zoom"
@@ -758,16 +737,6 @@
         </template>
       </div>
     </div>
-
-    <footer>
-      <div class="container">
-        <p>City staff strives to keep complete and accurate information and regrets any errors or omissions.</p>
-
-        <p>The information reported comes from the <strong>City of Bloomington Geographic Information Systems (GIS)</strong> and related databases.</p>
-
-        <p>To report missing City of Bloomington addresses or other profile errors, please contact the City of Bloomington GIS Staff at <strong>812-349-3454</strong> or <strong>email</strong> us at <a href="mailto: gis@bloomington.in.gov">gis@bloomington.in.gov</a>.</p>
-      </div>
-    </footer>
   </div>
 </template>
 
@@ -800,13 +769,6 @@ export default {
   // },
   data() {
     return {
-      appName:            process.env.appName,
-      baseUrl:            process.env.baseUrl,
-      frontEndBase:       process.env.frontEndBase,
-      cityName:           process.env.cityName,
-      logoHeading:        process.env.logoHeading,
-      logoSubHeading:     process.env.logoSubHeading,
-      headerLogo:         'city-of-bloomington-logo.svg',
       cityHallLatLong:    { lat: 39.16992723, lng: -86.53680559 },
       latLong:            {},
       weather:            null,
@@ -1243,23 +1205,6 @@ export default {
     100%  { background-color: $color-blue-darker }
   }
 
-  header {
-    padding: 15px 20px;
-  }
-
-  footer {
-    margin: 60px 0;
-    .container {
-      padding: 60px 0 0 0;
-      border-top: 1px solid $color-grey;
-    }
-
-    p {
-      color: $text-color;
-      margin: 0 0 20px 0;
-    }
-  }
-
   table {
     width: 100%;
 
@@ -1303,53 +1248,9 @@ export default {
     }
   }
 
-  h2 {
-    position: relative;
-    text-transform: uppercase;
-    font-weight: $weight-semi-bold;
-    letter-spacing: .5px;
-    font-size: 28px;
-    color: lighten($text-color, 15%);
-    border-bottom: 2px solid $color-grey;
-    padding: 0 0 10px 0;
-    margin: 0 0 40px 0;
 
-    &:after {
-      position: absolute;
-      content: '';
-      bottom: -2px;
-      left: 0;
-      height: 4px;
-      width: 125px;
-      background-color: $color-orange-light;
-    }
-  }
 
-  blockquote {
-    letter-spacing: .5px;
-    font-weight: 500;
-    font-style: italic;
-    border-left: 2px solid $color-grey-light;
-  }
 
-  h5 {
-    margin: 20px 0;
-    color: lighten($text-color, 20%);
-    font-style: italic;
-    font-weight: $weight-semi-bold;
-  }
-
-  .wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 0 0 40px 0;
-  }
-
-  .container {
-    width: 1024px;
-    margin: 0 auto;
-  }
 
   .row {
     width: 100%;

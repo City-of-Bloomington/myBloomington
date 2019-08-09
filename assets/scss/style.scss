@@ -95,3 +95,55 @@ pre, code {
   font-size: $size-s;
   font-weight: $weight-semi-bold;
 }
+
+.container {
+  width: 1024px;
+  margin: 0 auto;
+}
+
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 0 0 40px 0;
+
+  section {
+    margin: 0 0 50px 0;
+  }
+
+  h2 {
+    position: relative;
+    text-transform: uppercase;
+    font-weight: $weight-semi-bold;
+    letter-spacing: .5px;
+    font-size: 28px;
+    color: lighten($text-color, 15%);
+    border-bottom: 2px solid $color-grey;
+    padding: 0 0 10px 0;
+    margin: 0 0 40px 0;
+
+    &:after {
+      position: absolute;
+      content: '';
+      bottom: -2px;
+      left: 0;
+      height: 4px;
+      width: 125px;
+      background-color: $color-orange-light;
+    }
+  }
+
+  blockquote {
+    letter-spacing: .5px;
+    font-weight: 500;
+    font-style: italic;
+    border-left: 2px solid $color-grey-light;
+  }
+
+  h5 {
+    margin: 20px 0;
+    color: lighten($text-color, 20%);
+    font-style: italic;
+    font-weight: $weight-semi-bold;
+  }
+}
