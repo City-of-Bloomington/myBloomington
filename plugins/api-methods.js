@@ -15,6 +15,38 @@ Vue.mixin({
   },
   methods: {
     /**
+     * A promise returning City of Bloomington Parks.
+     *
+     * @promise     getCityOfBloomingtonParks
+     * @resolve     { Object }
+     * @reject      { Error }
+     * @return      { Promise <Object> }
+     */
+    getCityOfBloomingtonParks() {
+      return new Promise((resolve, reject) => {
+        axios.get(`${process.env.cityParksGeoJson}`)
+        .then((res) => resolve(res.data))
+        .catch((e)  => reject(e))
+      })
+    },
+    /**
+     * A promise returning elected representatives
+     * for an address.
+     *
+     * @promise     getCityCouncil
+     * @param       { String } address
+     * @resolve     { Object }
+     * @reject      { Error }
+     * @return      { Promise <Object> }
+     */
+    getElectedReps(address) {
+      return new Promise((resolve, reject) => {
+        axios.get(`https://www.googleapis.com/civicinfo/v2/representatives?key=${process.env.googleApiKey}&address=${address}`)
+        .then((res) => resolve(res.data))
+        .catch((e)  => reject(e))
+      })
+    },
+    /**
      * A promise returning City Council
      * district seats (members).
      *

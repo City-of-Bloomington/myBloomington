@@ -250,9 +250,9 @@
             </table>
           </div>
 
-          <div class="row data" v-if="locationResData.address.jurisdiction_name === 'Bloomington'">
+          <div class="row data">
             <header>
-              <h2>Pickup Days</h2>
+              <h2>Sanitation Pickup</h2>
 
               <div>
                 <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="trash" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-trash fa-w-14 fa-3x"><path fill="currentColor" d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z" class=""></path></svg>
@@ -333,9 +333,14 @@
                   <td>EPSG:2966</td>
                 </tr>
 
-                <tr>
-                  <th scope="row">Unit:</th>
-                  <td>US survey foot</td>
+                <tr v-if="locationResData.address.state_plane_x">
+                  <th scope="row">State Plane (x):</th>
+                  <td>{{ locationResData.address.state_plane_x }}</td>
+                </tr>
+
+                <tr v-if="locationResData.address.state_plane_y">
+                  <th scope="row">State Plane (y):</th>
+                  <td>{{ locationResData.address.state_plane_y }}</td>
                 </tr>
 
                 <tr v-if="locationResData.address.latitude">
@@ -347,23 +352,105 @@
                   <th scope="row">Longitude:</th>
                   <td>{{ locationResData.address.longitude }}</td>
                 </tr>
+              </tbody>
+            </table>
+          </div>
 
-                <tr v-if="locationResData.address.state_plane_x">
-                  <th scope="row">State Plane (x):</th>
-                  <td>{{ locationResData.address.state_plane_x }}</td>
-                </tr>
+          <div class="row data parks">
+            <header>
+              <h2>City Parks</h2>
 
-                <tr v-if="locationResData.address.state_plane_y">
-                  <th scope="row">State Plane (y):</th>
-                  <td>{{ locationResData.address.state_plane_y }}</td>
+              <div>
+                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="tree" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="svg-inline--fa fa-tree fa-w-12 fa-3x"><path fill="currentColor" d="M378.31 378.49L298.42 288h30.63c9.01 0 16.98-5 20.78-13.06 3.8-8.04 2.55-17.26-3.28-24.05L268.42 160h28.89c9.1 0 17.3-5.35 20.86-13.61 3.52-8.13 1.86-17.59-4.24-24.08L203.66 4.83c-6.03-6.45-17.28-6.45-23.32 0L70.06 122.31c-6.1 6.49-7.75 15.95-4.24 24.08C69.38 154.65 77.59 160 86.69 160h28.89l-78.14 90.91c-5.81 6.78-7.06 15.99-3.27 24.04C37.97 283 45.93 288 54.95 288h30.63L5.69 378.49c-6 6.79-7.36 16.09-3.56 24.26 3.75 8.05 12 13.25 21.01 13.25H160v24.45l-30.29 48.4c-5.32 10.64 2.42 23.16 14.31 23.16h95.96c11.89 0 19.63-12.52 14.31-23.16L224 440.45V416h136.86c9.01 0 17.26-5.2 21.01-13.25 3.8-8.17 2.44-17.47-3.56-24.26z" class=""></path></svg>
+
+                <blockquote>
+                  <p>The <a href="https://bloomington.in.gov/parks" alt="City of Bloomington Parks and Recreation">City of Bloomington Parks and Recreation</a> Department provides essential services, facilities and programs necessary for the positive development and well-being of the community through the provision of parks, greenways, trails and recreational facilities while working in cooperation with other service providers in the community in order to maximize all available resources.</p>
+                  <p><small>* Approximate distance.</small></p>
+                </blockquote>
+              </div>
+            </header>
+
+            <table>
+              <caption class="sr-only">
+                  City of Bloomington Parks
+                </caption>
+                <thead class="sr-only">
+                  <tr>
+                    <th scope="col">Distance</th>
+                    <th scope="col">Park Name</th>
+                    <th scope="col">Directions Link</th>
+                  </tr>
+                </thead>
+
+              <tbody>
+                <!-- <tr v-for="p, i in parksDistance(parksResData.features)"
+                    v-if="i < 10"> -->
+                <tr v-for="p, i in parksDistance(parksResData.features)"
+                    :class="[{'clickable': p.address}]"
+                    v-if="p.dist <= 1.0">
+                  <template v-if="p.address">
+                    <td>
+                      <a :href="`https://www.google.com/maps/dir/?api=1&origin=${latLong.lat},${latLong.lng}&destination=${p.lat},${p.lon}`"
+                         :alt="`Get Directions to ${p.name}`"
+                         :title="`Get Directions to ${p.name}`">
+                        {{ p.dist }} mi *
+                      </a>
+                    </td>
+                    <td @click="goToAddress(p.lat, p.lon)">
+                      {{ p.name }}
+                      <!-- <small>{{ p.address }}</small> -->
+                    </td>
+                    <td @click="goToAddress(p.lat, p.lon)">
+                      <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="directions" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-directions fa-w-16 fa-3x"><path fill="currentColor" d="M502.61 233.32L278.68 9.39c-12.52-12.52-32.83-12.52-45.36 0L9.39 233.32c-12.52 12.53-12.52 32.83 0 45.36l223.93 223.93c12.52 12.53 32.83 12.53 45.36 0l223.93-223.93c12.52-12.53 12.52-32.83 0-45.36zm-100.98 12.56l-84.21 77.73c-5.12 4.73-13.43 1.1-13.43-5.88V264h-96v64c0 4.42-3.58 8-8 8h-32c-4.42 0-8-3.58-8-8v-80c0-17.67 14.33-32 32-32h112v-53.73c0-6.97 8.3-10.61 13.43-5.88l84.21 77.73c3.43 3.17 3.43 8.59 0 11.76z" class=""></path></svg>directions
+                    </td>
+                  </template>
+
+                  <template v-else>
+                    <td>{{ p.dist }} mi *</td>
+                    <td>{{ p.name }}</td>
+                    <td>- - -</td>
+                  </template>
                 </tr>
               </tbody>
             </table>
           </div>
 
+          <!-- <div class="row data">
+            <header>
+              <h2>Google Civil Datas</h2>
+
+              <div>
+                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="location-arrow" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-location-arrow fa-w-16 fa-3x"><path fill="currentColor" d="M444.52 3.52L28.74 195.42c-47.97 22.39-31.98 92.75 19.19 92.75h175.91v175.91c0 51.17 70.36 67.17 92.75 19.19l191.9-415.78c15.99-38.39-25.59-79.97-63.97-63.97z" class=""></path></svg>
+
+                <blockquote>
+                  <p> The <a href="https://bloomington.in.gov/gis" alt="City of Bloomington GIS">City of Bloomington GIS</a> staff maintains spatial data and provides mapping and spatial analysis services to support operations of City Departments, Boards and Commissions.</p>
+                </blockquote>
+              </div>
+            </header>
+
+            <table>
+              <caption class="sr-only">
+                  Address Location Coordinate Details
+                </caption>
+                <thead class="sr-only">
+                  <tr>
+                    <th scope="col">Type</th>
+                    <th scope="col">Day/Week</th>
+                  </tr>
+                </thead>
+
+              <tbody>
+                <tr v-for="r, i in electedReps.officials">
+                  <th scope="row">Name:</th>
+                  <td>{{r.name}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div> -->
+
           <div class="row data">
             <header>
-              <h2>Elected Officials</h2>
+              <h2>Elected City Officials</h2>
             </header>
 
             <div class="contacts" v-if="contacts.mayor">
@@ -867,6 +954,8 @@ export default {
       councilAtLargeReps: null,
       districtRep:        null,
       councilDistrictsGeoJson: null,
+      electedReps:        null,
+      parksResData:       null,
       errors: {
         addressRes:       null,
         locationRes:      null
@@ -877,6 +966,26 @@ export default {
     this.latLong = this.cityHallLatLong;
   },
   mounted() {
+    this.getCityOfBloomingtonParks()
+    .then((res) => {
+      this.parksResData = res;
+      console.log(`%c getCityOfBloomingtonParks 👌 `,
+                  this.consoleLog.success);
+    })
+    .catch((e) => {
+      console.log(`%c getCityOfBloomingtonParks 🛑 `,
+                  this.consoleLog.error,
+                  `\n\n ${e} \n\n`);
+    })
+
+    axios.get(`https://bloomington.in.gov/geoserver/publicgis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=publicgis:ParkLocationPoints&maxFeatures=50&outputFormat=application%2Fjson`)
+    .then((res) => {
+      this.parksResData = res.data;
+    })
+    .catch((e) => {
+      console.dir(e);
+    })
+
     if(this.cityHallLatLong) {
       this.getWeather(this.cityHallLatLong.lat, this.cityHallLatLong.lng)
       .then((res) => {
@@ -1074,6 +1183,60 @@ export default {
     },
   },
   methods: {
+    goToAddress(lat, lon) {
+      let url = `https://www.google.com/maps/dir/?api=1&origin=${this.latLong.lat},${this.latLong.lng}&destination=${lat},${lon}`;
+
+      return window.open(url, '_blank');
+    },
+    parksDistance(park) {
+      if(this.parksResData && this.latLong) {
+        let parks = [],
+             self = this;
+
+        let coolio = park.map((p) => {
+          let ok = {name:    p.properties.name,
+                    address: p.properties.address,
+                    lat:     p.properties.lat,
+                    lon:     p.properties.lon,
+                    dist: self.nearbyDistance(p.properties.lat,p.properties.lon)};
+          parks.push(ok)
+        });
+
+        let parksSorted = parks.sort((a, b) => parseFloat(a.dist) - parseFloat(b.dist));
+
+        return parksSorted;
+      }
+    },
+    nearbyDistance(parkLat, parkLon) {
+      if(this.parksResData && this.latLong) {
+        let points1 = this.latLong,
+            points2 = {lat: parkLat, lng: parkLon};
+        return this.pointsToDistance(points1, points2);
+      }
+    },
+    roundUp(num, precision) {
+      precision = Math.pow(10, precision)
+      return Math.ceil(num * precision) / precision
+    },
+    deg2Rad(deg) {
+      return deg * Math.PI / 180;
+    },
+    pointsToDistance( points1, points2 ) {
+      var self = this;
+      function PythagorasEquirectangular(points1, points2) {
+        let lat1 = self.deg2Rad(points1.lat),
+            lat2 = self.deg2Rad(points2.lat),
+            lon1 = self.deg2Rad(points1.lng),
+            lon2 = self.deg2Rad(points2.lng);
+
+        const  R = 3959,
+               x = (lon2 - lon1) * Math.cos((lat1 + lat2) / 2),
+               y = (lat2 - lat1),
+               d = Math.sqrt(x * x + y * y) * R;
+        return self.roundUp(d, 1);
+      }
+      return PythagorasEquirectangular( points1, points2 );
+    },
     trashLink(week, day) {
       if(week === 'A'){
         switch(day) {
@@ -1131,6 +1294,21 @@ export default {
       this.districtRep        = null;
       this.errors.addressRes  = null;
       this.addressLookup(input);
+      this.electedRepsLookup(input);
+    },
+    electedRepsLookup(address) {
+      this.getElectedReps(address)
+      .then((res) => {
+        console.dir(res);
+        this.electedReps = res;
+        console.log(`%c getElectedReps 👌 `,
+                      this.consoleLog.success);
+      })
+      .catch((e)  => {
+        console.log(`%c getElectedReps 🛑 `,
+                    this.consoleLog.error,
+                    `\n\n ${e} \n\n`);
+      })
     },
     addressLookup(address) {
       this.$router.push({query : { address: address}});
@@ -1313,9 +1491,71 @@ export default {
     }
   }
 
+  .parks {
+    table {
+      tr {
+        &.clickable {
+          cursor: pointer;
 
+          td {
+            &:first-child  {
+              a {
+                color: lighten($text-color, 20%);
+                text-decoration: none;
 
+                &:hover,
+                &:focus {
+                  color: $color-blue;
+                }
+              }
+            }
 
+            &:last-child {
+              color: lighten($text-color, 30%);
+            }
+          }
+
+          &:hover,
+          &:focus {
+
+            td {
+              color: $color-blue;
+
+              a {
+                color: $color-blue;
+              }
+            }
+
+            svg {
+              color: $color-blue;
+            }
+          }
+        }
+
+        td {
+          vertical-align: middle;
+
+          svg {
+            color: lighten($text-color, 40%);
+            width: 25px;
+            height: 25px;
+            margin: 0 10px 0 0;
+          }
+
+          &:nth-of-type(3) {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: flex-end;
+
+            small {
+              width: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
 
   .row {
     width: 100%;
@@ -1338,6 +1578,13 @@ export default {
           align-items: center;
           width: 100%;
           margin: 0 0 40px 0;
+        }
+
+        svg {
+          color: $color-silver;
+          width: 50px;
+          height: 50px;
+          margin: 0 40px 0 0;
         }
 
         blockquote {
@@ -1582,22 +1829,6 @@ export default {
             }
           }
         }
-      }
-
-      // strong {
-      //   display: inline-block;
-      //   min-width: 350px;
-      //   letter-spacing: .5px;
-      //   text-transform: uppercase;
-      //   color: lighten($text-color, 20%);
-      //   font-size: 16px;
-      // }
-
-      svg {
-        color: $color-silver;
-        width: 50px;
-        height: 50px;
-        margin: 0 40px 0 0;
       }
     }
   }

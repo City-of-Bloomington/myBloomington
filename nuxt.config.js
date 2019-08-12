@@ -48,6 +48,7 @@ module.exports = {
     baseUrl:                  process.env.BASE_URL,
     weatherUrl:               process.env.WEATHER_URL,
     councilDistrictsGeoJson:  process.env.COUNCIL_DISTRICTS_GEOJSON_PATH,
+    cityParksGeoJson:         process.env.CITY_PARKS_GEOJSON_PATH,
     MAAddressesPath:          process.env.MASTER_ADDRESS_ADDRESS_PATH,
     directoryUsernamePath:    process.env.DIRECTORY_USERNAME_PATH,
     onBoardCityCouncilPath:   process.env.ONBOARD_CITY_COUNCIL_PATH,
