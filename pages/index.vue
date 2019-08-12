@@ -1,11 +1,51 @@
 <template>
   <div>
     <!-- <gmap-street-view-panorama
-        style="width: 100%; height: 415px"
+        style="width: 100%; height: 600px"
         ref="streetViewRef"
         :position="latLong"
-        :pov="{heading: 0, pitch: 10}"
-        :zoom="1">
+        :pov="{heading: gMapPanHeading, pitch: 0}"
+        :zoom="0"
+        :options="{
+          zoomControl:        false,
+          mapTypeControl:     false,
+          scaleControl:       false,
+          streetViewControl:  false,
+          rotateControl:      false,
+          fullscreenControl:  false,
+          disableDefaultUi:   true,
+          draggable:          false,
+          styles: [
+            {
+              featureType:    'landscape',
+              stylers: [
+                {
+                  color:      '#f2f2f2',
+                  visibility: 'on'
+                }
+              ]
+            },
+            {
+              featureType:    'poi',
+              stylers: [
+                {
+                  visibility: 'off'
+                }
+              ]
+            },
+            // {
+            //   featureType:    'poi.park',
+            //   elementType:    'geometry',
+            //   stylers: [
+            //     {
+            //       color:      '#C8ACA3',
+            //       visibility: 'on'
+            //     }
+            //   ]
+            // },
+          ]
+        }"
+      >
       <form @submit.stop.prevent="searchSubmit(addressSearch)">
         <fn1-search v-model="addressSearch"
                     buttonValue="Search"
@@ -19,7 +59,7 @@
       :center="latLong"
       :zoom="zoom"
       map-type-id="roadmap"
-      style="width: 100%; height: 315px"
+      style="width: 100%; height: 350px"
       :options="{
         zoomControl:        false,
         mapTypeControl:     false,
@@ -29,36 +69,7 @@
         fullscreenControl:  false,
         disableDefaultUi:   true,
         draggable:          false,
-        styles: [
-          {
-            featureType:    'landscape',
-            stylers: [
-              {
-                color:      '#f2f2f2',
-                visibility: 'on'
-              }
-            ]
-          },
-          {
-            featureType:    'poi',
-            stylers: [
-              {
-                visibility: 'off'
-              }
-            ]
-          },
-          // {
-          //   featureType:    'poi.park',
-          //   elementType:    'geometry',
-          //   stylers: [
-          //     {
-          //       color:      '#C8ACA3',
-          //       visibility: 'on'
-          //     }
-          //   ]
-          // },
-        ]
-
+        styles: []
       }">
       <GmapMarker
         :position="latLong"
@@ -66,17 +77,30 @@
         :draggable="false"
       />
 
-
-      <form @submit.stop.prevent="searchSubmit(addressSearch)">
+      <!-- <form @submit.stop.prevent="searchSubmit(addressSearch)">
         <fn1-search v-model="addressSearch"
                     buttonValue="Search"
                     placeholder="Search Address"
                     name="address-search"
                     id="address-search" />
-      </form>
+      </form> -->
     </GmapMap>
 
     <div class="overview" v-if="locationResData">
+      <div class="row">
+        <div class="container">
+          <h2>Address Search</h2>
+
+          <form @submit.stop.prevent="searchSubmit(addressSearch)">
+            <fn1-search v-model="addressSearch"
+                        buttonValue="Search"
+                        placeholder="Search Address"
+                        name="address-search"
+                        id="address-search" />
+          </form>
+        </div>
+      </div>
+
       <div class="row">
         <div class="container">
           <div class="weather" v-if="weather.weather[0]">
@@ -226,8 +250,7 @@
                         </th>
                         <td>
                           <template v-if="e.purpose_type === 'CITY COUNCIL DISTRICT'">
-                            <nuxt-link :to="{path: `/?address=${locationResData.address.streetAddress}`, hash: 'districtRep'}"
-                                        v-scroll-to="{el: '#districtRep'}">
+                            <nuxt-link :to="{path: `/?address=${locationResData.address.streetAddress}`, hash: 'districtRep'}">
                               {{e.name | capitalizeFirst}}
                             </nuxt-link>
                           </template>
@@ -457,7 +480,6 @@
                     </td>
                     <td @click="goToAddress(p.lat, p.lon)">
                       {{ p.name }}
-                      <!-- <small>{{ p.address }}</small> -->
                     </td>
                     <td @click="goToAddress(p.lat, p.lon)">
                       <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="directions" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-directions fa-w-16 fa-3x"><path fill="currentColor" d="M502.61 233.32L278.68 9.39c-12.52-12.52-32.83-12.52-45.36 0L9.39 233.32c-12.52 12.53-12.52 32.83 0 45.36l223.93 223.93c12.52 12.53 32.83 12.53 45.36 0l223.93-223.93c12.52-12.53 12.52-32.83 0-45.36zm-100.98 12.56l-84.21 77.73c-5.12 4.73-13.43 1.1-13.43-5.88V264h-96v64c0 4.42-3.58 8-8 8h-32c-4.42 0-8-3.58-8-8v-80c0-17.67 14.33-32 32-32h112v-53.73c0-6.97 8.3-10.61 13.43-5.88l84.21 77.73c3.43 3.17 3.43 8.59 0 11.76z" class=""></path></svg>directions
@@ -1253,6 +1275,50 @@ export default {
         return newNewnew;
       }
     },
+    gMapPanHeading () {
+      // this was only a generic test,
+      // we dont have support via master address
+      if(this.locationResData) {
+        let direction    = this.locationResData.address.street_direction,
+          quarterSection = this.locationResData.address.quarter_section;
+
+        switch(direction) {
+          case 'N':
+            return -90;
+            break;
+          case 'NE':
+            return -45;
+            break;
+          case 'NW':
+            return -145;
+            break;
+          case 'E':
+            if(quarterSection === 'NE') {
+              return 180;
+            } else if(quarterSection === 'SE') {
+              return 185;
+            } else if(quarterSection === 'SW') {
+              return 190;
+            } else if(quarterSection === 'NW') {
+              return 199;
+            } else {
+              return 0
+            }
+            break;
+          case 'S':
+            return 90;
+            break;
+          case 'SE':
+            return -45;
+            break;
+          case 'SW':
+            return -45;
+            break;
+        }
+      } else {
+        return 0
+      }
+    }
   },
   methods: {
     goToAddress(lat, lon) {
@@ -1904,7 +1970,7 @@ export default {
   .overview {
     z-index: 1;
     position: relative;
-    top: -40px;
+    top: 0;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -1937,9 +2003,58 @@ export default {
       }
 
       &:first-of-type {
+        position: relative;
+        background-color: white;
+        // background-color: $color-grey-lighter;
+        padding: 15px 0;
+
+        h2 {
+          position: absolute;
+          top: -41px;
+          z-index: 1;
+          display: flex;
+          width: fit-content;
+          color: white;
+          background-color: $color-blue;
+          padding: 0 15px;
+          font-size: 22px;
+          letter-spacing: 1px;
+        }
+
+        form {
+          z-index: 1;
+          width: 100%;
+
+          label {
+            @include visuallyHidden;
+          }
+
+          ::v-deep input {
+            box-shadow: none;
+            border: 1px solid $color-grey-dark;
+            color: $text-color;
+          }
+
+          ::v-deep button[type=submit] {
+            background-color: $color-green;
+            border-color: $color-green;
+
+            &:hover,
+            &:focus {
+              background-color: darken($color-green, 5%);
+            }
+          }
+        }
+      }
+
+      &:nth-of-type(2) {
         border-top: 1px solid $color-grey-dark;
         background-color: white;
         color: $text-color;
+
+        .container {
+          align-items: center;
+        }
 
         div {
           display: flex;
@@ -1947,23 +2062,9 @@ export default {
         }
       }
 
-      &:nth-of-type(2) {
+      &:nth-of-type(3) {
         padding: 25px 0;
         background-color: $color-blue;
-        // background-image: -webkit-linear-gradient(rgba($color-blue, 0), rgba($color-blue, 0.5));
-        // background-image: linear-gradient(rgba($color-blue, 0), rgba($color-blue, 0.5));
-        // -webkit-animation-duration: 7s;
-        // -moz-animation-duration: 7s;
-        // animation-duration: 7s;
-        // -webkit-animation-iteration-count: infinite;
-        // -moz-animation-iteration-count: infinite;
-        // animation-iteration-count: infinite;
-        // -webkit-animation-name: solidColor;
-        // -moz-animation-name: solidColor;
-        // animation-name: solidColor;
-        // background-blend-mode: multiply;
-        // background-repeat: no-repeat;
-        // background-attachment: fixed;
 
         p {
           color: white;
