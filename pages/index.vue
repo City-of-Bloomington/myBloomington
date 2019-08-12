@@ -383,11 +383,70 @@
                 </thead>
 
               <tbody>
-                <!-- <tr v-for="p, i in parksDistance(parksResData.features)"
+                <!-- <tr v-for="p, i in viaDistance(parksResData.features)"
                     v-if="i < 10"> -->
-                <tr v-for="p, i in parksDistance(parksResData.features)"
+                <tr v-for="p, i in viaDistance(parksResData.features)"
                     :class="[{'clickable': p.address}]"
                     v-if="p.dist <= 1.0">
+                  <template v-if="p.address">
+                    <td>
+                      <a :href="`https://www.google.com/maps/dir/?api=1&origin=${latLong.lat},${latLong.lng}&destination=${p.lat},${p.lon}`"
+                         :alt="`Get Directions to ${p.name}`"
+                         :title="`Get Directions to ${p.name}`">
+                        {{ p.dist }} mi *
+                      </a>
+                    </td>
+                    <td @click="goToAddress(p.lat, p.lon)">
+                      {{ p.name }}
+                      <!-- <small>{{ p.address }}</small> -->
+                    </td>
+                    <td @click="goToAddress(p.lat, p.lon)">
+                      <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="directions" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-directions fa-w-16 fa-3x"><path fill="currentColor" d="M502.61 233.32L278.68 9.39c-12.52-12.52-32.83-12.52-45.36 0L9.39 233.32c-12.52 12.53-12.52 32.83 0 45.36l223.93 223.93c12.52 12.53 32.83 12.53 45.36 0l223.93-223.93c12.52-12.53 12.52-32.83 0-45.36zm-100.98 12.56l-84.21 77.73c-5.12 4.73-13.43 1.1-13.43-5.88V264h-96v64c0 4.42-3.58 8-8 8h-32c-4.42 0-8-3.58-8-8v-80c0-17.67 14.33-32 32-32h112v-53.73c0-6.97 8.3-10.61 13.43-5.88l84.21 77.73c3.43 3.17 3.43 8.59 0 11.76z" class=""></path></svg>directions
+                    </td>
+                  </template>
+
+                  <template v-else>
+                    <td>{{ p.dist }} mi *</td>
+                    <td>{{ p.name }}</td>
+                    <td>- - -</td>
+                  </template>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="row data parks">
+            <header>
+              <h2>Nearby Schools</h2>
+
+              <div>
+                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="graduation-cap" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="svg-inline--fa fa-graduation-cap fa-w-20 fa-3x"><path fill="currentColor" d="M622.34 153.2L343.4 67.5c-15.2-4.67-31.6-4.67-46.79 0L17.66 153.2c-23.54 7.23-23.54 38.36 0 45.59l48.63 14.94c-10.67 13.19-17.23 29.28-17.88 46.9C38.78 266.15 32 276.11 32 288c0 10.78 5.68 19.85 13.86 25.65L20.33 428.53C18.11 438.52 25.71 448 35.94 448h56.11c10.24 0 17.84-9.48 15.62-19.47L82.14 313.65C90.32 307.85 96 298.78 96 288c0-11.57-6.47-21.25-15.66-26.87.76-15.02 8.44-28.3 20.69-36.72L296.6 284.5c9.06 2.78 26.44 6.25 46.79 0l278.95-85.7c23.55-7.24 23.55-38.36 0-45.6zM352.79 315.09c-28.53 8.76-52.84 3.92-65.59 0l-145.02-44.55L128 384c0 35.35 85.96 64 192 64s192-28.65 192-64l-14.18-113.47-145.03 44.56z" class=""></path></svg>
+
+                <blockquote>
+                  <p>Local Schools nearby the requested Address. Please note this <strong>does not</strong> indicate the appropriate School District nor higher education institutions.</p>
+                  <p><small>* Approximate distance.</small></p>
+                </blockquote>
+              </div>
+            </header>
+
+            <table>
+              <caption class="sr-only">
+                  Local Schools
+                </caption>
+                <thead class="sr-only">
+                  <tr>
+                    <th scope="col">Distance</th>
+                    <th scope="col">School Name</th>
+                    <th scope="col">Directions Link</th>
+                  </tr>
+                </thead>
+
+              <tbody>
+                <!-- <tr v-for="p, i in viaDistance(parksResData.features)"
+                    v-if="i < 10"> -->
+                <tr v-for="p, i in viaDistance(schoolsResData.features)"
+                    :class="[{'clickable': p.address}]"
+                    v-if="p.dist <= 5">
                   <template v-if="p.address">
                     <td>
                       <a :href="`https://www.google.com/maps/dir/?api=1&origin=${latLong.lat},${latLong.lng}&destination=${p.lat},${p.lon}`"
@@ -956,6 +1015,7 @@ export default {
       councilDistrictsGeoJson: null,
       electedReps:        null,
       parksResData:       null,
+      schoolsResData:     null,
       errors: {
         addressRes:       null,
         locationRes:      null
@@ -966,6 +1026,18 @@ export default {
     this.latLong = this.cityHallLatLong;
   },
   mounted() {
+    this.getLocalSchools()
+    .then((res) => {
+      this.schoolsResData = res;
+      console.log(`%c getLocalSchools 👌 `,
+                  this.consoleLog.success);
+    })
+    .catch((e)  => {
+      console.log(`%c getLocalSchools 🛑 `,
+                  this.consoleLog.error,
+                  `\n\n ${e} \n\n`);
+    });
+
     this.getCityOfBloomingtonParks()
     .then((res) => {
       this.parksResData = res;
@@ -976,7 +1048,7 @@ export default {
       console.log(`%c getCityOfBloomingtonParks 🛑 `,
                   this.consoleLog.error,
                   `\n\n ${e} \n\n`);
-    })
+    });
 
     axios.get(`https://bloomington.in.gov/geoserver/publicgis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=publicgis:ParkLocationPoints&maxFeatures=50&outputFormat=application%2Fjson`)
     .then((res) => {
@@ -984,7 +1056,7 @@ export default {
     })
     .catch((e) => {
       console.dir(e);
-    })
+    });
 
     if(this.cityHallLatLong) {
       this.getWeather(this.cityHallLatLong.lat, this.cityHallLatLong.lng)
@@ -1188,29 +1260,25 @@ export default {
 
       return window.open(url, '_blank');
     },
-    parksDistance(park) {
-      if(this.parksResData && this.latLong) {
-        let parks = [],
-             self = this;
+    viaDistance(place) {
+      if(this.latLong) {
+        let newArray = [],
+                self = this;
 
-        let coolio = park.map((p) => {
-          let ok = {name:    p.properties.name,
-                    address: p.properties.address,
-                    lat:     p.properties.lat,
-                    lon:     p.properties.lon,
-                    dist: self.nearbyDistance(p.properties.lat,p.properties.lon)};
-          parks.push(ok)
+        let locationMapped = place.map((p) => {
+          let addDist = {dist: self.nearbyDistance(p.properties.lat,p.properties.lon)};
+          newArray.push({...p.properties, ...addDist})
         });
 
-        let parksSorted = parks.sort((a, b) => parseFloat(a.dist) - parseFloat(b.dist));
+        let newArraySorted = newArray.sort((a, b) => parseFloat(a.dist) - parseFloat(b.dist));
 
-        return parksSorted;
+        return newArraySorted;
       }
     },
-    nearbyDistance(parkLat, parkLon) {
-      if(this.parksResData && this.latLong) {
+    nearbyDistance(lat, lon) {
+      if(this.latLong) {
         let points1 = this.latLong,
-            points2 = {lat: parkLat, lng: parkLon};
+            points2 = {lat: lat, lng: lon};
         return this.pointsToDistance(points1, points2);
       }
     },

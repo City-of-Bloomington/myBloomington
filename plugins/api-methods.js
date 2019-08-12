@@ -15,6 +15,21 @@ Vue.mixin({
   },
   methods: {
     /**
+     * A promise returning local Schools.
+     *
+     * @promise     getLocalSchools
+     * @resolve     { Object }
+     * @reject      { Error }
+     * @return      { Promise <Object> }
+     */
+    getLocalSchools() {
+      return new Promise((resolve, reject) => {
+        axios.get(`${process.env.localSchools}`)
+        .then((res) => resolve(res.data))
+        .catch((e)  => reject(e))
+      })
+    },
+    /**
      * A promise returning City of Bloomington Parks.
      *
      * @promise     getCityOfBloomingtonParks
