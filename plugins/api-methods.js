@@ -15,6 +15,21 @@ Vue.mixin({
   },
   methods: {
     /**
+     * A promise returning Monroe Co. Safe Places.
+     *
+     * @promise     getSafePlaces
+     * @resolve     { Object }
+     * @reject      { Error }
+     * @return      { Promise <Object> }
+     */
+    getSafePlaces() {
+      return new Promise((resolve, reject) => {
+        axios.get(`${process.env.safePlaces}`)
+        .then((res) => resolve(res.data))
+        .catch((e)  => reject(e))
+      })
+    },
+    /**
      * A promise returning City of Bloomington Playgrounds.
      *
      * @promise     getPlaygrounds

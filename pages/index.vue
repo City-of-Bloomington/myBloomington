@@ -89,20 +89,6 @@
     <div class="overview" v-if="locationResData">
       <div class="row">
         <div class="container">
-          <h2>Address Search</h2>
-
-          <form @submit.stop.prevent="searchSubmit(addressSearch)">
-            <fn1-search v-model="addressSearch"
-                        buttonValue="Search"
-                        placeholder="Search Address"
-                        name="address-search"
-                        id="address-search" />
-          </form>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="container">
           <div class="weather" v-if="weather.weather[0]">
               <img :src="`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`"
                    :alt="weather.weather[0].main">
@@ -139,14 +125,31 @@
             </p>
           </div>
 
-          <div>
-            <p>
-              <strong>Latitude:</strong>
-              {{ locationResData.address.latitude }}<!-- <br> -->
-              <strong>Longitude:</strong>
+          <div v-if="distanceToCityHall">
+            <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="map-pin" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 288 512" class="svg-inline--fa fa-map-pin fa-w-9 fa-3x"><path fill="currentColor" d="M112 316.94v156.69l22.02 33.02c4.75 7.12 15.22 7.12 19.97 0L176 473.63V316.94c-10.39 1.92-21.06 3.06-32 3.06s-21.61-1.14-32-3.06zM144 0C64.47 0 0 64.47 0 144s64.47 144 144 144 144-64.47 144-144S223.53 0 144 0zm0 76c-37.5 0-68 30.5-68 68 0 6.62-5.38 12-12 12s-12-5.38-12-12c0-50.73 41.28-92 92-92 6.62 0 12 5.38 12 12s-5.38 12-12 12z" class=""></path></svg>
+            <p>Approx. <strong>{{ distanceToCityHall }} mi</strong> from <strong>City Hall</strong></p>
+            <!-- <p>
+              <strong>Lat:</strong>
+              {{ locationResData.address.latitude }}
+              <strong>Lon:</strong>
               {{ locationResData.address.longitude }}
-            </p>
+            </p>-->
           </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="container">
+          <!-- <h2>Address Search</h2> -->
+
+          <form @submit.stop.prevent="searchSubmit(addressSearch)">
+            <exampleSearch v-model="addressSearch"
+                        :buttonValue="searchIconEncoded"
+                        placeholder="Search Address"
+                        ref="addressSearch"
+                        name="address-search"
+                        id="address-search" />
+          </form>
         </div>
       </div>
     </div>
@@ -379,7 +382,7 @@
             </table>
           </div>
 
-          <div class="row data parks">
+          <div class="row data parks" v-if="parksResData">
             <header>
               <h2>City Parks</h2>
 
@@ -406,11 +409,9 @@
                 </thead>
 
               <tbody>
-                <!-- <tr v-for="p, i in viaDistance(parksResData.features)"
-                    v-if="i < 10"> -->
                 <tr v-for="p, i in viaDistance(parksResData.features)"
                     :class="[{'clickable': p.address}]"
-                    v-if="p.dist <= 1.0">
+                    v-if="p.dist <= 1">
                   <template v-if="p.address">
                     <td>
                       <a :href="`https://www.google.com/maps/dir/?api=1&origin=${latLong.lat},${latLong.lng}&destination=${p.lat},${p.lon}`"
@@ -438,12 +439,12 @@
             </table>
           </div>
 
-          <div class="row data schools">
+          <div class="row data playgrounds" v-if="playgroundsResData">
             <header>
               <h2>Nearby Playgrounds</h2>
 
               <div>
-                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="graduation-cap" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="svg-inline--fa fa-graduation-cap fa-w-20 fa-3x"><path fill="currentColor" d="M622.34 153.2L343.4 67.5c-15.2-4.67-31.6-4.67-46.79 0L17.66 153.2c-23.54 7.23-23.54 38.36 0 45.59l48.63 14.94c-10.67 13.19-17.23 29.28-17.88 46.9C38.78 266.15 32 276.11 32 288c0 10.78 5.68 19.85 13.86 25.65L20.33 428.53C18.11 438.52 25.71 448 35.94 448h56.11c10.24 0 17.84-9.48 15.62-19.47L82.14 313.65C90.32 307.85 96 298.78 96 288c0-11.57-6.47-21.25-15.66-26.87.76-15.02 8.44-28.3 20.69-36.72L296.6 284.5c9.06 2.78 26.44 6.25 46.79 0l278.95-85.7c23.55-7.24 23.55-38.36 0-45.6zM352.79 315.09c-28.53 8.76-52.84 3.92-65.59 0l-145.02-44.55L128 384c0 35.35 85.96 64 192 64s192-28.65 192-64l-14.18-113.47-145.03 44.56z" class=""></path></svg>
+                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="shapes" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-shapes fa-w-16 fa-3x"><path fill="currentColor" d="M512 320v160c0 17.67-14.33 32-32 32H320c-17.67 0-32-14.33-32-32V320c0-17.67 14.33-32 32-32h160c17.67 0 32 14.33 32 32zm-384-64C57.31 256 0 313.31 0 384s57.31 128 128 128 128-57.31 128-128-57.31-128-128-128zm351.03-32c25.34 0 41.18-26.67 28.51-48L412.51 16c-12.67-21.33-44.35-21.33-57.02 0l-95.03 160c-12.67 21.33 3.17 48 28.51 48h190.06z" class=""></path></svg>
 
                 <blockquote>
                   <p>Playgrounds located nearby.</p>
@@ -469,7 +470,7 @@
                     v-if="i < 10"> -->
                 <tr v-for="p, i in viaDistance(playgroundsResData.features)"
                     :class="[{'clickable': p.address}]"
-                    v-if="p.dist <= 5">
+                    v-if="p.dist <= 1">
                   <template v-if="p.address">
                     <td>
                       <a :href="`https://www.google.com/maps/dir/?api=1&origin=${latLong.lat},${latLong.lng}&destination=${p.lat},${p.lon}`"
@@ -496,7 +497,52 @@
             </table>
           </div>
 
-          <div class="row data schools">
+          <div class="row data safe-places" v-if="safePlaceResData">
+            <header>
+              <h2>Safe Places</h2>
+
+              <div>
+                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="graduation-cap" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="svg-inline--fa fa-graduation-cap fa-w-20 fa-3x"><path fill="currentColor" d="M622.34 153.2L343.4 67.5c-15.2-4.67-31.6-4.67-46.79 0L17.66 153.2c-23.54 7.23-23.54 38.36 0 45.59l48.63 14.94c-10.67 13.19-17.23 29.28-17.88 46.9C38.78 266.15 32 276.11 32 288c0 10.78 5.68 19.85 13.86 25.65L20.33 428.53C18.11 438.52 25.71 448 35.94 448h56.11c10.24 0 17.84-9.48 15.62-19.47L82.14 313.65C90.32 307.85 96 298.78 96 288c0-11.57-6.47-21.25-15.66-26.87.76-15.02 8.44-28.3 20.69-36.72L296.6 284.5c9.06 2.78 26.44 6.25 46.79 0l278.95-85.7c23.55-7.24 23.55-38.36 0-45.6zM352.79 315.09c-28.53 8.76-52.84 3.92-65.59 0l-145.02-44.55L128 384c0 35.35 85.96 64 192 64s192-28.65 192-64l-14.18-113.47-145.03 44.56z" class=""></path></svg>
+
+                <blockquote>
+                  <p><strong>Safe Places</strong> are identified by the bright yellow Safe Place sign. A youth can enter a Safe Place at any time and ask for help. Within a few minutes a trained volunteer arrives to meet the youth and assist in defusing the crisis. <strong>PLEASE NOTE:</strong> If you are seeking <strong>Safe Place Services</strong>, or are a youth in crisis, please contact the Binkley House Youth Shelter directly at 812-349-2507.</p>
+
+                  <p><small>* Approximate distance.</small></p>
+                </blockquote>
+              </div>
+            </header>
+
+            <table>
+              <caption class="sr-only">
+                Safe Places
+              </caption>
+              <thead class="sr-only">
+                <tr>
+                  <th scope="col">Distance</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Directions Link</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr v-for="p, i in viaDistance(safePlaceResData.feed.entry)"
+                    :class="[{'clickable': p}]"
+                    v-if="p.dist <= 1.0">
+                  <td @click="goToAddress(p.gsx$lat.$t, p.gsx$lon.$t)">
+                    {{ p.dist }} mi*
+                  </td>
+                  <td @click="goToAddress(p.gsx$lat.$t, p.gsx$lon.$t)">
+                    {{ p.gsx$name.$t }}
+                  </td>
+                  <td @click="goToAddress(p.gsx$lat.$t, p.gsx$lon.$t)">
+                      <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="directions" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-directions fa-w-16 fa-3x"><path fill="currentColor" d="M502.61 233.32L278.68 9.39c-12.52-12.52-32.83-12.52-45.36 0L9.39 233.32c-12.52 12.53-12.52 32.83 0 45.36l223.93 223.93c12.52 12.53 32.83 12.53 45.36 0l223.93-223.93c12.52-12.53 12.52-32.83 0-45.36zm-100.98 12.56l-84.21 77.73c-5.12 4.73-13.43 1.1-13.43-5.88V264h-96v64c0 4.42-3.58 8-8 8h-32c-4.42 0-8-3.58-8-8v-80c0-17.67 14.33-32 32-32h112v-53.73c0-6.97 8.3-10.61 13.43-5.88l84.21 77.73c3.43 3.17 3.43 8.59 0 11.76z" class=""></path></svg>directions
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="row data schools" v-if="schoolsResData">
             <header>
               <h2>Nearby Schools</h2>
 
@@ -504,11 +550,37 @@
                 <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="graduation-cap" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="svg-inline--fa fa-graduation-cap fa-w-20 fa-3x"><path fill="currentColor" d="M622.34 153.2L343.4 67.5c-15.2-4.67-31.6-4.67-46.79 0L17.66 153.2c-23.54 7.23-23.54 38.36 0 45.59l48.63 14.94c-10.67 13.19-17.23 29.28-17.88 46.9C38.78 266.15 32 276.11 32 288c0 10.78 5.68 19.85 13.86 25.65L20.33 428.53C18.11 438.52 25.71 448 35.94 448h56.11c10.24 0 17.84-9.48 15.62-19.47L82.14 313.65C90.32 307.85 96 298.78 96 288c0-11.57-6.47-21.25-15.66-26.87.76-15.02 8.44-28.3 20.69-36.72L296.6 284.5c9.06 2.78 26.44 6.25 46.79 0l278.95-85.7c23.55-7.24 23.55-38.36 0-45.6zM352.79 315.09c-28.53 8.76-52.84 3.92-65.59 0l-145.02-44.55L128 384c0 35.35 85.96 64 192 64s192-28.65 192-64l-14.18-113.47-145.03 44.56z" class=""></path></svg>
 
                 <blockquote>
-                  <p>Local Schools nearby the requested Address. Please note this <strong>does not</strong> indicate the appropriate School District nor higher education institutions.</p>
+                  <p>Local Schools nearby the requested Address. Please note this <strong>does not</strong> indicate the appropriate School District nor Higher Education institutions.</p>
                   <p><small>* Approximate distance.</small></p>
                 </blockquote>
               </div>
             </header>
+
+            <fn1-button-group>
+              <fn1-button
+                @click.native="changeSchoolType('elm')"
+                :class="[{'active': schoolType == 'elm'}]">
+                Elementary
+              </fn1-button>
+
+              <fn1-button
+                @click.native="changeSchoolType('middle')"
+                :class="[{'active': schoolType == 'middle'}]">
+                Middle
+              </fn1-button>
+
+              <fn1-button
+                @click.native="changeSchoolType('high')"
+                :class="[{'active': schoolType == 'high'}]">
+                High
+              </fn1-button>
+
+              <fn1-button
+                @click.native="changeSchoolType('all')"
+                :class="[{'active': schoolType == 'all'}]">
+                All
+              </fn1-button>
+            </fn1-button-group>
 
             <table>
               <caption class="sr-only">
@@ -527,7 +599,7 @@
                     v-if="i < 10"> -->
                 <tr v-for="p, i in viaDistance(schoolsResData.features)"
                     :class="[{'clickable': p.address}]"
-                    v-if="p.dist <= 5">
+                    v-if="p.dist <= 3 && schoolTypeToggle.includes(p.type)">
                   <template v-if="p.address">
                     <td>
                       <a :href="`https://www.google.com/maps/dir/?api=1&origin=${latLong.lat},${latLong.lng}&destination=${p.lat},${p.lon}`"
@@ -1055,9 +1127,11 @@
 import axios          from 'axios'
 import { mapFields }  from 'vuex-map-fields'
 import proj4          from 'proj4'
+import exampleSearch  from '~/components/exampleSearch'
 
 export default {
   layout:           'result',
+  components:       {exampleSearch},
   beforeRouteEnter (to, from, next) {
     next(vm => {
       let addressQueryParam = to.query.address;
@@ -1084,6 +1158,7 @@ export default {
       cityHallLatLong:    { lat: 39.16992723, lng: -86.53680559 },
       latLong:            {},
       weather:            null,
+      distanceToCityHall: null,
       zoom:               13,
       addressSearch:      null,
       addressResData:     null,
@@ -1097,6 +1172,18 @@ export default {
       parksResData:       null,
       schoolsResData:     null,
       playgroundsResData: null,
+      safePlaceResData:   null,
+      schoolTypeToggle:   null,
+      schoolType:         'all',
+      schoolTypes: {
+        "pre":            ['Preschool'],
+        "elm":            ['Elementary School','P-6','P-12','K-8'],
+        "middle":         ['Middle School','K-8','P-12'],
+        "high":           ['High School','P-12'],
+        "admin":          ['School Adminstration'],
+        "all":            ['All','Preschool','Elementary School','P-6','P-12','K-8','Middle School','High School','School Adminstration','Continuing Education']
+      },
+      searchIconEncoded:  '<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="search" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-search fa-w-16 fa-3x"><path fill="currentColor" d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z" class=""></path></svg>',
       errors: {
         addressRes:       null,
         locationRes:      null
@@ -1107,9 +1194,27 @@ export default {
     this.latLong = this.cityHallLatLong;
   },
   mounted() {
+    let searchInputElement = document.getElementById('address-search');
+    if(searchInputElement)
+      searchInputElement.focus()
+
+    this.getSafePlaces()
+    .then((res) => {
+      this.safePlaceResData = res;
+      console.log(`%c getSafePlaces 👌 `,
+                  this.consoleLog.success);
+    })
+    .catch((e)  => {
+      console.log(`%c getSafePlaces 🛑 `,
+                  this.consoleLog.error,
+                  `\n\n ${e} \n\n`);
+    })
+
     this.getLocalSchools()
     .then((res) => {
       this.schoolsResData = res;
+      this.schoolTypeToggle = this.schoolTypes.all;
+
       console.log(`%c getLocalSchools 👌 `,
                   this.consoleLog.success);
     })
@@ -1143,13 +1248,13 @@ export default {
                   `\n\n ${e} \n\n`);
     });
 
-    axios.get(`https://bloomington.in.gov/geoserver/publicgis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=publicgis:ParkLocationPoints&maxFeatures=50&outputFormat=application%2Fjson`)
-    .then((res) => {
-      this.parksResData = res.data;
-    })
-    .catch((e) => {
-      console.dir(e);
-    });
+    // axios.get(`https://bloomington.in.gov/geoserver/publicgis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=publicgis:ParkLocationPoints&maxFeatures=50&outputFormat=application%2Fjson`)
+    // .then((res) => {
+    //   this.parksResData = res.data;
+    // })
+    // .catch((e) => {
+    //   console.dir(e);
+    // });
 
     if(this.cityHallLatLong) {
       this.getWeather(this.cityHallLatLong.lat, this.cityHallLatLong.lng)
@@ -1392,19 +1497,63 @@ export default {
     }
   },
   methods: {
+    cityHallDistance() {
+      let points1 = this.latLong,
+          points2 = {lat: this.locationResData.address.latitude, lng: this.locationResData.address.longitude};
+      if(this.latLong && this.locationResData.address) {
+        this.distanceToCityHall = this.pointsToDistance(points1, points2);
+      }
+    },
+    changeSchoolType(schoolType) {
+      switch(schoolType) {
+        case 'pre':
+          this.schoolType = 'pre';
+          this.schoolTypeToggle = this.schoolTypes.pre;
+          break;
+        case 'elm':
+          this.schoolType = 'elm';
+          this.schoolTypeToggle = this.schoolTypes.elm;
+          break;
+        case 'middle':
+          this.schoolType = 'middle';
+          this.schoolTypeToggle = this.schoolTypes.middle;
+          break;
+        case 'high':
+          this.schoolType = 'high';
+          this.schoolTypeToggle = this.schoolTypes.high;
+          break;
+        case 'admin':
+          this.schoolType = 'admin';
+          this.schoolTypeToggle = this.schoolTypes.admin;
+          break;
+        default:
+          this.schoolType = 'all';
+          this.schoolTypeToggle = this.schoolTypes.all;
+          break;
+      }
+    },
     goToAddress(lat, lon) {
       let url = `https://www.google.com/maps/dir/?api=1&origin=${this.latLong.lat},${this.latLong.lng}&destination=${lat},${lon}`;
 
       return window.open(url, '_blank');
     },
-    viaDistance(place) {
+    viaDistance(places) {
       if(this.latLong) {
         let newArray = [],
                 self = this;
 
-        let locationMapped = place.map((p) => {
-          let addDist = {dist: self.nearbyDistance(p.properties.lat,p.properties.lon)};
-          newArray.push({...p.properties, ...addDist})
+        let locationMapped = places.map((p) => {
+          if(p.properties) {
+            var addDist = {dist: self.nearbyDistance(p.properties.lat,p.properties.lon)};
+            newArray.push({...p.properties, ...addDist})
+          } else if(p.gsx$lat.$t && p.gsx$lon.$t) {
+            var addDist = {dist: self.nearbyDistance(p.gsx$lat.$t,p.gsx$lon.$t)};
+            newArray.push({...p, ...addDist})
+          } else {
+            console.log(`%c viaDistance 🛑 `,
+                        this.consoleLog.error,
+                        `\n\n Distance of the wrong format \n\n`);
+          }
         });
 
         let newArraySorted = newArray.sort((a, b) => parseFloat(a.dist) - parseFloat(b.dist));
@@ -1551,7 +1700,7 @@ export default {
 
           this.locationResData    = res;
           this.errors.locationRes = null;
-
+          this.cityHallDistance();
 
           this.$router.push({query : { address: this.locationResData.address.streetAddress}});
 
@@ -1674,8 +1823,25 @@ export default {
     100%  { background-color: $color-blue-darker }
   }
 
+  .button-group {
+    margin: 0 0 20px 0;
 
+    button {
+      padding: 5px 20px;
+      font-size: 18px;
+      border: 1px solid $color-grey;
+      background: rgba($color-cloud, 0.4);
+      color: lighten($text-color, 5%);
+      // color: white;
+      letter-spacing: 1px;
+      font-weight: 500;
 
+      &:hover,
+      &.active {
+        background: darken($color-cloud, 3%);
+      }
+    }
+  }
 
   ul {
     list-style: none;
@@ -1698,7 +1864,8 @@ export default {
 
   .parks,
   .schools,
-  .playgrounds {
+  .playgrounds,
+  .safe-places {
     table {
       tr {
         &.clickable {
@@ -2077,10 +2244,46 @@ export default {
       }
 
       &:first-of-type {
-        position: relative;
+        border-top: 1px solid $color-grey-dark;
         background-color: white;
-        // background-color: $color-grey-lighter;
-        padding: 15px 0;
+        color: $text-color;
+
+        .container {
+          align-items: center;
+        }
+
+        div {
+          display: flex;
+          align-items: center;
+        }
+
+      }
+
+      &:nth-of-type(2) {
+        padding: 25px 0;
+        background-color: $color-blue;
+
+        div {
+          display: flex;
+          align-items: center;
+        }
+
+        svg {
+          width: 20px;
+          height: 20px;
+          margin: 0 10px 0 0;
+        }
+
+        p {
+          font-size: 18px;
+          color: white;
+        }
+      }
+
+      &:nth-of-type(3) {
+        position: relative;
+        background-color: $color-blue;
+        padding: 0 0 25px 0;
 
         h2 {
           position: absolute;
@@ -2113,39 +2316,11 @@ export default {
             background-color: $color-green;
             border-color: $color-green;
 
+            svg {}
+
             &:hover,
             &:focus {
               background-color: darken($color-green, 5%);
-            }
-          }
-        }
-      }
-
-      &:nth-of-type(2) {
-        border-top: 1px solid $color-grey-dark;
-        background-color: white;
-        color: $text-color;
-
-        .container {
-          align-items: center;
-        }
-
-        div {
-          display: flex;
-          align-items: center;
-        }
-      }
-
-      &:nth-of-type(3) {
-        padding: 25px 0;
-        background-color: $color-blue;
-
-        p {
-          color: white;
-
-          strong {
-            &:nth-child(2n) {
-              margin: 0 0 0 10px;
             }
           }
         }
