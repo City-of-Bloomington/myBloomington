@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="[{'no-location': !locationResData}]">
     <!-- <gmap-street-view-panorama
         style="width: 100%; height: 600px"
         ref="streetViewRef"
@@ -45,8 +45,8 @@
       map-type-id="roadmap"
       :style="`width: 100vw; height: ${mapHeight};`"
       :options="{
-        zoomControl:        true,
-        mapTypeControl:     true,
+        zoomControl:        false,
+        mapTypeControl:     false,
         scaleControl:       false,
         streetViewControl:  false,
         rotateControl:      false,
@@ -64,7 +64,7 @@
           strokeOpacity:  0.8,
           strokeWeight:   2,
           fillColor:      'rgb(30, 90, 174)',
-          fillOpacity:    0.35
+          fillOpacity:    0.15
         }"
       />
 
@@ -74,6 +74,38 @@
         :draggable="false"
       />
     </GmapMap>
+
+    <template v-if="!locationResData">
+      <div class="form-wrapper">
+        <form
+          @submit.stop.prevent="searchSubmit(addressSearchAuto)"
+          id="no-location-search">
+          <exampleSearch
+            v-model="addressSearchAuto"
+            :buttonValue="searchIconEncoded"
+            placeholder="Search - eg: 401 N Morton St"
+            ref="addressSearch"
+            name="address-search"
+            id="address-search" />
+        </form>
+
+        <ul v-if="testRes">
+          <template v-if="testRes.length > 1">
+            <li v-for="a, i in testRes"
+                @click="addressChoice(a)">
+              <a href="#">{{ a.streetAddress }}</a>
+            </li>
+          </template>
+
+          <template v-else>
+            <li @click="addressChoice(testRes)">
+              <a href="#">{{ testRes.streetAddress }}</a>
+            </li>
+          </template>
+        </ul>
+      </div>
+
+    </template>
 
     <template v-if="locationResData">
       <div class="overview">
@@ -1148,6 +1180,8 @@ export default {
   // },
   data() {
     return {
+      deInput: null,
+      debouncedInput: '',
       cityHallLatLong:    { lat: 39.16992723, lng: -86.53680559 },
       latLong:            {},
       mapHeight:          null,
@@ -1159,6 +1193,7 @@ export default {
       distanceToCityHall: null,
       zoom:               13,
       addressSearch:      null,
+      addressSearchAuto:  null,
       addressResData:     null,
       addressResChoices:  null,
       locationResData:    null,
@@ -1182,6 +1217,7 @@ export default {
         "all":            ['All','Preschool','Elementary School','P-6','P-12','K-8','Middle School','High School','School Adminstration','Continuing Education']
       },
       searchIconEncoded:  '<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="search" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-search fa-w-16 fa-3x"><path fill="currentColor" d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z" class=""></path></svg>',
+      testRes: null,
       errors: {
         addressRes:       null,
         locationRes:      null
@@ -1359,6 +1395,52 @@ export default {
                   this.consoleLog.error,
                   `\n\n ${e} \n\n`);
     })
+  },
+  watch: {
+    addressSearchAuto: function (val) {
+      let regExTest   = /\d+\s+\w+/,
+          addressTest = regExTest.test(val),
+          searchValue = this.addressSearchAuto;
+
+      if(searchValue.length > 3 &&
+         addressTest &&
+         !this.locationResData) {
+
+        console.dir('search has val');
+
+        this.getAddress(val)
+        .then((res) => {
+          this.testRes = res;
+          console.dir(res.length);
+          // if(res.length > 1) {
+          //   this.addressResData     = null;
+          //   this.addressResChoices  = res;
+          // } else {
+          //   this.addressResData     = res;
+          //   this.errors.addressRes  = null;
+          //   this.locationLookup();
+          console.log(`%c getAutoAddress 👌 `,
+                      this.consoleLog.success);
+
+        })
+        .catch((e)  => {
+          // this.$router.replace({query : { }});
+
+          // this.addressSearch      = null;
+          // this.addressResData     = null;
+          // this.locationResData    = null;
+          // this.errors.addressRes  = e;
+          console.log(`%c getAutoAddress 🛑 `,
+                      this.consoleLog.error,
+                      `\n\n ${e} \n\n`);
+        })
+        // console.dir(addressTest);
+        // console.dir(this.addressSearch);
+      } else {
+        console.dir('search no val');
+        this.testRes = null;
+      }
+    },
   },
   computed: {
     ...mapFields([
@@ -2393,6 +2475,95 @@ export default {
 
       img {
         width: 50px;
+      }
+    }
+  }
+
+  .no-location {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .form-wrapper {
+    position: absolute;
+    top: 0;
+    z-index: 1;
+    border-top: 1px solid $color-grey-dark;
+    border-bottom: 1px solid $color-grey-dark;
+    background-color: rgba($color-grey-light, 0.75);
+    padding: 20px;
+    // height: 100%;
+    width: 100%;
+
+    ul {
+      position: relative;
+      top: -1px;
+      border: 1px solid $color-grey-dark;
+      border-top: none;
+      overflow: scroll;
+      max-height: 300px;
+      background-color: white;
+      -webkit-border-bottom-right-radius: $radius-default;
+      -webkit-border-bottom-left-radius: $radius-default;
+      -moz-border-radius-bottomright: $radius-default;
+      -moz-border-radius-bottomleft: $radius-default;
+      border-bottom-right-radius: $radius-default;
+      border-bottom-left-radius: $radius-default;
+
+      li {
+        padding: 15px 20px;
+        margin: 0;
+        cursor: pointer;
+        color: $text-color;
+
+        &:hover {
+          background-color: rgba($color-cloud, 0.5);
+        }
+
+        &:nth-child(even) {
+          background-color: rgba($color-cloud, 0.3);
+
+          &:hover {
+            background-color: rgba($color-cloud, 0.5);
+          }
+        }
+      }
+    }
+
+    #no-location-search {
+      // position: absolute;
+      width: 100%;
+
+      label {
+        @include visuallyHidden;
+      }
+
+      ::v-deep input {
+        box-shadow: none;
+        border: 1px solid $color-grey-dark;
+        color: $text-color;
+        font-size: 30px;
+        z-index: 1;
+      }
+
+      ::v-deep button[type=submit] {
+        background-color: $color-green;
+        border-color: $color-green;
+        padding: 0 20px;
+        margin: 0;
+        z-index: 1;
+
+        svg {
+          width: 30px;
+          height: 30px;
+        }
+
+        &:hover,
+        &:focus {
+          background-color: darken($color-green, 5%);
+        }
       }
     }
   }
