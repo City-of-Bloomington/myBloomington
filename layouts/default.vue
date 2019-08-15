@@ -1,5 +1,14 @@
 <template>
   <div>
-    <!-- <nuxt /> -->
+    <div><headerComponent /></div>
+    <div><nuxt /></div>
   </div>
 </template>
+
+<script>
+import headerComponent      from '~/components/headerComponent'
+
+export default {
+  components: { headerComponent },
+}
+</script>

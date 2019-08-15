@@ -104,7 +104,7 @@ Vue.mixin({
       return new Promise((resolve, reject) => {
         axios.get(`${process.env.baseUrl}${process.env.onBoardCityCouncilPath}`)
         .then((res) => resolve(res.data.seats))
-        .catch(e    => reject(e))
+        .catch((e)  => reject(e))
       })
     },
     /**
@@ -120,8 +120,8 @@ Vue.mixin({
     getDirectoryUser(username){
       return new Promise((resolve, reject) => {
         axios.get(`${process.env.baseUrl}${process.env.directoryUsernamePath}${username}`)
-        .then(res => resolve(res.data))
-        .catch(e  => reject(e))
+        .then((res) => resolve(res.data))
+        .catch((e)  => reject(e))
       })
     },
     /**
