@@ -314,14 +314,14 @@
               <template v-if="locationResData.locations[0].trash_day || locationResData.locations[0].recycle_week">
                 <table>
                   <caption class="sr-only">
-                      Address Location Waste Pickup
-                    </caption>
-                    <thead class="sr-only">
-                      <tr>
-                        <th scope="col">Type</th>
-                        <th scope="col">Day/Week</th>
-                      </tr>
-                    </thead>
+                    Address Location Waste Pickup
+                  </caption>
+                  <thead class="sr-only">
+                    <tr>
+                      <th scope="col">Type</th>
+                      <th scope="col">Day/Week</th>
+                    </tr>
+                  </thead>
 
                   <tbody>
                     <tr v-if="locationResData.locations[0].trash_day">
@@ -332,9 +332,23 @@
                     <tr v-if="locationResData.locations[0].recycle_week">
                       <th scope="row">Yard Waste:</th>
                       <td>
-                        <a :href="trashLink(locationResData.locations[0].recycle_week, locationResData.locations[0].trash_day)">
+                        <a :href="trashLink(locationResData.locations[0].recycle_week, locationResData.locations[0].trash_day).url" target="_blank">
                           Week {{ locationResData.locations[0].recycle_week | capitalizeFirst }}
                         </a>
+
+                        <template v-for="d, i in trashLink(locationResData.locations[0].recycle_week, locationResData.locations[0].trash_day).dates">
+                          <small>{{ d }}, </small>
+                        </template>
+
+                        <!-- <pre>
+                          {{ wastePickup(locationResData.locations[0].recycle_week, locationResData.locations[0].trash_day) }}
+                        </pre>
+ -->
+                        <!-- {{ sanitation.a }}<br><br>
+                        {{ sanitation.b }} -->
+                        <!-- <template v-for="s, i in sanitation">
+                          <template v-if="true">{{ s.a }}<br></template>
+                        </template> -->
                       </td>
                     </tr>
                   </tbody>
@@ -1728,31 +1742,31 @@ export default {
       if(week === 'A'){
         switch(day) {
           case 'Monday':
-            return this.sanitation.A.Monday;
+            return this.sanitation.a.monday;
             break;
           case 'Tuesday':
-            return this.sanitation.A.Tuesday;
+            return this.sanitation.a.tuesday;
             break;
           case 'Wednesday':
-            return this.sanitation.A.Wednesday;
+            return this.sanitation.a.wednesday;
             break;
           case 'Thursday':
-            return this.sanitation.A.Thursday;
+            return this.sanitation.a.thursday;
             break;
         }
       } else if(week === 'B'){
         switch(day) {
           case 'Monday':
-            return this.sanitation.B.Monday;
+            return this.sanitation.b.monday;
             break;
           case 'Tuesday':
-            return this.sanitation.B.Tuesday;
+            return this.sanitation.b.tuesday;
             break;
           case 'Wednesday':
-            return this.sanitation.B.Wednesday;
+            return this.sanitation.b.wednesday;
             break;
           case 'Thursday':
-            return this.sanitation.B.Thursday;
+            return this.sanitation.b.thursday;
             break;
         }
       }
