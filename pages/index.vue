@@ -336,9 +336,14 @@
                           Week {{ locationResData.locations[0].recycle_week | capitalizeFirst }}
                         </a>
 
-                        <template v-for="d, i in trashLink(locationResData.locations[0].recycle_week, locationResData.locations[0].trash_day).dates">
-                          <small>{{ d }}, </small>
-                        </template>
+                        <div class="yard-waste-days">
+                          <template v-for="d, i in trashLink(locationResData.locations[0].recycle_week, locationResData.locations[0].trash_day).dates">
+                            <fn1-badge v-if="yardWasteMomentDate(d)">
+                              {{ yardWasteMomentDate(d) }}
+                            </fn1-badge>
+                          </template>
+                        </div>
+
 
                         <!-- <pre>
                           {{ wastePickup(locationResData.locations[0].recycle_week, locationResData.locations[0].trash_day) }}
@@ -1166,6 +1171,7 @@
 import axios           from 'axios'
 import { mapFields }   from 'vuex-map-fields'
 import proj4           from 'proj4'
+import moment          from 'moment'
 import exampleSearch   from '~/components/exampleSearch'
 import footerComponent from '~/components/footerComponent'
 
@@ -1644,6 +1650,11 @@ export default {
     }
   },
   methods: {
+    yardWasteMomentDate(d) {
+      if(moment(d).isAfter()) {
+        return moment(d).format('MMMM Do');
+      }
+    },
     cityHallDistance() {
       let points1 = this.latLong,
           points2 = {lat: this.locationResData.address.latitude, lng: this.locationResData.address.longitude};
@@ -1992,6 +2003,10 @@ export default {
     }
   }
 
+  .badge {
+    padding: 2px 8px 0 8px;
+  }
+
   ul {
     list-style: none;
     padding: 0;
@@ -1999,6 +2014,17 @@ export default {
     li {
       color: lighten($text-color, 15%);
       margin: 0 0 10px 0;
+    }
+  }
+
+  .yard-waste-days {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+
+    .badge {
+      background-color: $color-silver;
+      margin: 10px 10px 0 0;
     }
   }
 
