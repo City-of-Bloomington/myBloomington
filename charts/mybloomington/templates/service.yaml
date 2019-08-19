@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "mybloomington.fullname" . }}
+  labels:
+{{ include "mybloomington.labels" . | indent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: 9090
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "mybloomington.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

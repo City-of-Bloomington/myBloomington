@@ -1,0 +1,63 @@
+# Default values for mybloomington.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: <repo>
+  tag: <tag>
+  pullPolicy: Always
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 9090
+  targetPort: 9090 
+
+ingress:
+  enabled: true
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts: []
+  tls: []
+
+environment:
+  APP_NAME: myBloomington
+  CITY_NAME: 'City of Wherever'
+  LOGO_HEADING: 'wherever.state.gov'
+  LOGO_SUB_HEADING: 'Mayor Mayorington, Mayor'
+  HOST: "0.0.0.0"
+  PORT: "9090"
+  NUXT_PORT: "9090"
+  NODE_ENV: "production"
+  BASE_URL: https://city.state.gov/
+  MASTER_ADDRESS_ADDRESS_PATH: master_address/addresses
+  DIRECTORY_USERNAME_PATH: directory/people/view?format=json&username=
+  ONBOARD_CITY_COUNCIL_PATH: onboard/committees/members?committee_id=1&format=json
+  WEATHER_URL: https://api.openweathermap.org/data/2.5/
+  COUNCIL_DISTRICTS_GEOJSON_PATH: geoserver/publicgis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=publicgis:CityCouncilDistricts&maxFeatures=50&outputFormat=application%2Fjson
+  CITY_PARKS_GEOJSON_PATH: https://bloomington.in.gov/geoserver/publicgis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=publicgis:ParkLocationPoints&maxFeatures=50&outputFormat=application%2Fjson
+  CITY_PLAYGROUNDS_GEOJSON_PATH: https://bloomington.in.gov/geoserver/publicgis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=publicgis:Playgrounds&maxFeatures=50&outputFormat=application%2Fjson
+  LOCAL_SCHOOLS_GEOJSON_PATH: https://bloomington.in.gov/geoserver/publicgis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=publicgis:Schools&maxFeatures=50&outputFormat=application%2Fjson
+  SAFE_PLACES_PATH: https://spreadsheets.google.com/feeds/list/1b7UMV6KpTHuMmMwQ5s2I5xTOyVTntRgHekhG_CFX3tg/od6/public/values?alt=json
+  FE_BASE: mybloomington #base path for frontend UI
+  GOOGLE_API_KEY: 1234
+  WEATHER_API_KEY: 5678
+  
+  
+  # these json strings are utilized by the application - the below are examples
+  DISTRICT_REPRESENTATIVES: >
+    {"1":{"name":"Chris Sturbaum","email":"sturbauc@bloomington.in.gov","address":"334 S Jackson"},"2":{"name":"Dorothy Granger","email":"grangerd@bloomington.in.gov","address":"3211 N Valleyview Dr"},"3":{"name":"Allison Chopra","email":"chopraa@bloomington.in.gov","address":"401 N Morton"},"4":{"name":"Dave Rollo","email":"rollod@bloomington.in.gov","address":"1200 S Nancy"},"5":{"name":"Isabel Piedmont-Smith","email":"piedmoni@bloomington.in.gov","address":"401 N Morton"},"6":{"name":"Stephen Volan","email":"volans@bloomington.in.gov","address":"514 E University"}}
+  SANITATION: >
+    {"a":{"monday":{"url":"https://bloomington.in.gov/sanitation/trash/monday-a","dates":["04/01/2019","04/15/2019","04/29/2019","05/13/2019","05/27/2019","06/10/2019","06/24/2019","07/08/2019","07/22/2019","08/05/2019","08/19/2019","09/02/2019","09/16/2019","09/30/2019","10/14/2019","10/28/2019","11/11/2019","11/25/2019","12/09/2019","12/23/2019"]},"tuesday":{"url":"https://bloomington.in.gov/sanitation/trash/tuesday-a","dates":["04/02/2019","04/16/2019","04/30/2019","05/14/2019","05/28/2019","06/11/2019","06/25/2019","07/09/2019","07/23/2019","08/06/2019","08/20/2019","09/03/2019","09/17/2019","10/01/2019","10/15/2019","10/29/2019","11/12/2019","11/26/2019","12/10/2019","12/24/2019"]},"wednesday":{"url":"https://bloomington.in.gov/sanitation/trash/wednesday-a","dates":["04/03/2019","04/17/2019","05/01/2019","05/15/2019","05/29/2019","06/12/2019","06/26/2019","07/10/2019","07/24/2019","08/07/2019","08/21/2019","09/04/2019","09/18/2019","10/02/2019","10/16/2019","10/30/2019","11/13/2019","11/27/2019","12/12/2019","12/26/2019"]},"thursday":{"url":"https://bloomington.in.gov/sanitation/trash/thursday-a","dates":["04/04/2019","04/18/2019","05/02/2019","05/16/2019","05/30/2019","06/13/2019","06/27/2019","07/11/2019","07/25/2019","08/08/2019","08/22/2019","09/05/2019","09/19/2019","10/03/2019","10/17/2019","10/31/2019","11/14/2019","11/29/2019","12/12/2019","12/27/2019"]}},"b":{"monday":{"url":"https://bloomington.in.gov/sanitation/trash/monday-b","dates":["04/08/2019","04/22/2019","05/06/2019","05/20/2019","06/03/2019","06/17/2019","07/01/2019","07/15/2019","07/29/2019","08/12/2019","08/26/2019","09/09/2019","09/23/2019","10/07/2019","10/21/2019","11/04/2019","11/18/2019","12/02/2019","12/16/2019","12/30/2019"]},"tuesday":{"url":"https://bloomington.in.gov/sanitation/trash/tuesday-b","dates":["04/09/2019","04/23/2019","05/07/2019","05/21/2019","06/04/2019","06/18/2019","07/02/2019","07/16/2019","07/30/2019","08/13/2019","08/27/2019","09/10/2019","09/24/2019","10/08/2019","10/22/2019","11/05/2019","11/19/2019","12/03/2019","12/17/2019"]},"wednesday":{"url":"https://bloomington.in.gov/sanitation/trash/wednesday-b","dates":["04/10/2019","04/24/2019","05/08/2019","05/22/2019","06/05/2019","06/19/2019","07/03/2019","07/17/2019","07/31/2019","08/14/2019","08/28/2019","09/11/2019","09/25/2019","10/09/2019","10/23/2019","11/06/2019","11/20/2019","12/04/2019","12/18/2019"]},"thursday":{"url":"https://bloomington.in.gov/sanitation/trash/thursday-b","dates":["04/11/2019","04/25/2019","05/09/2019","05/23/2019","06/06/2019","06/20/2019","07/04/2019","07/18/2019","08/01/2019","08/15/2019","08/29/2019","09/12/2019","09/26/2019","10/10/2019","10/24/2019","11/07/2019","11/21/2019","12/05/2019","12/19/2019"]}}}
+  INDIANAPOLIS: > 
+    {"type":"State","location":"Indianapolis","website":{"url":"https://www.in.gov/","text":"www.in.gov"},"socials":{"facebook":{"type":"facebook","url":"https://www.facebook.com/IndianaGovernment","text":"@IndianaGovernment"},"twitter":{"type":"twitter","url":"https://twitter.com/IN_gov","text":"@in_gov"},"instagram":{"type":"instagram","url":"https://www.instagram.com/in_gov/","text":"@in_gov"},"youtube":{"type":"youtube","url":"https://www.youtube.com/user/IndianaGovernment/videos","text":"IndianaGovernment YouTube"}},"phone":{"number":"1-800-457-8283"}}
+  MONROE_COUNTY: >
+    {"type":"County","location":"Monroe County","website":{"url":"http://www.co.monroe.in.us","text":"www.co.monroe.in.us"},"socials":{"facebook":{"type":"facebook","url":"https://www.facebook.com/monroecoboardofcommissioners","text":"@monroecoboardofcommissioners"},"twitter":{"type":"twitter","url":"https://twitter.com/MonroeCoBoC","text":"@MonroeCoBoC"}},"phone":{"number":"812-349-2550"}}
+  BLOOMINGTON: >
+    {"type":"City","location":"Bloomington","website":{"url":"http://bloomington.in.gov","text":"bloomington.in.gov"},"socials":{"facebook":{"type":"facebook","url":"https://www.facebook.com/cityofbloomington","text":"@cityofbloomington"},"twitter":{"type":"twitter","url":"http://twitter.com/citybloomington","text":"@citybloomington"}},"phone":{"number":"812-849-3400"}}
