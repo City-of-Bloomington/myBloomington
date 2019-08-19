@@ -45,15 +45,40 @@
       map-type-id="roadmap"
       :style="`width: 100vw; height: ${mapHeight};`"
       :options="{
-        zoomControl:        false,
+        zoomControl:        true,
         mapTypeControl:     false,
         scaleControl:       false,
         streetViewControl:  false,
         rotateControl:      false,
         fullscreenControl:  false,
         disableDefaultUi:   true,
-        draggable:          false,
-        styles: []
+        draggable:          true,
+        styles: [
+          {
+            featureType:    'poi',
+            stylers: [
+              {
+                visibility: 'off'
+              }
+            ]
+          },
+          {
+            featureType:    'poi.medical',
+            stylers: [
+              {
+                visibility: 'on'
+              }
+            ]
+          },
+          {
+            featureType:    'poi.government',
+            stylers: [
+              {
+                visibility: 'on'
+              }
+            ]
+          }
+        ]
       }">
 
       <GmapPolygon
@@ -73,6 +98,20 @@
         :clickable="false"
         :draggable="false"
       />
+
+      <GmapCluster>
+        <template v-for="p, i in nearbyParkMarkers()">
+          <GmapMarker
+            :key="i"
+            :animation="2"
+            :label="{text: `${p.label}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '25px', color: '#337536', fontWeight: '600'}"
+            :icon="{url: 'marker-parks.svg', labelOrigin: {x: 37, y: 135}}"
+            :position="{lat: Number(p.lat), lng: Number(p.lon)}"
+            :clickable="false"
+            :draggable="false"
+          />
+        </template>
+      </GmapCluster>
     </GmapMap>
 
     <template v-if="!locationResData">
@@ -1206,7 +1245,7 @@ export default {
       latLong:            {},
       mapHeight:          null,
       mapHeightDefault:   'calc(100vh - 90px)',
-      mapHeightResult:    '350px',
+      mapHeightResult:    '450px',
       coordsProjection:   '+proj=tmerc +lat_0=37.5 +lon_0=-87.08333333333333 +k=0.999966667 +x_0=900000 +y_0=249999.9998983998 +datum=NAD83 +units=us-ft +no_defs',
       bloomingtonBoundaryGeoJson: null,
       weather:            null,
@@ -1650,6 +1689,17 @@ export default {
     }
   },
   methods: {
+    nearbyParkMarkers(){
+      let parksData     = this.parksResData,
+          parkMarkers   = [];
+      if(parksData){
+        parksData.features.filter((p) => {
+          var addDist = {dist: this.nearbyDistance(p.properties.lat,p.properties.lon)};
+          parkMarkers.push({...p.properties, ...addDist})
+        })
+        return parkMarkers
+      }
+    },
     yardWasteMomentDate(d) {
       if(moment(d).isAfter()) {
         return moment(d).format('MMMM Do');
@@ -1905,7 +1955,7 @@ export default {
         lng: locationLng
       };
 
-      this.zoom = 18;
+      this.zoom = 17;
 
       console.log(`%c updated latLng (gMap) 👌 `,
                   this.consoleLog.success);
