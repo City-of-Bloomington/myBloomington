@@ -46,8 +46,8 @@
       :style="`width: 100vw; height: ${mapHeight};`"
       :options="{
         zoomControl:        true,
-        mapTypeControl:     false,
-        scaleControl:       false,
+        mapTypeControl:     true,
+        scaleControl:       true,
         streetViewControl:  false,
         rotateControl:      false,
         fullscreenControl:  false,
@@ -99,20 +99,62 @@
         :draggable="false"
       />
 
-      <GmapCluster>
-        <template v-for="p, i in nearbyParkMarkers()">
+      <GmapCluster
+        :minimumClusterSize="2">
+        <template
+          v-for="p, i in nearbyParkMarkers()"
+          v-if="mapMarkerToggle.parks">
           <GmapMarker
-            :key="i"
             :animation="2"
-            :label="{text: `${p.label}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '25px', color: '#337536', fontWeight: '600'}"
-            :icon="{url: 'marker-parks.svg', labelOrigin: {x: 37, y: 135}}"
+            :label="{text: `${p.label}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: '#337536', fontWeight: '600'}"
+            :icon="{url: 'marker-park.svg', labelOrigin: {x: 28, y: 85}}"
             :position="{lat: Number(p.lat), lng: Number(p.lon)}"
+            :clickable="false"
+            :draggable="false"
+          />
+        </template>
+
+        <template
+          v-for="s, i in nearbySchoolMarkers()"
+          v-if="mapMarkerToggle.schools">
+          <GmapMarker
+            :animation="2"
+            :label="{text: `${s.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: '#990000', fontWeight: '600'}"
+            :icon="{url: 'marker-school.svg', labelOrigin: {x: 28, y: 85}}"
+            :position="{lat: Number(s.lat), lng: Number(s.lon)}"
+            :clickable="false"
+            :draggable="false"
+          />
+        </template>
+
+        <template
+          v-for="p, i in nearbyPlaygroundMarkers()"
+          v-if="mapMarkerToggle.playgrounds">
+          <GmapMarker
+            :animation="2"
+            :label="{text: `${p.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: '#1e5aae', fontWeight: '600'}"
+            :icon="{url: 'marker-playground.svg', labelOrigin: {x: 28, y: 85}}"
+            :position="{lat: Number(p.lat), lng: Number(p.lon)}"
+            :clickable="false"
+            :draggable="false"
+          />
+        </template>
+
+        <template
+          v-for="s, i in nearbySafePlaceMarkers()"
+          v-if="mapMarkerToggle.safePlaces">
+          <GmapMarker
+            :animation="2"
+            :label="{text: `${s.gsx$name.$t}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: '#212121', fontWeight: '600'}"
+            :icon="{url: 'marker-safe-place.svg', labelOrigin: {x: 28, y: 85}}"
+            :position="{lat: Number(s.gsx$lat.$t), lng: Number(s.gsx$lon.$t)}"
             :clickable="false"
             :draggable="false"
           />
         </template>
       </GmapCluster>
     </GmapMap>
+
 
     <template v-if="!locationResData">
       <div class="form-wrapper">
@@ -148,6 +190,56 @@
 
     <template v-if="locationResData">
       <div class="overview">
+        <div class="row">
+          <div class="container">
+            <div class="form-group inline">
+              <fieldset>
+                <span>Toggle Map Markers:</span>
+                <legend class="sr-only">Toggle Map Markers:</legend>
+                <div class="inner-wrapper">
+                  <input v-model="mapMarkerToggle.parks"
+                         id="parks"
+                         value="parks"
+                         type="checkbox"
+                         name="parks">
+
+                  <label for="parks">Parks</label>
+                </div>
+
+                <div class="inner-wrapper">
+                  <input v-model="mapMarkerToggle.playgrounds"
+                         id="playgrounds"
+                         value="playgrounds"
+                         type="checkbox"
+                         name="playgrounds">
+
+                  <label for="playgrounds">Playgrounds</label>
+                </div>
+
+                <div class="inner-wrapper">
+                  <input v-model="mapMarkerToggle.safePlaces"
+                         id="safePlaces"
+                         value="safePlaces"
+                         type="checkbox"
+                         name="safePlaces">
+
+                  <label for="safePlaces">Safe Places</label>
+                </div>
+
+                <div class="inner-wrapper">
+                  <input v-model="mapMarkerToggle.schools"
+                         id="schools"
+                         value="schools"
+                         type="checkbox"
+                         name="schools">
+
+                  <label for="schools">Schools</label>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+
         <div class="row">
           <div class="container">
             <div class="weather" v-if="weather.weather[0]">
@@ -1239,6 +1331,12 @@ export default {
   // },
   data() {
     return {
+      mapMarkerToggle: {
+        parks:       true,
+        playgrounds: true,
+        schools:     true,
+        safePlaces:  true,
+      },
       deInput: null,
       debouncedInput: '',
       cityHallLatLong:    { lat: 39.16992723, lng: -86.53680559 },
@@ -1698,6 +1796,39 @@ export default {
           parkMarkers.push({...p.properties, ...addDist})
         })
         return parkMarkers
+      }
+    },
+    nearbySchoolMarkers(){
+      let schoolsData    = this.schoolsResData,
+          schoolsMarkers = [];
+      if(schoolsData){
+        schoolsData.features.filter((p) => {
+          var addDist = {dist: this.nearbyDistance(p.properties.lat,p.properties.lon)};
+          schoolsMarkers.push({...p.properties, ...addDist})
+        })
+        return schoolsMarkers
+      }
+    },
+    nearbyPlaygroundMarkers(){
+      let playgroundsData    = this.playgroundsResData,
+          playgroundsMarkers = [];
+      if(playgroundsData){
+        playgroundsData.features.filter((p) => {
+          var addDist = {dist: this.nearbyDistance(p.properties.lat,p.properties.lon)};
+          playgroundsMarkers.push({...p.properties, ...addDist})
+        })
+        return playgroundsMarkers
+      }
+    },
+    nearbySafePlaceMarkers(){
+      let safePlacesData     = this.safePlaceResData,
+          safePlacesMarkers  = [];
+      if(safePlacesData){
+        safePlacesData.feed.entry.filter((p) => {
+          var addDist = {dist: this.nearbyDistance(p.gsx$lat.$t,p.gsx$lon.$t)};
+          safePlacesMarkers.push({...p, ...addDist})
+        })
+        return safePlacesMarkers
       }
     },
     yardWasteMomentDate(d) {
@@ -2475,8 +2606,42 @@ export default {
       }
 
       &:first-of-type {
-        border-top: 1px solid $color-grey-dark;
         background-color: white;
+        border-top: 1px solid $color-grey-dark;
+        padding: 4px 0 0 0;
+
+        .form-group {
+          font-size: 16px;
+          width: 100%;
+
+          fieldset {
+            span {
+              color: $text-color;
+              margin: 0 10px 0 0;
+              font-weight: $weight-semi-bold;
+            }
+
+            div {
+              margin: 0 10px 0 0;
+            }
+          }
+
+          legend {
+            background-color: black;
+          }
+
+          input {
+            font-size: 16px;
+            font-weight: $weight-semi-bold;
+            color: $text-color;
+            margin: 0 5px 0 0;
+          }
+        }
+      }
+
+      &:nth-of-type(2) {
+        border-top: 1px solid $color-grey;
+        background-color: rgba($color-cloud, 0.3);
         color: $text-color;
 
         .container {
@@ -2487,10 +2652,9 @@ export default {
           display: flex;
           align-items: center;
         }
-
       }
 
-      &:nth-of-type(2) {
+      &:nth-of-type(3) {
         padding: 25px 0;
         background-color: $color-blue;
 
@@ -2511,7 +2675,7 @@ export default {
         }
       }
 
-      &:nth-of-type(3) {
+      &:nth-child(4) {
         position: relative;
         background-color: $color-blue;
         padding: 0 0 25px 0;
