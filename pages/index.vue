@@ -1928,8 +1928,10 @@ export default {
       }
     },
     yardWasteMomentDate(d) {
-      if(moment(d).isAfter()) {
-        return moment(d).format('MMMM Do');
+      let dateFormat = moment(new Date(d));
+
+      if(dateFormat.isAfter()) {
+        return dateFormat.format('MMMM Do');
       }
     },
     cityHallDistance() {
