@@ -106,7 +106,7 @@
           v-if="mapMarkerToggle.parks">
           <GmapMarker
             :animation="2"
-            :label="{text: `${p.label}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: '#337536', fontWeight: '600'}"
+            :label="{text: `${p.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: '#337536', fontWeight: '600'}"
             :icon="{url: 'marker-park.svg', labelOrigin: {x: 28, y: 85}}"
             :position="{lat: Number(p.lat), lng: Number(p.lon)}"
             :clickable="false"
@@ -678,7 +678,9 @@
                 </svg>
 
                   <blockquote>
-                    <p><strong>Safe Places</strong> are identified by the bright yellow Safe Place sign. A youth can enter a Safe Place at any time and ask for help. Within a few minutes a trained volunteer arrives to meet the youth and assist in defusing the crisis. <strong>PLEASE NOTE:</strong> If you are seeking <strong>Safe Place Services</strong>, or are a youth in crisis, please contact the Binkley House Youth Shelter directly at 812-349-2507.</p>
+                    <p><strong>Safe Places</strong> are identified by the bright yellow Safe Place sign. A youth can enter a Safe Place at any time and ask for help. Within a few minutes a trained volunteer arrives to meet the youth and assist in defusing the crisis.</p>
+
+                    <p><strong>Please Note:</strong> If you are seeking <strong>Safe Place Services</strong>, or are a <strong>youth in crisis</strong>, please contact the <strong>Binkley House Youth Shelter</strong> directly at <strong>812-349-2507</strong>.</p>
 
                     <p><small>* Approximate distance.</small></p>
                   </blockquote>
@@ -720,10 +722,13 @@
                 <h2>Nearby Schools</h2>
 
                 <div>
-                  <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="graduation-cap" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="svg-inline--fa fa-graduation-cap fa-w-20 fa-3x"><path fill="currentColor" d="M622.34 153.2L343.4 67.5c-15.2-4.67-31.6-4.67-46.79 0L17.66 153.2c-23.54 7.23-23.54 38.36 0 45.59l48.63 14.94c-10.67 13.19-17.23 29.28-17.88 46.9C38.78 266.15 32 276.11 32 288c0 10.78 5.68 19.85 13.86 25.65L20.33 428.53C18.11 438.52 25.71 448 35.94 448h56.11c10.24 0 17.84-9.48 15.62-19.47L82.14 313.65C90.32 307.85 96 298.78 96 288c0-11.57-6.47-21.25-15.66-26.87.76-15.02 8.44-28.3 20.69-36.72L296.6 284.5c9.06 2.78 26.44 6.25 46.79 0l278.95-85.7c23.55-7.24 23.55-38.36 0-45.6zM352.79 315.09c-28.53 8.76-52.84 3.92-65.59 0l-145.02-44.55L128 384c0 35.35 85.96 64 192 64s192-28.65 192-64l-14.18-113.47-145.03 44.56z" class=""></path></svg>
+                  <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="graduation-cap" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="svg-inline--fa fa-graduation-cap fa-w-20 fa-3x"><path fill="currentColor" d="M622.34 153.2L343.4 67.5c-15.2-4.67-31.6-4.67-46.79 0L17.66 153.2c-23.54 7.23-23.54 38.36 0 45.59l48.63 14.94c-10.67 13.19-17.23 29.28-17.88 46.9C38.78 266.15 32 276.11 32 288c0 10.78 5.68 19.85 13.86 25.65L20.33 428.53C18.11 438.52 25.71 448 35.94 448h56.11c10.24 0 17.84-9.48 15.62-19.47L82.14 313.65C90.32 307.85 96 298.78 96 288c0-11.57-6.47-21.25-15.66-26.87.76-15.02 8.44-28.3 20.69-36.72L296.6 284.5c9.06 2.78 26.44 6.25 46.79 0l278.95-85.7c23.55-7.24 23.55-38.36 z0-45.6zM352.79 315.09c-28.53 8.76-52.84 3.92-65.59 0l-145.02-44.55L128 384c0 35.35 85.96 64 192 64s192-28.65 192-64l-14.18-113.47-145.03 44.56z" class=""></path></svg>
 
                   <blockquote>
-                    <p>Local Schools nearby the requested Address. Please note this <strong>does not</strong> indicate the appropriate School District nor Higher Education institutions.</p>
+                    <p>Local <strong>Schools</strong> nearby the requested Address.</p>
+                    <p><strong>Please Note:</strong> This <strong>does not</strong> indicate the appropriate <strong>School District</strong> nor any <strong>Higher Educational</strong> institutions.</p>
+
+                    <p>External <strong>School District</strong> information may by found <a @click.prevent="openSchoolDistrictModal()" href="#" alt="MCCSC School Districts">here</a>.</p>
                     <p><small>* Approximate distance.</small></p>
                   </blockquote>
                 </div>
@@ -797,6 +802,63 @@
                   </tr>
                 </tbody>
               </table>
+
+              <exampleModal
+                      ref="schoolDistrictModal"
+                      title="School District Information">
+
+                      <fn1-alert
+                        slot="body"
+                        v-if="gradeLevelError"
+                        variant="warning">
+                        <p>Select a <strong>Grade Level</strong> to continue.</p>
+                      </fn1-alert>
+
+                      <p slot="body">Please select a Grade Level.</p>
+
+                      <div slot="body" class="field-group">
+                        <label for="schoolDistrictGradeLevel">
+                          Grade Level:
+                        </label>
+
+                        <select name="schoolDistrictGradeLevel"
+                                id="schoolDistrictGradeLevel"
+                                type="select"
+                                v-model="schoolDistrictGradeLevel">
+                          <option :value="{val: 3, lvl: 'PA'}">PA</option>
+                          <option :value="{val: 1, lvl: 'PP'}">PP</option>
+                          <option :value="{val: 2, lvl: 'PK'}">PK</option>
+                          <option :value="{val: 6, lvl: 'K'}">K</option>
+                          <option :value="{val: 7, lvl: '01'}">01</option>
+                          <option :value="{val: 8, lvl: '02'}">02</option>
+                          <option :value="{val: 9, lvl: '03'}">03</option>
+                          <option :value="{val: 10, lvl: '04'}">04</option>
+                          <option :value="{val: 11, lvl: '05'}">05</option>
+                          <option :value="{val: 12, lvl: '06'}">06</option>
+                          <option :value="{val: 13, lvl: '07'}">07</option>
+                          <option :value="{val: 14, lvl: '08'}">08</option>
+                          <option :value="{val: 15, lvl: '09'}">09</option>
+                          <option :value="{val: 16, lvl: '10'}">10</option>
+                          <option :value="{val: 17, lvl: '11'}">11</option>
+                          <option :value="{val: 18, lvl: '12'}">12</option>
+                          <option :value="{val: 20, lvl: '13'}">13</option>
+                          <option :value="{val: 19, lvl: '99'}">99</option>
+                          <option :value="{val: 23, lvl: 'PW'}">PW</option>
+                        </select>
+                      </div>
+
+                      <fn1-button slot="footer"
+                                  title="Confirm - Remove Service"
+                                  @click.native="confirmModal('schoolDistrictModal')">
+                        Confirm
+                      </fn1-button>
+
+                      <fn1-button slot="footer"
+                                  title="Cancel - Remove Service"
+                                  @click.native="closeModal('schoolDistrictModal')">
+                        Cancel
+                      </fn1-button>
+                    </exampleModal>
             </div>
 
             <!-- <div class="row data">
@@ -1304,10 +1366,15 @@ import { mapFields }   from 'vuex-map-fields'
 import proj4           from 'proj4'
 import moment          from 'moment'
 import exampleSearch   from '~/components/exampleSearch'
+import exampleModal    from '~/components/exampleModal'
 import footerComponent from '~/components/footerComponent'
 
 export default {
-  components:       {exampleSearch, footerComponent},
+  components: {
+    exampleSearch,
+    exampleModal,
+    footerComponent
+  },
   beforeRouteEnter (to, from, next) {
     next(vm => {
       let addressQueryParam = to.query.address;
@@ -1373,6 +1440,8 @@ export default {
         "admin":          ['School Adminstration'],
         "all":            ['All','Preschool','Elementary School','P-6','P-12','K-8','Middle School','High School','School Adminstration','Continuing Education']
       },
+      schoolDistrictGradeLevel: null,
+      gradeLevelError: false,
       searchIconEncoded:  '<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="search" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-search fa-w-16 fa-3x"><path fill="currentColor" d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z" class=""></path></svg>',
       testRes: null,
       errors: {
@@ -1398,6 +1467,11 @@ export default {
     let cityHallLatLong = { lat: 39.16992723, lng: -86.53680559 },
                { data } = await axios.get(`${process.env.weatherUrl}weather?lat=${cityHallLatLong.lat}&lon=${cityHallLatLong.lng}&units=imperial&appid=${process.env.weatherApiKey}`)
     return { weather: data }
+  },
+  updated() {
+    this.$nextTick(() => {
+      console.dir(this.$refs);
+    });
   },
   mounted() {
     let searchInputElement = document.getElementById('address-search');
@@ -1787,6 +1861,44 @@ export default {
     }
   },
   methods: {
+    openSchoolDistrictModal() {
+      this.$refs.schoolDistrictModal.showModal = true;
+    },
+    confirmModal(modalRef, i) {
+      if(modalRef === 'schoolDistrictModal') {
+        if(this.schoolDistrictGradeLevel) {
+          this.$refs.schoolDistrictModal.showModal = false;
+
+          let stDirection   = this.locationResData.address.street_direction,
+              stName        = this.locationResData.address.street_name,
+              stNameEncode  = stName.replace(/ /g, "+"),
+              stSuffix      = this.locationResData.address.street_suffix_code,
+              houseNumber   = this.locationResData.address.street_number,
+              zip           = this.locationResData.address.zip,
+              gradeID       = this.schoolDistrictGradeLevel.val,
+              gradeLvl      = this.schoolDistrictGradeLevel.lvl;
+
+          if(stSuffix) {
+            var street = `${stDirection}+${stNameEncode}+${stSuffix}`;
+          } else {
+            var street = `${stDirection}+${stNameEncode}`;
+          }
+
+          let preppedSt     = street.toUpperCase(),
+              url           = `http://versalookup.mccsc.edu/elinkrp/Students/BasicTransBoundaryResults.aspx?BasicTB=Y&GradeID=${gradeID}&HHouseNumber=${houseNumber}&HStreet=${preppedSt}&HZip=${zip}&GradeDesc=${gradeLvl}`;
+
+          console.dir(url);
+          return window.open(url, '_blank');
+        } else {
+          this.gradeLevelError = true;
+        }
+      }
+    },
+    closeModal(modalRef, i) {
+      if(modalRef === 'schoolDistrictModal') {
+        this.$refs.schoolDistrictModal.showModal = false;
+      }
+    },
     nearbyParkMarkers(){
       let parksData     = this.parksResData,
           parkMarkers   = [];
@@ -2164,6 +2276,19 @@ export default {
     100%  { background-color: $color-blue-darker }
   }
 
+  .modal-wrapper .modal-container .modal-body {
+    .alert {
+      margin: 0 0 20px 0;
+    }
+
+    .field-group {
+      label {
+        font-weight: $weight-semi-bold;
+        margin: 0 10px 0 0;
+      }
+    }
+  }
+
   .button-group {
     margin: 0 0 20px 0;
 
@@ -2332,6 +2457,11 @@ export default {
           p {
             width: 100%;
             color: lighten($text-color, 5%);
+            margin: 0 0 10px 0;
+
+            &:last-of-type {
+              margin: 0;
+            }
           }
         }
       }
@@ -2623,6 +2753,14 @@ export default {
 
             div {
               margin: 0 10px 0 0;
+              padding: 0 10px 0 0;
+              border-right: 1px solid $color-grey;
+
+              &:last-child {
+                border: none;
+                padding: 0;
+                margin: 0;
+              }
             }
           }
 
