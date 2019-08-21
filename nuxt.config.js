@@ -15,7 +15,7 @@ module.exports = {
     },
   },
   head: {
-    title:          pkg.prettyName,
+    title:          pkg.name,
     meta: [
       { charset:    'utf-8' },
       { name:       'viewport',
@@ -68,7 +68,11 @@ module.exports = {
     { src:          '~/plugins/api-methods' },
     { src:          '~/plugins/design-system' },
     { src:          '~/plugins/filters' },
-    { src:          '~/plugins/google-map', ssr: false}
+    { src:          '~/plugins/google-map', ssr: false},
+    /*
+    ** Note: Change domain & enable for launch.
+    */
+    // { src:          '~/plugins/google-analytics.js', ssr: false }
   ],
 
   loading: { color: '#fff' },

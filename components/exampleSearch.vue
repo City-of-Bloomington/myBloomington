@@ -2,6 +2,7 @@
   <component :is="wrapper" :class="['field-group']">
     <label :for="id" v-if="label">{{ label }}</label>
     <input
+      autocomplete="off"
       :id="id"
       :disabled="disabled"
       :type="type"
