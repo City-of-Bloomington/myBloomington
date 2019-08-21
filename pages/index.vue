@@ -722,7 +722,7 @@
                 <h2>Nearby Schools</h2>
 
                 <div>
-                  <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="graduation-cap" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="svg-inline--fa fa-graduation-cap fa-w-20 fa-3x"><path fill="currentColor" d="M622.34 153.2L343.4 67.5c-15.2-4.67-31.6-4.67-46.79 0L17.66 153.2c-23.54 7.23-23.54 38.36 0 45.59l48.63 14.94c-10.67 13.19-17.23 29.28-17.88 46.9C38.78 266.15 32 276.11 32 288c0 10.78 5.68 19.85 13.86 25.65L20.33 428.53C18.11 438.52 25.71 448 35.94 448h56.11c10.24 0 17.84-9.48 15.62-19.47L82.14 313.65C90.32 307.85 96 298.78 96 288c0-11.57-6.47-21.25-15.66-26.87.76-15.02 8.44-28.3 20.69-36.72L296.6 284.5c9.06 2.78 26.44 6.25 46.79 0l278.95-85.7c23.55-7.24 23.55-38.36 z0-45.6zM352.79 315.09c-28.53 8.76-52.84 3.92-65.59 0l-145.02-44.55L128 384c0 35.35 85.96 64 192 64s192-28.65 192-64l-14.18-113.47-145.03 44.56z" class=""></path></svg>
+                  <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="graduation-cap" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="svg-inline--fa fa-graduation-cap fa-w-20 fa-3x"><path fill="currentColor" d="M622.34 153.2L343.4 67.5c-15.2-4.67-31.6-4.67-46.79 0L17.66 153.2c-23.54 7.23-23.54 38.36 0 45.59l48.63 14.94c-10.67 13.19-17.23 29.28-17.88 46.9C38.78 266.15 32 276.11 32 288c0 10.78 5.68 19.85 13.86 25.65L20.33 428.53C18.11 438.52 25.71 448 35.94 448h56.11c10.24 0 17.84-9.48 15.62-19.47L82.14 313.65C90.32 307.85 96 298.78 96 288c0-11.57-6.47-21.25-15.66-26.87.76-15.02 8.44-28.3 20.69-36.72L296.6 284.5c9.06 2.78 26.44 6.25 46.79 0l278.95-85.7c23.55-7.24 23.55-38.36 0-45.6zM352.79 315.09c-28.53 8.76-52.84 3.92-65.59 0l-145.02-44.55L128 384c0 35.35 85.96 64 192 64s192-28.65 192-64l-14.18-113.47-145.03 44.56z" class=""></path></svg>
 
                   <blockquote>
                     <p>Local <strong>Schools</strong> nearby the requested Address.</p>
@@ -1365,6 +1365,7 @@ import axios           from 'axios'
 import { mapFields }   from 'vuex-map-fields'
 import proj4           from 'proj4'
 import moment          from 'moment'
+import debounce        from 'lodash.debounce'
 import exampleSearch   from '~/components/exampleSearch'
 import exampleModal    from '~/components/exampleModal'
 import footerComponent from '~/components/footerComponent'
@@ -1470,7 +1471,7 @@ export default {
   },
   updated() {
     this.$nextTick(() => {
-      console.dir(this.$refs);
+      // console.dir(this.$refs);
     });
   },
   mounted() {
@@ -1628,50 +1629,33 @@ export default {
     })
   },
   watch: {
-    addressSearchAuto: function (val) {
+    addressSearchAuto: debounce(function(val){
+      console.dir('BOUNCED');
       let regExTest   = /\d+\s+\w+/,
-          addressTest = regExTest.test(val),
-          searchValue = this.addressSearchAuto;
+        addressTest = regExTest.test(val),
+        searchValue = this.addressSearchAuto;
 
       if(searchValue.length > 3 &&
          addressTest &&
          !this.locationResData) {
-
-        console.dir('search has val');
-
         this.getAddress(val)
         .then((res) => {
           this.testRes = res;
           console.dir(res.length);
-          // if(res.length > 1) {
-          //   this.addressResData     = null;
-          //   this.addressResChoices  = res;
-          // } else {
-          //   this.addressResData     = res;
-          //   this.errors.addressRes  = null;
-          //   this.locationLookup();
           console.log(`%c getAutoAddress 👌 `,
                       this.consoleLog.success);
 
         })
         .catch((e)  => {
-          // this.$router.replace({query : { }});
-
-          // this.addressSearch      = null;
-          // this.addressResData     = null;
-          // this.locationResData    = null;
-          // this.errors.addressRes  = e;
           console.log(`%c getAutoAddress 🛑 `,
                       this.consoleLog.error,
                       `\n\n ${e} \n\n`);
         })
-        // console.dir(addressTest);
-        // console.dir(this.addressSearch);
       } else {
         console.dir('search no val');
         this.testRes = null;
       }
-    },
+    }, 500)
   },
   computed: {
     ...mapFields([
