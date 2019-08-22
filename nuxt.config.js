@@ -37,6 +37,11 @@ module.exports = {
     ]
   },
 
+  // server: {
+  //   port: 9090, // default: 3000
+  //   host: 'dhcp-cityhall-101-164.bloomington.in.gov', // default: localhost
+  // },
+
   env: {
     repo:                     pkg.repository.url,
     appName:                  process.env.APP_NAME,
@@ -68,7 +73,7 @@ module.exports = {
     { src:          '~/plugins/api-methods' },
     { src:          '~/plugins/design-system' },
     { src:          '~/plugins/filters' },
-    { src:          '~/plugins/google-map', ssr: false},
+    { src:          '~/plugins/google-map'},
     /*
     ** Note: Change domain & enable for launch.
     */
@@ -87,14 +92,18 @@ module.exports = {
 
   modules: ['@nuxtjs/style-resources'],
 
+  babel: {
+    plugins: ['@babel/plugin-transform-modules-commonjs'],
+  },
+
   build: {
     /*
     ** You can extend webpack config here
     */
+    transpile: [/^vue2-google-maps($|\/)/],
     extend(config, ctx) {
-      transpile: [/^vue2-google-maps($|\/)/];
       if(!ctx.isDev) {
-        config.output.publicPath = `/${process.env.FE_BASE}/_nuxt/`
+        // config.output.publicPath = `/${process.env.FE_BASE}/_nuxt`
       }
     }
   }

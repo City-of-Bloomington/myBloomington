@@ -9,9 +9,11 @@
       :value="value"
       :name="name"
       :class="state"
+      :state="state"
       :placeholder="placeholder"
       @input="onInput($event.target.value)"
       @focus="onFocus($event.target.value)"
+      @blur="onBlur($event.target.value)"
     />
     <button
       :for="id"
@@ -127,7 +129,10 @@ export default {
       this.$emit("input", value)
     },
     onFocus(value) {
-      this.$emit("focus", value)
+      this.$emit("focusd", value)
+    },
+    onBlur(value) {
+      this.$emit("blurd", value)
     },
   },
 }

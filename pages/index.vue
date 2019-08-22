@@ -164,28 +164,29 @@
           <exampleSearch
             v-model="addressSearchAuto"
             :buttonValue="searchIconEncoded"
+            v-on:focusd="sFocus()"
+            v-on:blurd="sBlur()"
             placeholder="Search - eg: 401 N Morton St"
             ref="addressSearch"
             name="address-search"
             id="address-search" />
         </form>
 
-        <ul v-if="autoSuggestRes">
+        <ul v-if="autoSuggestRes && searchHasFocus">
           <template v-if="autoSuggestRes.length > 1">
             <li v-for="a, i in autoSuggestRes"
-                @click="addressChoice(a)">
+                @click.prevent="addressChoice(a)">
               <a href="#">{{ a.streetAddress }}</a>
             </li>
           </template>
 
           <template v-else>
-            <li @click="addressChoice(autoSuggestRes)">
+            <li @click.prevent="addressChoice(autoSuggestRes)">
               <a href="#">{{ autoSuggestRes.streetAddress }}</a>
             </li>
           </template>
         </ul>
       </div>
-
     </template>
 
     <template v-if="locationResData">
@@ -293,41 +294,35 @@
 
         <div class="row">
           <div class="container">
-            <form @submit.stop.prevent="searchSubmit(addressSearch)">
-              <exampleSearch v-model="addressSearch"
-                          :buttonValue="searchIconEncoded"
-                          placeholder="Search Address"
-                          ref="addressSearch"
-                          name="address-search"
-                          id="address-search" />
-            </form>
-            <!-- <div class="form-wrapper">
+            <div class="form-wrapper">
               <form
                 @submit.stop.prevent="searchSubmit(addressSearchAuto)">
                 <exampleSearch
                   v-model="addressSearchAuto"
                   :buttonValue="searchIconEncoded"
+                  v-on:focusd="sFocus()"
+                  v-on:blurd="sBlur()"
                   placeholder="Search - eg: 401 N Morton St"
                   ref="addressSearch"
                   name="address-search"
                   id="address-search" />
               </form>
 
-              <ul v-if="autoSuggestRes">
+              <ul v-if="autoSuggestRes && searchHasFocus">
                 <template v-if="autoSuggestRes.length > 1">
                   <li v-for="a, i in autoSuggestRes"
-                      @click="addressChoice(a)">
+                      @click.prevent="addressChoice(a)">
                     <a href="#">{{ a.streetAddress }}</a>
                   </li>
                 </template>
 
                 <template v-else>
-                  <li @click="addressChoice(autoSuggestRes)">
+                  <li @click.prevent="addressChoice(autoSuggestRes)">
                     <a href="#">{{ autoSuggestRes.streetAddress }}</a>
                   </li>
                 </template>
               </ul>
-            </div> -->
+            </div>
           </div>
         </div>
       </div>
@@ -1405,7 +1400,8 @@ export default {
     next(vm => {
       let addressQueryParam = to.query.address;
       if(addressQueryParam){
-        vm.addressSearch = addressQueryParam;
+        // vm.addressSearch = addressQueryParam;
+        vm.addressSearchAuto = addressQueryParam;
         vm.searchSubmit(addressQueryParam);
       }
     });
@@ -1424,6 +1420,7 @@ export default {
   // },
   data() {
     return {
+      searchHasFocus: false,
       mapMarkerToggle: {
         parks:       true,
         playgrounds: true,
@@ -1661,8 +1658,7 @@ export default {
         searchValue = this.addressSearchAuto;
 
       if(searchValue.length > 3 &&
-         addressTest &&
-         !this.locationResData) {
+         addressTest) {
         this.getAddress(val)
         .then((res) => {
           this.autoSuggestRes = res;
@@ -1870,6 +1866,16 @@ export default {
     }
   },
   methods: {
+    sFocus(){
+      console.dir('YESS WAY');
+      this.searchHasFocus = true;
+    },
+    sBlur() {
+      console.dir('NOO WAY');
+      setTimeout(() => {
+        this.searchHasFocus = false;
+      }, 500);
+    },
     openSchoolDistrictModal() {
       this.$refs.schoolDistrictModal.showModal = true;
     },
@@ -1960,7 +1966,7 @@ export default {
       }
     },
     cityHallDistance() {
-      let points1 = this.latLong,
+      let points1 = this.cityHallLatLong,
           points2 = {lat: this.locationResData.address.latitude, lng: this.locationResData.address.longitude};
       if(this.latLong && this.locationResData.address) {
         this.distanceToCityHall = this.pointsToDistance(points1, points2);
@@ -2098,7 +2104,10 @@ export default {
       })
     },
     addressChoice(address) {
-      this.addressSearch  = address.streetAddress;
+      // console.dir(address);
+      // alert('ok')
+      // this.addressSearch  = address.streetAddress;
+      this.addressSearchAuto  = address.streetAddress;
       this.addressResData = address;
       if(this.addressResData)
         this.locationLookup();
@@ -2155,18 +2164,20 @@ export default {
       })
     },
     locationLookup() {
+      console.dir('got to loc lookup');
       if(this.addressResData.id) {
         this.getLocation(this.addressResData.id)
         .then((res) => {
           this.addressResChoices = null;
 
           this.locationResData   = res;
+          this.$router.push({query : { address: this.locationResData.address.streetAddress}});
+
           this.mapHeight         = this.mapHeightResult;
 
           this.errors.locationRes = null;
-          this.cityHallDistance();
 
-          this.$router.push({query : { address: this.locationResData.address.streetAddress}});
+          this.cityHallDistance();
 
           console.log(`%c getLocation 👌 `,
                       this.consoleLog.success);
@@ -2784,6 +2795,7 @@ export default {
             font-weight: $weight-semi-bold;
             color: $text-color;
             margin: 0 5px 0 0;
+            border-radius: $radius-default;
           }
         }
       }
@@ -2862,9 +2874,11 @@ export default {
             border: 1px solid $color-grey-dark;
             color: $text-color;
             font-size: 18px;
+            border-radius: $radius-default;
           }
 
           ::v-deep button[type=submit] {
+            display: none;
             background-color: $color-green;
             border-color: $color-green;
             margin: 0;
@@ -2909,13 +2923,15 @@ export default {
     width: 100%;
 
     ul {
-      position: relative;
-      top: -1px;
+      position: absolute;
+      top: 40px;
       border: 1px solid $color-grey-dark;
       border-top: none;
       overflow: scroll;
       max-height: 300px;
+      width: 50%;
       background-color: white;
+      box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.10);
       -webkit-border-bottom-right-radius: $radius-default;
       -webkit-border-bottom-left-radius: $radius-default;
       -moz-border-radius-bottomright: $radius-default;
