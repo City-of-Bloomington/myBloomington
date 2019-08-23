@@ -37,11 +37,6 @@ module.exports = {
     ]
   },
 
-  // server: {
-  //   port: 9090, // default: 3000
-  //   host: 'dhcp-cityhall-101-164.bloomington.in.gov', // default: localhost
-  // },
-
   env: {
     repo:                     pkg.repository.url,
     appName:                  process.env.APP_NAME,
