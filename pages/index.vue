@@ -1,5 +1,5 @@
 <template>
-  <div :class="[{'no-location': !locationResData}]">
+  <div :class="[{'no-location': !locationResData || !addressMapped}]">
     <!-- <gmap-street-view-panorama
         style="width: 100%; height: 600px"
         ref="streetViewRef"
@@ -156,7 +156,7 @@
     </GmapMap>
 
 
-    <template v-if="!locationResData">
+    <template v-if="!locationResData || !addressMapped">
       <div class="form-wrapper">
         <form
           @submit.stop.prevent="searchSubmit(addressSearchAuto)"
@@ -189,7 +189,7 @@
       </div>
     </template>
 
-    <template v-if="locationResData">
+    <template v-if="locationResData && addressMapped">
       <div class="overview">
         <div class="row">
           <div class="container">
@@ -494,17 +494,6 @@
                             </fn1-badge>
                           </template>
                         </div>
-
-
-                        <!-- <pre>
-                          {{ wastePickup(locationResData.locations[0].recycle_week, locationResData.locations[0].trash_day) }}
-                        </pre>
- -->
-                        <!-- {{ sanitation.a }}<br><br>
-                        {{ sanitation.b }} -->
-                        <!-- <template v-for="s, i in sanitation">
-                          <template v-if="true">{{ s.a }}<br></template>
-                        </template> -->
                       </td>
                     </tr>
                   </tbody>
@@ -823,61 +812,61 @@
               </table>
 
               <exampleModal
-                      ref="schoolDistrictModal"
-                      title="School District Information">
+                ref="schoolDistrictModal"
+                title="School District Information">
 
-                      <fn1-alert
-                        slot="body"
-                        v-if="gradeLevelError"
-                        variant="warning">
-                        <p>Select a <strong>Grade Level</strong> to continue.</p>
-                      </fn1-alert>
+                <fn1-alert
+                  slot="body"
+                  v-if="gradeLevelError"
+                  variant="warning">
+                  <p>Select a <strong>Grade Level</strong> to continue.</p>
+                </fn1-alert>
 
-                      <p slot="body">Please select a Grade Level.</p>
+                <p slot="body">Please select a Grade Level.</p>
 
-                      <div slot="body" class="field-group">
-                        <label for="schoolDistrictGradeLevel">
-                          Grade Level:
-                        </label>
+                <div slot="body" class="field-group">
+                  <label for="schoolDistrictGradeLevel">
+                    Grade Level:
+                  </label>
 
-                        <select name="schoolDistrictGradeLevel"
-                                id="schoolDistrictGradeLevel"
-                                type="select"
-                                v-model="schoolDistrictGradeLevel">
-                          <option :value="{val: 3, lvl: 'PA'}">PA</option>
-                          <option :value="{val: 1, lvl: 'PP'}">PP</option>
-                          <option :value="{val: 2, lvl: 'PK'}">PK</option>
-                          <option :value="{val: 6, lvl: 'K'}">K</option>
-                          <option :value="{val: 7, lvl: '01'}">01</option>
-                          <option :value="{val: 8, lvl: '02'}">02</option>
-                          <option :value="{val: 9, lvl: '03'}">03</option>
-                          <option :value="{val: 10, lvl: '04'}">04</option>
-                          <option :value="{val: 11, lvl: '05'}">05</option>
-                          <option :value="{val: 12, lvl: '06'}">06</option>
-                          <option :value="{val: 13, lvl: '07'}">07</option>
-                          <option :value="{val: 14, lvl: '08'}">08</option>
-                          <option :value="{val: 15, lvl: '09'}">09</option>
-                          <option :value="{val: 16, lvl: '10'}">10</option>
-                          <option :value="{val: 17, lvl: '11'}">11</option>
-                          <option :value="{val: 18, lvl: '12'}">12</option>
-                          <option :value="{val: 20, lvl: '13'}">13</option>
-                          <option :value="{val: 19, lvl: '99'}">99</option>
-                          <option :value="{val: 23, lvl: 'PW'}">PW</option>
-                        </select>
-                      </div>
+                  <select name="schoolDistrictGradeLevel"
+                          id="schoolDistrictGradeLevel"
+                          type="select"
+                          v-model="schoolDistrictGradeLevel">
+                    <option :value="{val: 3, lvl: 'PA'}">PA</option>
+                    <option :value="{val: 1, lvl: 'PP'}">PP</option>
+                    <option :value="{val: 2, lvl: 'PK'}">PK</option>
+                    <option :value="{val: 6, lvl: 'K'}">K</option>
+                    <option :value="{val: 7, lvl: '01'}">01</option>
+                    <option :value="{val: 8, lvl: '02'}">02</option>
+                    <option :value="{val: 9, lvl: '03'}">03</option>
+                    <option :value="{val: 10, lvl: '04'}">04</option>
+                    <option :value="{val: 11, lvl: '05'}">05</option>
+                    <option :value="{val: 12, lvl: '06'}">06</option>
+                    <option :value="{val: 13, lvl: '07'}">07</option>
+                    <option :value="{val: 14, lvl: '08'}">08</option>
+                    <option :value="{val: 15, lvl: '09'}">09</option>
+                    <option :value="{val: 16, lvl: '10'}">10</option>
+                    <option :value="{val: 17, lvl: '11'}">11</option>
+                    <option :value="{val: 18, lvl: '12'}">12</option>
+                    <option :value="{val: 20, lvl: '13'}">13</option>
+                    <option :value="{val: 19, lvl: '99'}">99</option>
+                    <option :value="{val: 23, lvl: 'PW'}">PW</option>
+                  </select>
+                </div>
 
-                      <fn1-button slot="footer"
-                                  title="Confirm - Remove Service"
-                                  @click.native="confirmModal('schoolDistrictModal')">
-                        Confirm
-                      </fn1-button>
+                <fn1-button slot="footer"
+                            title="Confirm - Remove Service"
+                            @click.native="confirmModal('schoolDistrictModal')">
+                  Confirm
+                </fn1-button>
 
-                      <fn1-button slot="footer"
-                                  title="Cancel - Remove Service"
-                                  @click.native="closeModal('schoolDistrictModal')">
-                        Cancel
-                      </fn1-button>
-                    </exampleModal>
+                <fn1-button slot="footer"
+                            title="Cancel - Remove Service"
+                            @click.native="closeModal('schoolDistrictModal')">
+                  Cancel
+                </fn1-button>
+              </exampleModal>
             </div>
 
             <!-- <div class="row data">
@@ -1376,6 +1365,23 @@
       </div>
       <footerComponent />
     </template>
+
+    <exampleModal
+      ref="addressMappedErrorModal"
+      title="Address Not Mapped">
+
+      <fn1-alert
+        slot="body"
+        variant="warning">
+        <p>We're sorry, this <strong>Address</strong> has not yet been mapped.</p>
+      </fn1-alert>
+
+      <fn1-button slot="footer"
+                  title="Ok"
+                  @click.native="closeModal('addressMappedErrorModal')">
+        Close
+      </fn1-button>
+    </exampleModal>
   </div>
 </template>
 
@@ -1441,6 +1447,7 @@ export default {
       addressSearch:      null,
       addressSearchAuto:  null,
       addressResData:     null,
+      addressMapped:      null,
       addressResChoices:  null,
       locationResData:    null,
       councilDistrict:    null,
@@ -1568,24 +1575,8 @@ export default {
                   `\n\n ${e} \n\n`);
     });
 
-    // if(this.cityHallLatLong) {
-    //   this.getWeather(this.cityHallLatLong.lat, this.cityHallLatLong.lng)
-    //   .then((res) => {
-    //     this.weather = res;
-    //     console.log(`%c getWeather 👌 `,
-    //                 this.consoleLog.success);
-    //   })
-    //   .catch((e)  => {
-    //     console.log(`%c getWeather 🛑 `,
-    //                 this.consoleLog.error,
-    //                 `\n\n ${e} \n\n`);
-    //   });
-    // }
-
-
     this.getCouncilDistrictsGeoJson()
     .then((res) => {
-      console.dir(res);
       this.councilDistrictsGeoJson = res;
       console.log(`%c getCouncilDistrictsGeoJson 👌 `,
                   this.consoleLog.success);
@@ -1595,10 +1586,6 @@ export default {
                   this.consoleLog.error,
                   `\n\n ${e} \n\n`);
     });
-
-    // this.$refs.districtMap.$mapPromise.then((map) => {
-    //   map.data.loadGeoJson(this.councilDistrictsGeoJson)
-    // })
 
     this.getDirectoryUser('mayor')
     .then((res) => {
@@ -1661,7 +1648,6 @@ export default {
         this.getAddress(val)
         .then((res) => {
           this.autoSuggestRes = res;
-          console.dir(res.length);
           console.log(`%c getAutoAddress 👌 `,
                       this.consoleLog.success);
 
@@ -1875,11 +1861,9 @@ export default {
   },
   methods: {
     sFocus(){
-      console.dir('YESS WAY');
       this.searchHasFocus = true;
     },
     sBlur() {
-      console.dir('NOO WAY');
       setTimeout(() => {
         this.searchHasFocus = false;
       }, 500);
@@ -1920,6 +1904,8 @@ export default {
     closeModal(modalRef, i) {
       if(modalRef === 'schoolDistrictModal') {
         this.$refs.schoolDistrictModal.showModal = false;
+      } else if(modalRef == 'addressMappedErrorModal') {
+        this.$refs.addressMappedErrorModal.showModal = false;
       }
     },
     nearbyParkMarkers(){
@@ -2117,8 +2103,21 @@ export default {
       // this.addressSearch  = address.streetAddress;
       this.addressSearchAuto  = address.streetAddress;
       this.addressResData = address;
-      if(this.addressResData)
+      let canWeMapAddress = this.isAddressMapped(address.latitude, address.longitude);
+      if(this.addressResData && canWeMapAddress){
         this.locationLookup();
+      } else {
+        this.addressResData = null;
+        console.dir(this.$refs);
+        this.$refs.addressMappedErrorModal.showModal = true;
+        // alert('Address not mappable')
+
+        if(this.locationResData) {
+          this.addressSearchAuto = this.locationResData.address.streetAddress
+        } else {
+          this.addressSearchAuto = null;
+        }
+      }
     },
     searchSubmit(input) {
       this.addressResChoices  = null;
@@ -2129,32 +2128,45 @@ export default {
       this.addressLookup(input);
       // this.electedRepsLookup(input);
     },
-    electedRepsLookup(address) {
-      this.getElectedReps(address)
-      .then((res) => {
-        console.dir(res);
-        this.electedReps = res;
-        console.log(`%c getElectedReps 👌 `,
-                      this.consoleLog.success);
-      })
-      .catch((e)  => {
-        console.log(`%c getElectedReps 🛑 `,
-                    this.consoleLog.error,
-                    `\n\n ${e} \n\n`);
-      })
+    // electedRepsLookup(address) {
+    //   this.getElectedReps(address)
+    //   .then((res) => {
+    //     console.dir(res);
+    //     this.electedReps = res;
+    //     console.log(`%c getElectedReps 👌 `,
+    //                   this.consoleLog.success);
+    //   })
+    //   .catch((e)  => {
+    //     console.log(`%c getElectedReps 🛑 `,
+    //                 this.consoleLog.error,
+    //                 `\n\n ${e} \n\n`);
+    //   })
+    // },
+    isAddressMapped(lat, lon) {
+      return lat !== null && lon !== null
     },
     addressLookup(address) {
-      this.$router.push({query : { address: address}});
       this.getAddress(address)
       .then((res) => {
-        console.dir(res.length);
-        if(res.length > 1) {
-          this.addressResData     = null;
-          this.addressResChoices  = res;
-        } else {
+        if(this.isAddressMapped(res.latitude, res.longitude)) {
+          this.$router.push({query : { address: address}});
+          this.addressMapped      = true;
           this.addressResData     = res;
           this.errors.addressRes  = null;
           this.locationLookup();
+          console.log(`%c getAddress 👌 `,
+                      this.consoleLog.success);
+        } else {
+          this.$router.replace({query : { }});
+          this.addressSearch      = null;
+          this.addressResData     = null;
+          this.locationResData    = null;
+
+          this.addressMapped      = false;
+          this.latLong            = this.cityHallLatLong;
+          this.mapHeight          = '100%';
+          this.errors.addressRes  = 'This Address has not yet been Mapped.';
+          alert(this.errors.addressRes)
           console.log(`%c getAddress 👌 `,
                       this.consoleLog.success);
         }
@@ -2172,7 +2184,6 @@ export default {
       })
     },
     locationLookup() {
-      console.dir('got to loc lookup');
       if(this.addressResData.id) {
         this.getLocation(this.addressResData.id)
         .then((res) => {
