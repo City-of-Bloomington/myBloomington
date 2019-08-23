@@ -1675,7 +1675,16 @@ export default {
         console.dir('search no val');
         this.autoSuggestRes = null;
       }
-    }, 500)
+    }, 500),
+    $route: function (to, from) {
+      let addressToQueryParam   = to.query.address,
+          addressFromQueryParam = from.query.address;
+
+      if(addressToQueryParam !== addressFromQueryParam){
+        this.addressSearchAuto = addressToQueryParam;
+        this.searchSubmit(addressToQueryParam);
+      }
+    }
   },
   computed: {
     ...mapFields([
