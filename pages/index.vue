@@ -253,7 +253,7 @@
             </div>
 
             <div>
-              <fn1-badge :class="[{'inside': locationResData.address.jurisdiction_name === 'Bloomington', 'outside': locationResData.address.jurisdiction_name != 'Bloomington'}]">
+              <fn1-badge :class="['jurisdiction-check', {'inside': locationResData.address.jurisdiction_name === 'Bloomington', 'outside': locationResData.address.jurisdiction_name != 'Bloomington'}]">
                 <template v-if="locationResData.address.jurisdiction_name === 'Bloomington'">
                   <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-check fa-w-16 fa-3x"><path fill="currentColor" d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" class=""></path></svg>
                   Inside
@@ -1367,18 +1367,47 @@
     </template>
 
     <exampleModal
+      id="address-mapped-error-modal"
       ref="addressMappedErrorModal"
       title="Address Not Mapped">
 
       <fn1-alert
         slot="body"
         variant="warning">
-        <p>We're sorry, this <strong>Address</strong> has not yet been mapped.</p>
+        <p><strong>We Apologize -</strong></p>
+
+        <template v-if="errors.addressNotMapped != null">
+          <p><strong>Address:</strong></p>
+          <blockquote>
+            {{ errors.addressNotMapped.streetAddress }}<br>
+            {{ errors.addressNotMapped.city }}
+            {{ errors.addressNotMapped.state }},
+            {{ errors.addressNotMapped.zip }}
+
+            <fn1-badge :class="['jurisdiction-check', {'inside': errors.addressNotMapped.jurisdiction_name === 'Bloomington', 'outside': errors.addressNotMapped.jurisdiction_name != 'Bloomington'}]">
+              <template v-if="errors.addressNotMapped.jurisdiction_name === 'Bloomington'">
+                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-check fa-w-16 fa-3x"><path fill="currentColor" d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" class=""></path></svg>
+                Inside
+              </template>
+
+              <template v-else>
+                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512" class="svg-inline--fa fa-times fa-w-11 fa-3x"><path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" class=""></path></svg>
+                Outside
+              </template>
+              Bloomington City Limits
+            </fn1-badge>
+          </blockquote>
+        </template>
+
+        <p>Is in our database, but has yet to be mapped.</p>
+        <p>We are actively updating records, so check back soon.</p>
       </fn1-alert>
 
-      <fn1-button slot="footer"
-                  title="Ok"
-                  @click.native="closeModal('addressMappedErrorModal')">
+      <fn1-button
+        slot="footer"
+        title="Ok"
+        ref="addressMappedErrorModalCloseBtn"
+        @click.native="closeModal('addressMappedErrorModal')">
         Close
       </fn1-button>
     </exampleModal>
@@ -1475,7 +1504,8 @@ export default {
       autoSuggestRes: null,
       errors: {
         addressRes:       null,
-        locationRes:      null
+        locationRes:      null,
+        addressNotMapped: null,
       }
     }
   },
@@ -1638,7 +1668,6 @@ export default {
   },
   watch: {
     addressSearchAuto: debounce(function(val){
-      console.dir('BOUNCED');
       let regExTest   = /\d+\s+\w+/,
         addressTest = regExTest.test(val),
         searchValue = this.addressSearchAuto;
@@ -1906,6 +1935,7 @@ export default {
         this.$refs.schoolDistrictModal.showModal = false;
       } else if(modalRef == 'addressMappedErrorModal') {
         this.$refs.addressMappedErrorModal.showModal = false;
+        this.errors.addressNotMapped = null;
       }
     },
     nearbyParkMarkers(){
@@ -2098,9 +2128,6 @@ export default {
       })
     },
     addressChoice(address) {
-      // console.dir(address);
-      // alert('ok')
-      // this.addressSearch  = address.streetAddress;
       this.addressSearchAuto  = address.streetAddress;
       this.addressResData = address;
       let canWeMapAddress = this.isAddressMapped(address.latitude, address.longitude);
@@ -2108,9 +2135,12 @@ export default {
         this.locationLookup();
       } else {
         this.addressResData = null;
-        console.dir(this.$refs);
         this.$refs.addressMappedErrorModal.showModal = true;
-        // alert('Address not mappable')
+
+        this.$nextTick(() => {
+          this.$refs.addressMappedErrorModalCloseBtn.$el.focus();
+          this.errors.addressNotMapped = address;
+        });
 
         if(this.locationResData) {
           this.addressSearchAuto = this.locationResData.address.streetAddress
@@ -2317,6 +2347,38 @@ export default {
     100%  { background-color: $color-blue-darker }
   }
 
+  #address-mapped-error-modal {
+    ::v-deep .modal-wrapper {
+      .modal-container {
+        width: 500px;
+
+        .modal-body {
+          max-height: 100%;
+
+          .badge {
+            margin: 5px 0 0 0;
+          }
+
+          .alert {
+            margin: 0;
+          }
+
+          p, blockquote {
+            font-weight: $weight-semi-bold;
+          }
+
+          blockquote {
+            color: $text-color;
+            border-left: 3px solid shade($color-ucla-gold-lighter, 40%);
+            margin: 0px 0px 15px 10px;
+            padding: 0 0 0 15px;
+            font-style: italic;
+          }
+        }
+      }
+    }
+  }
+
   .modal-wrapper .modal-container .modal-body {
     .alert {
       margin: 0 0 20px 0;
@@ -2350,8 +2412,24 @@ export default {
     }
   }
 
+
   .badge {
     padding: 2px 8px 0 8px;
+
+    &.jurisdiction-check {
+      svg {
+        width: 15px;
+        margin: 0 10px 0 0;
+      }
+
+      &.inside {
+        background-color: $color-green;
+      }
+
+      &.outside {
+        background-color: $color-vermilion;
+      }
+    }
   }
 
   ul {
@@ -2753,21 +2831,6 @@ export default {
 
     h4 {
       margin: 0 0 15px 0;
-    }
-
-    .badge {
-      svg {
-        width: 15px;
-        margin: 0 10px 0 0;
-      }
-
-      &.inside {
-        background-color: $color-green;
-      }
-
-      &.outside {
-        background-color: $color-vermilion;
-      }
     }
 
     .row {
