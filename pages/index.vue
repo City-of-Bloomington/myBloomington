@@ -1,30 +1,195 @@
 <template>
   <div :class="[{'no-location': !locationResData || !addressMapped}]">
-    <!-- <gmap-street-view-panorama
-        style="width: 100%; height: 600px"
-        ref="streetViewRef"
-        :position="latLong"
-        :pov="{heading: 0, pitch: 0}"
-        :zoom="0"
+    <template v-if="!locationResData || !addressMapped">
+      <div class="container">
+        <h1>Welcome,</h1>
+        <h2><span class="hi-lite">myBloomington</span> provides information related to a given Street Address.</h2>
+        <h3><strong>Enter an Address</strong> to learn more:</h3>
+
+        <div class="form-wrapper">
+          <form
+            @submit.stop.prevent="searchSubmit(addressSearchAuto)">
+            <exampleSearch
+              v-model="addressSearchAuto"
+              :buttonValue="searchIconEncoded"
+              v-on:focusd="sFocus()"
+              v-on:blurd="sBlur()"
+              placeholder="Search an Address - eg: 401 N Morton St"
+              ref="addressSearch"
+              name="address-search"
+              id="address-search" />
+          </form>
+
+          <ul v-if="autoSuggestRes && searchHasFocus">
+            <template v-if="autoSuggestRes.length > 1">
+              <li v-for="a, i in autoSuggestRes"
+                  @click.prevent="addressChoice(a)">
+                <a href="#">
+                  {{ a.streetAddress }}
+
+                  <fn1-badge :class="['jurisdiction-check', {'inside': a.jurisdiction_name === 'Bloomington', 'outside': a.jurisdiction_name != 'Bloomington'}]">
+                    <template v-if="a.jurisdiction_name === 'Bloomington'">
+                      <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-check fa-w-16 fa-3x"><path fill="currentColor" d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" class=""></path></svg>
+                      Inside
+                    </template>
+
+                    <template v-else>
+                      <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512" class="svg-inline--fa fa-times fa-w-11 fa-3x"><path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" class=""></path></svg>
+                      Outside
+                    </template>
+                    Bloomington City Limits
+                  </fn1-badge>
+                </a>
+              </li>
+            </template>
+
+            <template v-else>
+              <li @click.prevent="addressChoice(autoSuggestRes)">
+                <a href="#">
+                  {{ autoSuggestRes.streetAddress }}
+                  <fn1-badge :class="['jurisdiction-check', {'inside': autoSuggestRes.jurisdiction_name === 'Bloomington', 'outside': autoSuggestRes.jurisdiction_name != 'Bloomington'}]">
+                    <template v-if="autoSuggestRes.jurisdiction_name === 'Bloomington'">
+                      <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-check fa-w-16 fa-3x"><path fill="currentColor" d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" class=""></path></svg>
+                      Inside
+                    </template>
+
+                    <template v-else>
+                      <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512" class="svg-inline--fa fa-times fa-w-11 fa-3x"><path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" class=""></path></svg>
+                      Outside
+                    </template>
+                    Bloomington City Limits
+                  </fn1-badge>
+                </a>
+              </li>
+            </template>
+          </ul>
+        </div>
+
+        <div class="disclaimer">
+          <p>&#9426; {{ currentYear }} - {{ cityName }}</p>
+        </div>
+
+        <div class="map-container-wrapper">
+          <svg id="map-shape" xmlns="http://www.w3.org/2000/svg" width="650" height="705" viewBox="0 0 650 705">
+            <path id="path-fill" d="M655.255,51.46305a146.64783,146.64783,0,0,0-243.52691,110.089l-.483,36.59674a88.5,88.5,0,0,1-88.5,88.5h-79a88.5,88.5,0,0,0-88.5,88.5c0,19.56328,7.66667,32,16.375,52.3125l2.12827,4.4403a192.72059,192.72059,0,0,1,19.49673,84.7472c0,106.8671-86.6329,193.5-193.5,193.5V-.93848H652.25048V48.89573Z" fill="#1e5aae"/>
+            <path id="path-stroke" d="M652.25048,48.89573l3.00448,2.56732a146.64783,146.64783,0,0,0-243.52691,110.089l-.483,36.59674a88.5,88.5,0,0,1-88.5,88.5h-79a88.5,88.5,0,0,0-88.5,88.5c0,19.56328,7.66667,32,16.375,52.3125l2.12827,4.4403a192.72059,192.72059,0,0,1,19.49673,84.7472c0,106.8671-86.6329,193.5-193.5,193.5" fill="none" stroke="" stroke-miterlimit="" stroke-width=""/>
+          </svg>
+
+
+          <GmapMap
+            :center="latLong"
+            :zoom="13"
+            ref="placeholderMap"
+            map-type-id="roadmap"
+            :style="`width: 650px; height: 705px;`"
+            :options="{
+              zoomControl:        false,
+              mapTypeControl:     false,
+              scaleControl:       false,
+              streetViewControl:  false,
+              rotateControl:      false,
+              fullscreenControl:  false,
+              disableDefaultUi:   false,
+              draggable:          false,
+              styles: [
+                {
+                  featureType:    'poi',
+                  stylers: [
+                    {
+                      visibility: 'off'
+                    }
+                  ]
+                },
+                {
+                  featureType:    'poi.medical',
+                  stylers: [
+                    {
+                      visibility: 'off'
+                    }
+                  ]
+                },
+                {
+                  featureType:    'poi.government',
+                  stylers: [
+                    {
+                      visibility: 'off'
+                    }
+                  ]
+                }
+              ]
+            }">
+
+            <GmapPolygon
+              v-if="bloomingtonBoundaryPaths"
+              :paths="bloomingtonBoundaryPaths"
+              :options="{
+                strokeColor:    'rgb(30, 90, 174)',
+                strokeOpacity:  0.8,
+                strokeWeight:   2,
+                fillColor:      'rgb(30, 90, 174)',
+                fillOpacity:    0.15
+              }"
+            />
+          </GmapMap>
+        </div>
+      </div>
+    </template>
+
+    <template v-if="locationResData && addressMapped">
+      <!-- <gmap-street-view-panorama
+          style="width: 100%; height: 600px"
+          ref="streetViewRef"
+          :position="latLong"
+          :pov="{heading: 0, pitch: 0}"
+          :zoom="0"
+          :options="{
+            zoomControl:        false,
+            mapTypeControl:     false,
+            scaleControl:       false,
+            streetViewControl:  false,
+            rotateControl:      false,
+            fullscreenControl:  false,
+            disableDefaultUi:   true,
+            draggable:          false,
+            styles: [
+              {
+                featureType:    'landscape',
+                stylers: [
+                  {
+                    color:      '#f2f2f2',
+                    visibility: 'on'
+                  }
+                ]
+              },
+              {
+                featureType:    'poi',
+                stylers: [
+                  {
+                    visibility: 'off'
+                  }
+                ]
+              }
+            ]
+          }"
+        >
+      </gmap-street-view-panorama> -->
+
+      <GmapMap
+        :center="latLong"
+        :zoom="zoom"
+        ref="defaultMap"
+        map-type-id="roadmap"
+        :style="`width: 100vw; height: ${mapHeight};`"
         :options="{
-          zoomControl:        false,
-          mapTypeControl:     false,
-          scaleControl:       false,
+          zoomControl:        true,
+          mapTypeControl:     true,
+          scaleControl:       true,
           streetViewControl:  false,
           rotateControl:      false,
           fullscreenControl:  false,
           disableDefaultUi:   true,
-          draggable:          false,
+          draggable:          true,
           styles: [
-            {
-              featureType:    'landscape',
-              stylers: [
-                {
-                  color:      '#f2f2f2',
-                  visibility: 'on'
-                }
-              ]
-            },
             {
               featureType:    'poi',
               stylers: [
@@ -32,164 +197,100 @@
                   visibility: 'off'
                 }
               ]
+            },
+            {
+              featureType:    'poi.medical',
+              stylers: [
+                {
+                  visibility: 'on'
+                }
+              ]
+            },
+            {
+              featureType:    'poi.government',
+              stylers: [
+                {
+                  visibility: 'on'
+                }
+              ]
             }
           ]
-        }"
-      >
-    </gmap-street-view-panorama> -->
+        }">
 
-    <GmapMap
-      :center="latLong"
-      :zoom="zoom"
-      ref="defaultMap"
-      map-type-id="roadmap"
-      :style="`width: 100vw; height: ${mapHeight};`"
-      :options="{
-        zoomControl:        true,
-        mapTypeControl:     true,
-        scaleControl:       true,
-        streetViewControl:  false,
-        rotateControl:      false,
-        fullscreenControl:  false,
-        disableDefaultUi:   true,
-        draggable:          true,
-        styles: [
-          {
-            featureType:    'poi',
-            stylers: [
-              {
-                visibility: 'off'
-              }
-            ]
-          },
-          {
-            featureType:    'poi.medical',
-            stylers: [
-              {
-                visibility: 'on'
-              }
-            ]
-          },
-          {
-            featureType:    'poi.government',
-            stylers: [
-              {
-                visibility: 'on'
-              }
-            ]
-          }
-        ]
-      }">
+        <GmapPolygon
+          v-if="bloomingtonBoundaryPaths"
+          :paths="bloomingtonBoundaryPaths"
+          :options="{
+            strokeColor:    'rgb(30, 90, 174)',
+            strokeOpacity:  0.8,
+            strokeWeight:   2,
+            fillColor:      'rgb(30, 90, 174)',
+            fillOpacity:    0.15
+          }"
+        />
 
-      <GmapPolygon
-        v-if="bloomingtonBoundaryPaths"
-        :paths="bloomingtonBoundaryPaths"
-        :options="{
-          strokeColor:    'rgb(30, 90, 174)',
-          strokeOpacity:  0.8,
-          strokeWeight:   2,
-          fillColor:      'rgb(30, 90, 174)',
-          fillOpacity:    0.15
-        }"
-      />
+        <GmapMarker
+          :position="latLong"
+          :clickable="false"
+          :draggable="false"
+        />
 
-      <GmapMarker
-        :position="latLong"
-        :clickable="false"
-        :draggable="false"
-      />
-
-      <GmapCluster
-        :minimumClusterSize="2">
-        <template
-          v-for="p, i in nearbyParkMarkers()"
-          v-if="mapMarkerToggle.parks">
-          <GmapMarker
-            :animation="2"
-            :label="{text: `${p.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: '#337536', fontWeight: '600'}"
-            :icon="{url: 'marker-park.svg', labelOrigin: {x: 28, y: 85}}"
-            :position="{lat: Number(p.lat), lng: Number(p.lon)}"
-            :clickable="false"
-            :draggable="false"
-          />
-        </template>
-
-        <template
-          v-for="s, i in nearbySchoolMarkers()"
-          v-if="mapMarkerToggle.schools">
-          <GmapMarker
-            :animation="2"
-            :label="{text: `${s.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: '#990000', fontWeight: '600'}"
-            :icon="{url: 'marker-school.svg', labelOrigin: {x: 28, y: 85}}"
-            :position="{lat: Number(s.lat), lng: Number(s.lon)}"
-            :clickable="false"
-            :draggable="false"
-          />
-        </template>
-
-        <template
-          v-for="p, i in nearbyPlaygroundMarkers()"
-          v-if="mapMarkerToggle.playgrounds">
-          <GmapMarker
-            :animation="2"
-            :label="{text: `${p.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: '#1e5aae', fontWeight: '600'}"
-            :icon="{url: 'marker-playground.svg', labelOrigin: {x: 28, y: 85}}"
-            :position="{lat: Number(p.lat), lng: Number(p.lon)}"
-            :clickable="false"
-            :draggable="false"
-          />
-        </template>
-
-        <template
-          v-for="s, i in nearbySafePlaceMarkers()"
-          v-if="mapMarkerToggle.safePlaces">
-          <GmapMarker
-            :animation="2"
-            :label="{text: `${s.gsx$name.$t}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: '#212121', fontWeight: '600'}"
-            :icon="{url: 'marker-safe-place.svg', labelOrigin: {x: 28, y: 85}}"
-            :position="{lat: Number(s.gsx$lat.$t), lng: Number(s.gsx$lon.$t)}"
-            :clickable="false"
-            :draggable="false"
-          />
-        </template>
-      </GmapCluster>
-    </GmapMap>
-
-
-    <template v-if="!locationResData || !addressMapped">
-      <div class="form-wrapper">
-        <form
-          @submit.stop.prevent="searchSubmit(addressSearchAuto)"
-          id="no-location-search">
-          <exampleSearch
-            v-model="addressSearchAuto"
-            :buttonValue="searchIconEncoded"
-            v-on:focusd="sFocus()"
-            v-on:blurd="sBlur()"
-            placeholder="Search - eg: 401 N Morton St"
-            ref="addressSearch"
-            name="address-search"
-            id="address-search" />
-        </form>
-
-        <ul v-if="autoSuggestRes && searchHasFocus">
-          <template v-if="autoSuggestRes.length > 1">
-            <li v-for="a, i in autoSuggestRes"
-                @click.prevent="addressChoice(a)">
-              <a href="#">{{ a.streetAddress }}</a>
-            </li>
+        <GmapCluster
+          :minimumClusterSize="2">
+          <template
+            v-for="p, i in nearbyParkMarkers()"
+            v-if="mapMarkerToggle.parks">
+            <GmapMarker
+              :animation="2"
+              :label="{text: `${p.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: '#337536', fontWeight: '600'}"
+              :icon="{url: 'marker-park.svg', labelOrigin: {x: 28, y: 85}}"
+              :position="{lat: Number(p.lat), lng: Number(p.lon)}"
+              :clickable="false"
+              :draggable="false"
+            />
           </template>
 
-          <template v-else>
-            <li @click.prevent="addressChoice(autoSuggestRes)">
-              <a href="#">{{ autoSuggestRes.streetAddress }}</a>
-            </li>
+          <template
+            v-for="s, i in nearbySchoolMarkers()"
+            v-if="mapMarkerToggle.schools">
+            <GmapMarker
+              :animation="2"
+              :label="{text: `${s.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: '#990000', fontWeight: '600'}"
+              :icon="{url: 'marker-school.svg', labelOrigin: {x: 28, y: 85}}"
+              :position="{lat: Number(s.lat), lng: Number(s.lon)}"
+              :clickable="false"
+              :draggable="false"
+            />
           </template>
-        </ul>
-      </div>
-    </template>
 
-    <template v-if="locationResData && addressMapped">
+          <template
+            v-for="p, i in nearbyPlaygroundMarkers()"
+            v-if="mapMarkerToggle.playgrounds">
+            <GmapMarker
+              :animation="2"
+              :label="{text: `${p.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: '#1e5aae', fontWeight: '600'}"
+              :icon="{url: 'marker-playground.svg', labelOrigin: {x: 28, y: 85}}"
+              :position="{lat: Number(p.lat), lng: Number(p.lon)}"
+              :clickable="false"
+              :draggable="false"
+            />
+          </template>
+
+          <template
+            v-for="s, i in nearbySafePlaceMarkers()"
+            v-if="mapMarkerToggle.safePlaces">
+            <GmapMarker
+              :animation="2"
+              :label="{text: `${s.gsx$name.$t}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: '#212121', fontWeight: '600'}"
+              :icon="{url: 'marker-safe-place.svg', labelOrigin: {x: 28, y: 85}}"
+              :position="{lat: Number(s.gsx$lat.$t), lng: Number(s.gsx$lon.$t)}"
+              :clickable="false"
+              :draggable="false"
+            />
+          </template>
+        </GmapCluster>
+      </GmapMap>
+
       <div class="overview">
         <div class="row">
           <div class="container">
@@ -312,13 +413,43 @@
                 <template v-if="autoSuggestRes.length > 1">
                   <li v-for="a, i in autoSuggestRes"
                       @click.prevent="addressChoice(a)">
-                    <a href="#">{{ a.streetAddress }}</a>
+                    <a href="#">
+                      {{ a.streetAddress }}
+
+                      <fn1-badge :class="['jurisdiction-check', {'inside': a.jurisdiction_name === 'Bloomington', 'outside': a.jurisdiction_name != 'Bloomington'}]">
+                        <template v-if="a.jurisdiction_name === 'Bloomington'">
+                          <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-check fa-w-16 fa-3x"><path fill="currentColor" d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" class=""></path></svg>
+                          Inside
+                        </template>
+
+                        <template v-else>
+                          <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512" class="svg-inline--fa fa-times fa-w-11 fa-3x"><path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" class=""></path></svg>
+                          Outside
+                        </template>
+                        Bloomington City Limits
+                      </fn1-badge>
+                    </a>
                   </li>
                 </template>
 
                 <template v-else>
                   <li @click.prevent="addressChoice(autoSuggestRes)">
-                    <a href="#">{{ autoSuggestRes.streetAddress }}</a>
+                    <a href="#">
+                      {{ autoSuggestRes.streetAddress }}
+
+                      <fn1-badge :class="['jurisdiction-check', {'inside': autoSuggestRes.jurisdiction_name === 'Bloomington', 'outside': autoSuggestRes.jurisdiction_name != 'Bloomington'}]">
+                        <template v-if="autoSuggestRes.jurisdiction_name === 'Bloomington'">
+                          <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-check fa-w-16 fa-3x"><path fill="currentColor" d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" class=""></path></svg>
+                          Inside
+                        </template>
+
+                        <template v-else>
+                          <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512" class="svg-inline--fa fa-times fa-w-11 fa-3x"><path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" class=""></path></svg>
+                          Outside
+                        </template>
+                        Bloomington City Limits
+                      </fn1-badge>
+                    </a>
                   </li>
                 </template>
               </ul>
@@ -1440,20 +1571,9 @@ export default {
       }
     });
   },
-  // beforeRouteUpdate (to, from, next) {
-  //   let addressQueryParam   = to.query.address,
-  //     addressFromQueryParam = from.query.address;
-
-  //     if(addressQueryParam != addressFromQueryParam){
-  //       console.dir('changed');
-  //       // this.addressSearch = addressQueryParam;
-  //       // this.searchSubmit(addressQueryParam);
-  //     }
-
-  //   next();
-  // },
   data() {
     return {
+      cityName:       process.env.cityName,
       searchHasFocus: false,
       mapMarkerToggle: {
         parks:       true,
@@ -1527,21 +1647,17 @@ export default {
                { data } = await axios.get(`${process.env.weatherUrl}weather?lat=${cityHallLatLong.lat}&lon=${cityHallLatLong.lng}&units=imperial&appid=${process.env.weatherApiKey}`)
     return { weather: data }
   },
-  updated() {
-    this.$nextTick(() => {
-      // console.dir(this.$refs);
-    });
-  },
+  updated() {},
   mounted() {
     let searchInputElement = document.getElementById('address-search');
     if(searchInputElement)
       searchInputElement.focus();
 
-    if(!this.locationResData) {
-      this.$refs.defaultMap.$mapPromise
-      .then(() => this.$refs.defaultMap.panBy(0,50));
-      this.mapHeight = this.mapHeightDefault;
-    }
+    // if(!this.locationResData) {
+    //   this.$refs.defaultMap.$mapPromise
+    //   .then(() => this.$refs.defaultMap.panBy(0,50));
+    //   this.mapHeight = this.mapHeightDefault;
+    // }
 
     axios.get(`https://bloomington.in.gov/geoserver/publicgis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=publicgis:BloomingtonMunicipalBoundary&maxFeatures=50&outputFormat=application%2Fjson`)
     .then((res) => {
@@ -1708,6 +1824,9 @@ export default {
       'sanitation',
       'contacts'
     ]),
+    currentYear() {
+      return new Date().getFullYear();
+    },
     districtPaths() {
       let lngLat  = [],
         geoCoords = [];
@@ -2330,21 +2449,21 @@ export default {
 
 <style lang="scss" scoped>
   @-webkit-keyframes solidColor {
-    0%    { background-color: $color-blue-darker }
-    50%   { background-color: $color-blue; }
-    100%  { background-color: $color-blue-darker }
+    0%    { background-color: $color-blue-dark }
+    50%   { background-color: $color-blue-light; }
+    100%  { background-color: $color-blue-dark }
   }
 
   @-moz-keyframes solidColor {
-    0%    { background-color: $color-blue-darker }
-    50%   { background-color: $color-blue; }
-    100%  { background-color: $color-blue-darker }
+    0%    { background-color: $color-blue-dark }
+    50%   { background-color: $color-blue-light; }
+    100%  { background-color: $color-blue-dark }
   }
 
   @keyframes solidColor {
-    0%    { background-color: $color-blue-darker }
-    50%   { background-color: $color-blue; }
-    100%  { background-color: $color-blue-darker }
+    0%    { background-color: $color-blue-dark }
+    50%   { background-color: $color-blue-light; }
+    100%  { background-color: $color-blue-dark }
   }
 
   #address-mapped-error-modal {
@@ -2935,44 +3054,6 @@ export default {
           font-size: 22px;
           letter-spacing: 1px;
         }
-
-        .form-wrapper {
-          position: relative;
-          padding: 0;
-          border: none;
-          background-color: transparent;
-        }
-
-        form {
-          z-index: 1;
-          width: 100%;
-
-          label {
-            @include visuallyHidden;
-          }
-
-          ::v-deep input {
-            box-shadow: none;
-            border: 1px solid $color-grey-dark;
-            color: $text-color;
-            font-size: 18px;
-            border-radius: $radius-default;
-          }
-
-          ::v-deep button[type=submit] {
-            display: none;
-            background-color: $color-green;
-            border-color: $color-green;
-            margin: 0;
-
-            svg {}
-
-            &:hover,
-            &:focus {
-              background-color: darken($color-green, 5%);
-            }
-          }
-        }
       }
     }
 
@@ -2989,20 +3070,179 @@ export default {
   .no-location {
     position: relative;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-wrap: wrap;
+    background-color: $color-blue;
+    height: calc(100vh - 89px); // 89 = header height
+    padding: 100px 0 0 0;
+
+    // background-color: rgba(255, 0, 0, 0);
+    // background-image: -webkit-linear-gradient(rgba(255, 0, 0, 0), rgba(255, 0, 0, 0.5));
+    // background-image: linear-gradient(rgba(255, 0, 0, 0), rgba(255, 0, 0, 0.5));
+    // -webkit-animation-duration: 7s;
+    // -moz-animation-duration: 7s;
+    // animation-duration: 7s;
+    // -webkit-animation-iteration-count: infinite;
+    // -moz-animation-iteration-count: infinite;
+    // animation-iteration-count: infinite;
+    // -webkit-animation-name: solidColor;
+    // -moz-animation-name: solidColor;
+    // animation-name: solidColor;
+    // background-blend-mode: multiply;
+    // background-repeat: no-repeat;
+    // background-attachment: fixed;
+
+
+    .container {
+      z-index: 100;
+    }
+
+    h1, h2, h3, p {
+      color: white;
+    }
+
+    h1, h2 {
+
+    }
+
+    h1 {
+      font-size: 80px;
+      font-weight: 600;
+      margin: 0 0 30px 0;
+    }
+
+    h2 {
+      line-height: 55px;
+      font-weight: 500;
+      font-style: italic;
+      margin: 0 0 15px 0;
+
+      .hi-lite {
+        z-index: 1;
+        position: relative;
+        background-color: white;
+        color: $color-blue;
+        font-weight: 600;
+        padding: 5px 15px;
+      }
+    }
+
+    .disclaimer {
+      position: absolute;
+      bottom: 20px;
+
+      p {
+        font-weight: $weight-semi-bold;
+        color: rgba(255, 255, 255, 0.6);
+      }
+    }
+
+    .map-container-wrapper {
+      z-index: 0;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 650px;
+      height: 705px;
+      background-color: white;
+      overflow: hidden;
+
+      svg {
+        z-index: 1;
+        position: absolute;
+        content: '';
+        width: 650px;
+        height: 705px;
+
+        #path-stroke {
+          fill: none;
+          // stroke: $color-blue-darker;
+          stroke: white;
+          stroke-width: 10px;
+          // stroke-dasharray: 50;
+          // stroke-dashoffset: 150;
+          // animation-fill-mode: forwards;
+          // animation: move 1s infinite;
+
+          // @keyframes move {
+          //   0% {
+          //     stroke-dashoffset: 0;
+          //   }
+          //   100% {
+          //     stroke-dashoffset: 150;
+          //   }
+          // }
+        }
+      }
+
+      // &:before {
+      //   z-index: 1;
+      //   position: absolute;
+      //   content: '';
+      //   width: 650px;
+      //   height: 715px;
+      //   bottom: -5px;
+      //   background-image: url("data:image/svg+xml,%3Csvg id='map-shape' xmlns='http://www.w3.org/2000/svg' width='650' height='710' viewBox='0 0 650 710'%3E%3Cpath id='path-fill' d='M655.255,51.8579a146.64783,146.64783,0,0,0-243.52691,110.089l-.483,36.59674a88.5,88.5,0,0,1-88.5,88.5h-79a88.5,88.5,0,0,0-88.5,88.5c0,19.56328,7.66667,32,16.375,52.3125l2.12827,4.4403a192.72056,192.72056,0,0,1,19.49673,84.7472c0,106.86709-86.6329,193.5-193.5,193.5V-.54364H652.25048V49.29058Z' fill='%231e5aae'/%3E%3Cpath id='path-stroke' d='M652.25048,49.29058,655.255,51.8579a146.64783,146.64783,0,0,0-243.52691,110.089l-.483,36.59674a88.5,88.5,0,0,1-88.5,88.5h-79a88.5,88.5,0,0,0-88.5,88.5c0,19.56328,7.66667,32,16.375,52.3125l2.12827,4.4403a192.72056,192.72056,0,0,1,19.49673,84.7472c0,106.86709-86.6329,193.5-193.5,193.5' fill='none' stroke='%23e2299b' stroke-miterlimit='10' stroke-width='10'/%3E%3C/svg%3E");
+      // }
+    }
+
+    .form-wrapper {
+      margin: 15px 0 0 0;
+
+      form {
+        ::v-deep input {
+          padding: 10px 20px;
+          font-size: 30px;
+        }
+      }
+
+      ul {
+        z-index: 100;
+        position: relative;
+        top: 0;
+        width: 100%;
+      }
+    }
   }
 
   .form-wrapper {
-    position: absolute;
+    position: relative;
     top: 0;
     z-index: 1;
-    border-top: 1px solid $color-grey-dark;
-    border-bottom: 1px solid $color-grey-dark;
-    background-color: rgba($color-grey-light, 0.75);
-    padding: 20px;
-    // height: 100%;
     width: 100%;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+
+    form {
+      z-index: 1;
+      width: 100%;
+
+      label {
+        @include visuallyHidden;
+      }
+
+      ::v-deep input {
+        box-shadow: none;
+        border: 1px solid $color-grey-dark;
+        color: $text-color;
+        font-size: 18px;
+        border-radius: $radius-default;
+      }
+
+      ::v-deep button[type=submit] {
+        display: none;
+        background-color: $color-green;
+        border-color: $color-green;
+        margin: 0;
+
+        svg {}
+
+        &:hover,
+        &:focus {
+          background-color: darken($color-green, 5%);
+        }
+      }
+    }
 
     ul {
       position: absolute;
@@ -3011,7 +3251,7 @@ export default {
       border-top: none;
       overflow: scroll;
       max-height: 300px;
-      width: 50%;
+      width: 100%;
       background-color: white;
       box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.10);
       -webkit-border-bottom-right-radius: $radius-default;
@@ -3022,10 +3262,24 @@ export default {
       border-bottom-left-radius: $radius-default;
 
       li {
+        display: flex;
         padding: 15px 20px;
         margin: 0;
         cursor: pointer;
         color: $text-color;
+
+        a {
+          color: $text-color;
+          font-weight: $weight-semi-bold;
+          text-decoration: none;
+          width: 100%;
+          display: flex;
+          align-items: center;
+        }
+
+        .badge {
+          margin-left: auto;
+        }
 
         &:hover {
           background-color: rgba($color-cloud, 0.5);
@@ -3041,40 +3295,40 @@ export default {
       }
     }
 
-    #no-location-search {
-      // position: absolute;
-      width: 100%;
+    // #no-location-search {
+    //   // position: absolute;
+    //   width: 100%;
 
-      label {
-        @include visuallyHidden;
-      }
+    //   label {
+    //     @include visuallyHidden;
+    //   }
 
-      ::v-deep input {
-        box-shadow: none;
-        border: 1px solid $color-grey-dark;
-        color: $text-color;
-        font-size: 30px;
-        z-index: 1;
-      }
+    //   ::v-deep input {
+    //     box-shadow: none;
+    //     border: 1px solid $color-grey-dark;
+    //     color: $text-color;
+    //     font-size: 30px;
+    //     z-index: 1;
+    //   }
 
-      ::v-deep button[type=submit] {
-        background-color: $color-green;
-        border-color: $color-green;
-        padding: 0 20px;
-        margin: 0;
-        z-index: 1;
+    //   ::v-deep button[type=submit] {
+    //     background-color: $color-green;
+    //     border-color: $color-green;
+    //     padding: 0 20px;
+    //     margin: 0;
+    //     z-index: 1;
 
-        svg {
-          width: 30px;
-          height: 30px;
-        }
+    //     svg {
+    //       width: 30px;
+    //       height: 30px;
+    //     }
 
-        &:hover,
-        &:focus {
-          background-color: darken($color-green, 5%);
-        }
-      }
-    }
+    //     &:hover,
+    //     &:focus {
+    //       background-color: darken($color-green, 5%);
+    //     }
+    //   }
+    // }
   }
 
   .vue-map-container,
