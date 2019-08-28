@@ -66,6 +66,57 @@
         </div>
 
         <div class="disclaimer">
+          <div class="folks">
+            <div class="row">
+              <h4>Mayor &amp; Clerk</h4>
+              <div
+                class="headshot"
+                style="background-image: url('contacts/mayor/john-hamilton.jpg');"></div>
+
+              <div
+                class="headshot"
+                style="background-image: url('contacts/clerk/nicole-bolden.jpg');"></div>
+            </div>
+
+            <div class="row">
+              <h4>City Council</h4>
+              <div
+                class="headshot"
+                style="background-image: url('contacts/district-representatives/4/dave-rollo.jpg');"></div>
+
+              <div
+                class="headshot"
+                style="background-image: url('contacts/district-representatives/2/dorothy-granger.jpg');"></div>
+
+              <div
+                class="headshot"
+                style="background-image: url('contacts/district-representatives/6/stephen-volan.jpg');"></div>
+
+              <div
+                class="headshot"
+                style="background-image: url('contacts/city-council/andy-ruff.jpg');"></div>
+
+              <div
+                class="headshot"
+                style="background-image: url('contacts/city-council/susan-sandberg.jpg');"></div>
+
+              <div
+                class="headshot"
+                style="background-image: url('contacts/city-council/jim-sims.jpg');"></div>
+
+              <div
+                class="headshot"
+                style="background-image: url('contacts/district-representatives/1/chris-sturbaum.jpg');"></div>
+
+              <div
+                class="headshot"
+                style="background-image: url('contacts/district-representatives/3/allison-chopra.jpg');"></div>
+
+              <div
+                class="headshot"
+                style="background-image: url('contacts/district-representatives/5/isabel-piedmont-smith.jpg');"></div>
+            </div>
+          </div>
           <p>&#9426; {{ currentYear }} - {{ cityName }}</p>
         </div>
 
@@ -77,7 +128,7 @@
 
 
           <GmapMap
-            :center="latLong"
+            :center="cityHallLatLong"
             :zoom="13"
             ref="placeholderMap"
             map-type-id="roadmap"
@@ -2055,6 +2106,7 @@ export default {
       } else if(modalRef == 'addressMappedErrorModal') {
         this.$refs.addressMappedErrorModal.showModal = false;
         this.errors.addressNotMapped = null;
+        this.autoSuggestRes = null;
       }
     },
     nearbyParkMarkers(){
@@ -3096,7 +3148,7 @@ export default {
       z-index: 100;
     }
 
-    h1, h2, h3, p {
+    h1, h2, h3 {
       color: white;
     }
 
@@ -3127,12 +3179,86 @@ export default {
     }
 
     .disclaimer {
+      z-index: 1;
       position: absolute;
       bottom: 20px;
 
       p {
         font-weight: $weight-semi-bold;
-        color: rgba(255, 255, 255, 0.6);
+        color: rgba(white, 0.6);
+      }
+    }
+
+    .folks {
+      margin: 0 0 10px 0;
+
+      h4 {
+        text-transform: uppercase;
+        font-size: 18px;
+        letter-spacing: .5px;
+        font-weight: $weight-semi-bold;
+        color: rgba(white, 0.6);
+        margin: 0;
+      }
+
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: row;
+
+        &:nth-of-type(1) {
+          margin: 0 0 20px 0;
+
+          .headshot {
+            width: 65px;
+            height: 65px;
+
+            &:after {
+              width: 65px;
+              height: 65px;
+            }
+          }
+        }
+
+        &:nth-of-type(2) {
+          margin: 0 0 40px 0;
+
+          .headshot {
+            width: 50px;
+            height: 50px;
+
+            &:after {
+              width: 50px;
+              height: 50px;
+            }
+          }
+        }
+      }
+
+      .headshot {
+        position: relative;
+        display: block;
+        margin: 0 20px 0 0;
+        border-radius: 50%;
+        border: 1px solid $color-blue-darker;
+        background-position: top center;
+        background-repeat: no-repeat;
+        background-size: cover;
+
+        &:last-of-type {
+          margin: 0;
+        }
+
+        &:after {
+          z-index: -1;
+          position: absolute;
+          content: '';
+          left: -2px;
+          bottom: -5px;
+          display: block;
+          border-radius: 50%;
+          background-color: darken($color-blue-darker, 5%);
+        }
       }
     }
 
@@ -3173,16 +3299,6 @@ export default {
           // }
         }
       }
-
-      // &:before {
-      //   z-index: 1;
-      //   position: absolute;
-      //   content: '';
-      //   width: 650px;
-      //   height: 715px;
-      //   bottom: -5px;
-      //   background-image: url("data:image/svg+xml,%3Csvg id='map-shape' xmlns='http://www.w3.org/2000/svg' width='650' height='710' viewBox='0 0 650 710'%3E%3Cpath id='path-fill' d='M655.255,51.8579a146.64783,146.64783,0,0,0-243.52691,110.089l-.483,36.59674a88.5,88.5,0,0,1-88.5,88.5h-79a88.5,88.5,0,0,0-88.5,88.5c0,19.56328,7.66667,32,16.375,52.3125l2.12827,4.4403a192.72056,192.72056,0,0,1,19.49673,84.7472c0,106.86709-86.6329,193.5-193.5,193.5V-.54364H652.25048V49.29058Z' fill='%231e5aae'/%3E%3Cpath id='path-stroke' d='M652.25048,49.29058,655.255,51.8579a146.64783,146.64783,0,0,0-243.52691,110.089l-.483,36.59674a88.5,88.5,0,0,1-88.5,88.5h-79a88.5,88.5,0,0,0-88.5,88.5c0,19.56328,7.66667,32,16.375,52.3125l2.12827,4.4403a192.72056,192.72056,0,0,1,19.49673,84.7472c0,106.86709-86.6329,193.5-193.5,193.5' fill='none' stroke='%23e2299b' stroke-miterlimit='10' stroke-width='10'/%3E%3C/svg%3E");
-      // }
     }
 
     .form-wrapper {
@@ -3200,6 +3316,7 @@ export default {
         position: relative;
         top: 0;
         width: 100%;
+        box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.40);
       }
     }
   }
@@ -3227,6 +3344,7 @@ export default {
         color: $text-color;
         font-size: 18px;
         border-radius: $radius-default;
+        caret-color: $color-blue; //no IE support
       }
 
       ::v-deep button[type=submit] {
