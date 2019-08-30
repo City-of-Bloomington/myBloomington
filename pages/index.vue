@@ -452,9 +452,9 @@
 
         <div class="row">
           <div class="container">
-            <div class="weather" v-if="weather.weather[0]">
+            <div class="weather" v-if="weather">
                 <img :src="`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`"
-                     :alt="weather.weather[0].main">
+                     :alt="weather.main">
                 <p>
                   <strong>Weather:</strong>
                   {{ weather.weather[0].main }} ~ {{ weather.main.temp }} &#176;F
@@ -1677,58 +1677,34 @@ export default {
     }
   },
   created() {
-    this.latLong = this.cityHallLatLong;
-  },
-  // async asyncData({ query, error }) {
-  //   let cityHallLatLong = { lat: 39.16992723, lng: -86.53680559 };
-
-  //   let {data} = await Promise.all([
-  //     axios.get(`${process.env.weatherUrl}weather?lat=${cityHallLatLong.lat}&lon=${cityHallLatLong.lng}&units=imperial&appid=${process.env.weatherApiKey}`)
-  //   ])
-  //   return {
-  //     weather: data
-  //   }
-  // },
-  async asyncData () {
-    let cityHallLatLong = { lat: 39.16992723, lng: -86.53680559 },
-               { data } = await axios.get(`${process.env.weatherUrl}weather?lat=${cityHallLatLong.lat}&lon=${cityHallLatLong.lng}&units=imperial&appid=${process.env.weatherApiKey}`)
-    return { weather: data }
-  },
-  updated() {},
-  mounted() {
-    let searchInputElement = document.getElementById('address-search');
-    if(searchInputElement)
-      searchInputElement.focus();
-
-    // if(!this.locationResData) {
-    //   this.$refs.defaultMap.$mapPromise
-    //   .then(() => this.$refs.defaultMap.panBy(0,50));
-    //   this.mapHeight = this.mapHeightDefault;
-    // }
-
     axios.get(`https://bloomington.in.gov/geoserver/publicgis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=publicgis:BloomingtonMunicipalBoundary&maxFeatures=50&outputFormat=application%2Fjson`)
     .then((res) => {
-      this.bloomingtonBoundaryGeoJson = res.data.features;
-      console.log(`%c getBloomingtonBoundary 👌 `,
-                  this.consoleLog.success);
+      this.bloomingtonBoundaryGeoJson = res.data.features
     })
-    .catch((e)  => {
-      console.log(`%c getBloomingtonBoundary 🛑 `,
-                  this.consoleLog.error,
+    .catch((e) => {
+      console.log(`Bloomington Boundary Failed 🛑 `,
                   `\n\n ${e} \n\n`);
     });
+
+    axios.get(`${process.env.weatherUrl}weather?lat=${this.cityHallLatLong.lat}&lon=${this.cityHallLatLong.lng}&units=imperial&appid=${process.env.weatherApiKey}`)
+    .then((res) => {
+      this.weather = res.data
+    })
+    .catch((e) => {
+      console.log(`Weather Failed 🛑 `,
+                  `\n\n ${e} \n\n`);
+    });
+
 
     this.getSafePlaces()
     .then((res) => {
       this.safePlaceResData = res;
-      console.log(`%c getSafePlaces 👌 `,
-                  this.consoleLog.success);
+      console.log(`getSafePlaces 👌`);
     })
     .catch((e)  => {
-      console.log(`%c getSafePlaces 🛑 `,
-                  this.consoleLog.error,
+      console.log(`getSafePlaces 🛑`,
                   `\n\n ${e} \n\n`);
-    })
+    });
 
     this.getLocalSchools()
     .then((res) => {
@@ -1779,6 +1755,29 @@ export default {
                   this.consoleLog.error,
                   `\n\n ${e} \n\n`);
     });
+  },
+  // async asyncData() {
+  //   let cityHallLatLong = { lat: 39.16992723, lng: -86.53680559 };
+
+  //   const boundary = await axios.get(`https://bloomington.in.gov/geoserver/publicgis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=publicgis:BloomingtonMunicipalBoundary&maxFeatures=50&outputFormat=application%2Fjson`);
+
+  //   const weather = await axios.get(`${process.env.weatherUrl}weather?lat=${cityHallLatLong.lat}&lon=${cityHallLatLong.lng}&units=imperial&appid=${process.env.weatherApiKey}`);
+
+  //   return {
+  //           bloomingtonBoundaryGeoJson: boundary.data.features,
+  //           weather: weather.data
+  //         };
+  // },
+  mounted() {
+    let searchInputElement = document.getElementById('address-search');
+    if(searchInputElement)
+      searchInputElement.focus();
+
+    // if(!this.locationResData) {
+    //   this.$refs.defaultMap.$mapPromise
+    //   .then(() => this.$refs.defaultMap.panBy(0,50));
+    //   this.mapHeight = this.mapHeightDefault;
+    // }
   },
   watch: {
     addressSearchAuto: debounce(function(val){
