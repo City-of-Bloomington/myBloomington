@@ -57,6 +57,7 @@ module.exports = {
     onBoardCityCouncilPath:   process.env.ONBOARD_CITY_COUNCIL_PATH,
     googleApiKey:             process.env.GOOGLE_API_KEY,
     weatherApiKey:            process.env.WEATHER_API_KEY,
+    folks:                    process.env.FOLKS,
     districtReps:             process.env.DISTRICT_REPRESENTATIVES,
     sanitation:               process.env.SANITATION,
     indianapolis:             process.env.INDIANAPOLIS,

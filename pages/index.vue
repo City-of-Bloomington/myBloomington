@@ -69,52 +69,109 @@
           <div class="folks">
             <div class="row">
               <h4>Mayor &amp; Clerk</h4>
-              <div
-                class="headshot"
-                style="background-image: url('contacts/mayor/john-hamilton.jpg');"></div>
+              <a :href="folks.officials.mayor.url"
+                 :alt="`Mayor - ${folks.officials.mayor.name}`"
+                 :title="`Mayor - ${folks.officials.mayor.name}`"
+                 target="_blank">
+                <div
+                  class="headshot"
+                  :style="`background-image: url(${folks.officials.mayor.image});`"></div>
+              </a>
 
-              <div
-                class="headshot"
-                style="background-image: url('contacts/clerk/nicole-bolden.jpg');"></div>
+              <a :href="folks.officials.clerk.url"
+                 :alt="`Clerk - ${folks.officials.clerk.name}`"
+                 :title="`Clerk - ${folks.officials.clerk.name}`"
+                 target="_blank">
+                <div
+                  class="headshot"
+                  :style="`background-image: url(${folks.officials.clerk.image});`"></div>
+              </a>
             </div>
 
             <div class="row">
               <h4>City Council</h4>
-              <div
-                class="headshot"
-                style="background-image: url('contacts/district-representatives/4/dave-rollo.jpg');"></div>
 
-              <div
-                class="headshot"
-                style="background-image: url('contacts/district-representatives/2/dorothy-granger.jpg');"></div>
+              <a :href="folks.district[4].url"
+                 :alt="`Council Member - ${folks.district[4].name}`"
+                 :title="`Council Member - ${folks.district[4].name}`"
+                 target="_blank">
+                <div
+                  class="headshot"
+                  :style="`background-image: url(${folks.district[4].image});`"></div>
+              </a>
 
-              <div
-                class="headshot"
-                style="background-image: url('contacts/district-representatives/6/stephen-volan.jpg');"></div>
+              <a :href="folks.district[2].url"
+                 :alt="`Council Member - ${folks.district[2].name}`"
+                 :title="`Council Member - ${folks.district[2].name}`"
+                 target="_blank">
+                <div
+                  class="headshot"
+                  :style="`background-image: url(${folks.district[2].image});`"></div>
+              </a>
 
-              <div
-                class="headshot"
-                style="background-image: url('contacts/city-council/andy-ruff.jpg');"></div>
 
-              <div
-                class="headshot"
-                style="background-image: url('contacts/city-council/susan-sandberg.jpg');"></div>
+              <a :href="folks.district[6].url"
+                 :alt="`Council Member - ${folks.district[6].name}`"
+                 :title="`Council Member - ${folks.district[6].name}`"
+                 target="_blank">
+                <div
+                  class="headshot"
+                  :style="`background-image: url(${folks.district[6].image});`"></div>
+              </a>
 
-              <div
-                class="headshot"
-                style="background-image: url('contacts/city-council/jim-sims.jpg');"></div>
+              <a :href="folks.council[2].url"
+                 :alt="`Council Member - ${folks.council[2].name}`"
+                 :title="`Council Member - ${folks.council[2].name}`"
+                 target="_blank">
+                <div
+                  class="headshot"
+                  :style="`background-image: url(${folks.council[2].image});`"></div>
+              </a>
 
-              <div
-                class="headshot"
-                style="background-image: url('contacts/district-representatives/1/chris-sturbaum.jpg');"></div>
+              <a :href="folks.council[1].url"
+                 :alt="`Council Member - ${folks.council[1].name}`"
+                 :title="`Council Member - ${folks.council[1].name}`"
+                 target="_blank">
+                <div
+                  class="headshot"
+                  :style="`background-image: url(${folks.council[1].image});`"></div>
+              </a>
 
-              <div
-                class="headshot"
-                style="background-image: url('contacts/district-representatives/3/allison-chopra.jpg');"></div>
+              <a :href="folks.council[3].url"
+                 :alt="`Council Member - ${folks.council[3].name}`"
+                 :title="`Council Member - ${folks.council[3].name}`"
+                 target="_blank">
+                <div
+                  class="headshot"
+                  :style="`background-image: url(${folks.council[3].image});`"></div>
+              </a>
 
-              <div
-                class="headshot"
-                style="background-image: url('contacts/district-representatives/5/isabel-piedmont-smith.jpg');"></div>
+              <a :href="folks.district[1].url"
+                 :alt="`Council Member - ${folks.district[1].name}`"
+                 :title="`Council Member - ${folks.district[1].name}`"
+                 target="_blank">
+                <div
+                  class="headshot"
+                  :style="`background-image: url(${folks.district[1].image});`"></div>
+              </a>
+
+              <a :href="folks.district[3].url"
+                 :alt="`Council Member - ${folks.district[3].name}`"
+                 :title="`Council Member - ${folks.district[3].name}`"
+                 target="_blank">
+                <div
+                  class="headshot"
+                  :style="`background-image: url(${folks.district[3].image});`"></div>
+              </a>
+
+              <a :href="folks.district[5].url"
+                 :alt="`Council Member - ${folks.district[5].name}`"
+                 :title="`Council Member - ${folks.district[5].name}`"
+                 target="_blank">
+                <div
+                  class="headshot"
+                  :style="`background-image: url(${folks.district[5].image});`"></div>
+              </a>
             </div>
           </div>
           <p>&#9426; {{ currentYear }} - {{ cityName }}</p>
@@ -551,6 +608,10 @@
               </tbody>
             </table>
           </div>
+
+          <!-- <template v-for="c, i in JSON.parse(folks)">
+            {{ c }}
+          </template> -->
 
           <template v-if="!addressResChoices && locationResData">
             <div class="row data" v-if="locationResData.purposes">
@@ -1625,6 +1686,7 @@ export default {
   data() {
     return {
       cityName:       process.env.cityName,
+      folks:          JSON.parse(process.env.folks),
       searchHasFocus: false,
       mapMarkerToggle: {
         parks:       true,
@@ -3206,6 +3268,12 @@ export default {
         flex-wrap: wrap;
         flex-direction: row;
 
+        &:hover {
+          h4 {
+            color: white;
+          }
+        }
+
         &:nth-of-type(1) {
           margin: 0 0 20px 0;
 
@@ -3235,19 +3303,29 @@ export default {
         }
       }
 
+      a {
+        border-radius: 50%;
+        margin: 0 20px 0 0;
+
+        &:focus {
+          outline: none;
+          box-shadow: 0 2px 1px 2px white;
+        }
+
+        &:last-of-type {
+          margin: 0;
+        }
+      }
+
       .headshot {
         position: relative;
         display: block;
-        margin: 0 20px 0 0;
+        margin: 0;
         border-radius: 50%;
         border: 1px solid $color-blue-darker;
         background-position: top center;
         background-repeat: no-repeat;
         background-size: cover;
-
-        &:last-of-type {
-          margin: 0;
-        }
 
         &:after {
           z-index: -1;
