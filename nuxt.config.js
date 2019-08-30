@@ -58,7 +58,6 @@ module.exports = {
     googleApiKey:             process.env.GOOGLE_API_KEY,
     weatherApiKey:            process.env.WEATHER_API_KEY,
     folks:                    process.env.FOLKS,
-    districtReps:             process.env.DISTRICT_REPRESENTATIVES,
     sanitation:               process.env.SANITATION,
     indianapolis:             process.env.INDIANAPOLIS,
     monroeCounty:             process.env.MONROE_COUNTY,

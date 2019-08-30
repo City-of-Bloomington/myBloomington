@@ -1112,54 +1112,23 @@
               </exampleModal>
             </div>
 
-            <!-- <div class="row data">
-              <header>
-                <h2>Google Civil Datas</h2>
-
-                <div>
-                  <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="location-arrow" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-location-arrow fa-w-16 fa-3x"><path fill="currentColor" d="M444.52 3.52L28.74 195.42c-47.97 22.39-31.98 92.75 19.19 92.75h175.91v175.91c0 51.17 70.36 67.17 92.75 19.19l191.9-415.78c15.99-38.39-25.59-79.97-63.97-63.97z" class=""></path></svg>
-
-                  <blockquote>
-                    <p> The <a href="https://bloomington.in.gov/gis" alt="City of Bloomington GIS">City of Bloomington GIS</a> staff maintains spatial data and provides mapping and spatial analysis services to support operations of City Departments, Boards and Commissions.</p>
-                  </blockquote>
-                </div>
-              </header>
-
-              <table>
-                <caption class="sr-only">
-                    Address Location Coordinate Details
-                  </caption>
-                  <thead class="sr-only">
-                    <tr>
-                      <th scope="col">Type</th>
-                      <th scope="col">Day/Week</th>
-                    </tr>
-                  </thead>
-
-                <tbody>
-                  <tr v-for="r, i in electedReps.officials">
-                    <th scope="row">Name:</th>
-                    <td>{{r.name}}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div> -->
-
             <div class="row data">
               <header>
                 <h2>Elected City Officials</h2>
               </header>
 
-              <div class="contacts" v-if="contacts.mayor">
+              <div class="contacts">
                 <div class="row contact mayor">
                   <div class="img">
-                    <img src="contacts/mayor/john-hamilton.jpg" :alt="`Mayor ${contacts.mayor.displayname}`">
+                    <img :src="folks.officials.mayor.image"
+                         :title="`Mayor - ${folks.officials.mayor.name}`"
+                         :alt="`Mayor - ${folks.officials.mayor.name}`">
                   </div>
 
                   <div class="about">
 
-                    <h2>{{ contacts.mayor.displayname }}</h2>
-                    <h4>{{ contacts.mayor.name }}</h4>
+                    <h2>{{ folks.officials.mayor.name }}</h2>
+                    <h4>{{ folks.officials.mayor.title }}</h4>
 
                     <p>John has worked extensively as a public servant in Democratic government, leading two state agencies, advising a Governor and Lieutenant Governor, and serving as an elected official. As the Secretary of the Indiana Family and Social Services Administration, he oversaw the implementation of Medicaid and welfare programs, services for the elderly, disabled, mentally ill, and children at risk, and state-wide community development and housing programs – all executed by a staff of 10,000 Hoosiers with an annual budget of $6 billion. Earlier he served as Commissioner of the Indiana Department of Environmental Management, the agency tasked with the statewide protection of Indiana’s air, water and land. John served as an elected member of the Board of Trustees for the Monroe County Community School Corporation.</p>
 
@@ -1179,20 +1148,20 @@
                       <tbody>
                         <tr>
                           <th scope="row">Email:</th>
-                          <td>{{ contacts.mayor.email }}</td>
+                          <td>{{ folks.officials.mayor.email }}</td>
                         </tr>
 
                         <tr>
                           <th scope="row">Telephone:</th>
-                          <td>{{ contacts.mayor.pager }}</td>
+                          <td>{{ folks.officials.mayor.phone.office }}</td>
                         </tr>
 
                         <tr>
                           <th scope="row">Mailing Address:</th>
                           <td>
-                            {{ contacts.mayor.department }}<br>
-                            401 N Morton St<br>
-                            Bloomington, IN 47404
+                            Office of the Mayor<br>
+                            {{ folks.officials.mayor.streetAddress }} - Suite {{ folks.officials.mayor.suite }}<br>
+                            {{ folks.officials.mayor.cityStateZip }}
                           </td>
                         </tr>
                       </tbody>
@@ -1202,13 +1171,14 @@
 
                 <div class="row contact clerk">
                   <div class="img">
-                    <img src="contacts/clerk/nicole-bolden.jpg" :alt="`Clerk ${contacts.clerk.displayname}`">
+                    <img :src="folks.officials.clerk.image"
+                         :title="`Clerk - ${folks.officials.clerk.name}`"
+                         :alt="`Clerk ${folks.officials.clerk.name}`">
                   </div>
 
                   <div class="about">
-
-                    <h2>{{ contacts.clerk.displayname }}</h2>
-                    <h4>{{ contacts.clerk.lastname }}</h4>
+                    <h2>{{ folks.officials.clerk.name }}</h2>
+                    <h4>{{ folks.officials.clerk.title }}</h4>
 
                     <p>The City of Bloomington Clerk's Office strives to make city government as accessible and responsive to the community as possible. The office serves as an educational liaison between citizens and their government. We respond to inquiries by telephone, in writing, or in person from a variety of interested persons regarding matters pertaining to City Council actions, or related City information retained in the City Clerk's office. We work closely with the City Council to supply combined constituent services.</p>
 
@@ -1228,25 +1198,20 @@
                       <tbody>
                         <tr>
                           <th scope="row">Email:</th>
-                          <td>{{ contacts.clerk.email }}</td>
+                          <td>{{ folks.officials.clerk.email}}</td>
                         </tr>
 
                         <tr>
                           <th scope="row">Telephone:</th>
-                          <td>{{ contacts.clerk.pager }}</td>
-                        </tr>
-
-                        <tr>
-                          <th scope="row">Hours:</th>
-                          <td>Monday - Friday, 8am - 5pm</td>
+                          <td>{{ folks.officials.clerk.phone.office }}</td>
                         </tr>
 
                         <tr>
                           <th scope="row">Mailing Address:</th>
                           <td>
-                            {{ contacts.clerk.department }}<br>
-                            401 N Morton St, Suite 110<br>
-                            Bloomington, IN 47404
+                            City Clerk<br>
+                            {{ folks.officials.clerk.streetAddress }} - Suite {{ folks.officials.clerk.suite }}<br>
+                           {{ folks.officials.clerk.cityStateZip }}
                           </td>
                         </tr>
                       </tbody>
@@ -1264,18 +1229,16 @@
               <div class="contacts">
                 <div class="row council">
                   <div class="contact">
-                    <div class="img" style="background-image: url('contacts/city-council/andy-ruff.jpg');"></div>
+                    <div class="img"
+                         :style="`background-image: url(${folks.council[1].image});`"></div>
 
                     <div class="about">
-                      <h2>
-                        {{ councilAtLargeReps[0].currentMember.firstname }}
-                        {{ councilAtLargeReps[0].currentMember.lastname }}
-                      </h2>
-                      <h4>At Large</h4>
+                      <h2>{{ folks.council[1].name }}</h2>
+                      <h4>{{ folks.council[1].title }}</h4>
 
                       <table>
                         <caption class="sr-only">
-                          City Council Member {{ councilAtLargeReps[0].currentMember.firstname }} {{ councilAtLargeReps[0].currentMember.lastname }}
+                          City Council Member {{ folks.council[1].name }} {{ folks.council[1].title }}
                         </caption>
                         <thead class="sr-only">
                           <tr>
@@ -1287,25 +1250,25 @@
                         <tbody>
                           <tr>
                             <th scope="row">Email:</th>
-                            <td>ruffa@bloomington.in.gov</td>
+                            <td>{{ folks.council[1].email }}</td>
                           </tr>
 
                           <tr>
                             <th scope="row">Address:</th>
                             <td>
-                              1414 E University<br>
-                              Bloomington, IN 47404
+                              {{ folks.council[1].streetAddress }}<br>
+                              {{ folks.council[1].cityStateZip }}
                             </td>
                           </tr>
 
                           <tr>
-                            <th scope="row">Phone:</th>
-                            <td>812-349-3409</td>
+                            <th scope="row">Phone (Office):</th>
+                            <td>{{ folks.council[1].phone.office }}</td>
                           </tr>
 
                           <tr>
-                            <th scope="row">Fax:</th>
-                            <td>812-349-3570</td>
+                            <th scope="row">Phone (Cell):</th>
+                            <td>{{ folks.council[1].phone.home }}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -1313,18 +1276,16 @@
                   </div>
 
                   <div class="contact">
-                    <div class="img" style="background-image: url('contacts/city-council/susan-sandberg.jpg');"></div>
+                    <div class="img"
+                         :style="`background-image: url(${folks.council[2].image});`"></div>
 
                     <div class="about">
-                      <h2>
-                        {{ councilAtLargeReps[1].currentMember.firstname }}
-                        {{ councilAtLargeReps[1].currentMember.lastname }}
-                      </h2>
-                      <h4>At Large</h4>
+                      <h2>{{ folks.council[2].name }}</h2>
+                      <h4>{{ folks.council[2].title }}</h4>
 
                       <table>
                         <caption class="sr-only">
-                          City Council Member {{ councilAtLargeReps[1].currentMember.firstname }} {{ councilAtLargeReps[1].currentMember.lastname }}
+                          City Council Member {{ folks.council[2].title }} {{ folks.council[2].name }}
                         </caption>
                         <thead class="sr-only">
                           <tr>
@@ -1336,25 +1297,20 @@
                         <tbody>
                           <tr>
                             <th scope="row">Email:</th>
-                            <td>sandbers@bloomington.in.gov</td>
+                            <td>{{ folks.council[2].email }}</td>
                           </tr>
 
                           <tr>
                             <th scope="row">Address:</th>
                             <td>
-                              2201 N Fritz Dr<br>
-                              Bloomington, IN 47404
+                              {{ folks.council[2].streetAddress }}<br>
+                              {{ folks.council[2].cityStateZip }}
                             </td>
                           </tr>
 
                           <tr>
                             <th scope="row">Phone:</th>
-                            <td>812-349-3409</td>
-                          </tr>
-
-                          <tr>
-                            <th scope="row">Fax:</th>
-                            <td>812-349-3570</td>
+                            <td>{{ folks.council[2].phone.office }}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -1362,18 +1318,16 @@
                   </div>
 
                   <div class="contact">
-                    <div class="img" style="background-image: url('contacts/city-council/jim-sims.jpg');"></div>
+                    <div class="img"
+                         :style="`background-image: url(${folks.council[3].image});`"></div>
 
                     <div class="about">
-                      <h2>
-                        {{ councilAtLargeReps[2].currentMember.firstname }}
-                        {{ councilAtLargeReps[2].currentMember.lastname }}
-                      </h2>
-                      <h4>At Large</h4>
+                      <h2>{{ folks.council[3].name }}</h2>
+                      <h4>{{ folks.council[3].title }}</h4>
 
                       <table>
                         <caption class="sr-only">
-                          City Council Member {{ councilAtLargeReps[2].currentMember.firstname }} {{ councilAtLargeReps[2].currentMember.lastname }}
+                          City Council Member {{ folks.council[3].name }} {{ folks.council[3].title }}
                         </caption>
                         <thead class="sr-only">
                           <tr>
@@ -1385,25 +1339,20 @@
                         <tbody>
                           <tr>
                             <th scope="row">Email:</th>
-                            <td>simsji@bloomington.in.gov</td>
+                            <td>{{ folks.council[3].email }}</td>
                           </tr>
 
                           <tr>
                             <th scope="row">Address:</th>
                             <td>
-                              401 N Morton St<br>
-                              Bloomington, IN 47404
+                              {{ folks.council[3].streetAddress }}<br>
+                              {{ folks.council[3].cityStateZip }}
                             </td>
                           </tr>
 
                           <tr>
                             <th scope="row">Phone:</th>
-                            <td>812-349-3409</td>
-                          </tr>
-
-                          <tr>
-                            <th scope="row">Fax:</th>
-                            <td>812-349-3570</td>
+                            <td>{{ folks.council[3].phone.office }}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -1413,10 +1362,9 @@
               </div>
             </div>
 
-            <div v-if="districtRep"
-                class="row data"
-                id="districtRep"
-                ref="districtRep">
+            <div class="row data"
+                 id="districtRep"
+                 ref="districtRep">
               <header>
                 <h2>District Representative</h2>
               </header>
@@ -1464,7 +1412,7 @@
                 />
 
                 <GmapPolygon
-                    :paths="districtPaths"
+                    :paths="districtRepGeoCoords"
                     :options="{
                       strokeColor:    'rgb(30, 90, 174)',
                       strokeOpacity:  0.8,
@@ -1475,22 +1423,19 @@
                 />
               </GmapMap>
 
-              <div class="contacts">
+              <div class="contacts" v-if="districtRep">
                 <div class="row council">
                   <div class="contact">
-                    <div class="img" :style="`background-image: url( ${districtRepImage} );`"></div>
+                    <div class="img"
+                         :style="`background-image: url( ${districtRep.image} );`"></div>
 
                     <div class="about">
-                      <h2>
-                        {{ districtRep[0].currentMember.firstname }}
-                        {{ districtRep[0].currentMember.lastname }}
-                      </h2>
-                      <h4>{{ districtRep[0].name }} Representative</h4>
+                      <h2>{{ districtRep.name }}</h2>
+                      <h4>{{ districtRep.title }}</h4>
 
                       <table>
                         <caption class="sr-only">
-                          City Council District Representative {{ districtRep[0].currentMember.firstname }}
-                        {{ districtRep[0].currentMember.lastname }}
+                          City Council District Representative {{ districtRep.name }} {{ districtRep.title }}
                         </caption>
                         <thead class="sr-only">
                           <tr>
@@ -1500,32 +1445,22 @@
                         </thead>
 
                         <tbody>
-                          <tr v-if="districtRepInfo.email">
+                          <tr>
                             <th scope="row">Email:</th>
-                            <td>{{ districtRepInfo.email }}</td>
+                            <td>{{ districtRep.email }}</td>
                           </tr>
 
                           <tr>
                             <th scope="row">Address:</th>
                             <td>
-                              <template v-if="districtRepInfo.address">
-                                {{ districtRepInfo.address }}<br>
-                              </template>
-                              <template v-else>
-                                401 N Morton St<br>
-                              </template>
-                              Bloomington, IN 47404
+                              {{ districtRep.streetAddress }}<br>
+                              {{ districtRep.cityStateZip }}
                             </td>
                           </tr>
 
                           <tr>
                             <th scope="row">Phone:</th>
-                            <td>812-349-3409</td>
-                          </tr>
-
-                          <tr>
-                            <th scope="row">Fax:</th>
-                            <td>812-349-3570</td>
+                            <td>{{ districtRep.phone.office }}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -1713,10 +1648,9 @@ export default {
       addressResChoices:  null,
       locationResData:    null,
       councilDistrict:    null,
-      councilAtLargeReps: null,
       districtRep:        null,
       councilDistrictsGeoJson: null,
-      electedReps:        null,
+      districtRepGeoCoords:    null,
       parksResData:       null,
       schoolsResData:     null,
       playgroundsResData: null,
@@ -1845,55 +1779,6 @@ export default {
                   this.consoleLog.error,
                   `\n\n ${e} \n\n`);
     });
-
-    this.getDirectoryUser('mayor')
-    .then((res) => {
-      this.$store.dispatch('contacts/setMayor', res);
-      console.log(`%c getMayor 👌 `,
-                  this.consoleLog.success);
-    })
-    .catch((e) => {
-      console.log(`%c getMayor 🛑 `,
-                  this.consoleLog.error,
-                  `\n\n ${e} \n\n`);
-    });
-
-    this.getDirectoryUser('clerk')
-    .then((res) => {
-      this.$store.dispatch('contacts/setClerk', res);
-      console.log(`%c getClerk 👌 `,
-                  this.consoleLog.success);
-    })
-    .catch((e) => {
-      console.log(`%c getClerk 🛑 `,
-                  this.consoleLog.error,
-                  `\n\n ${e} \n\n`);
-    });
-
-    this.getCityCouncil()
-    .then((res) => {
-      this.$store.dispatch('contacts/setCouncil', res);
-      console.log(`%c getCityCouncil 👌 `,
-                  this.consoleLog.success);
-
-      this.councilAtLarge()
-      .then((res) => {
-        this.councilAtLargeReps = res;
-        console.log(`%c councilAtLarge 👌 `,
-                  this.consoleLog.success);
-
-      })
-      .catch((e)  => {
-        console.log(`%c councilAtLarge 🛑 `,
-                    this.consoleLog.error,
-                    `\n\n ${e} \n\n`);
-      })
-    })
-    .catch((e)  => {
-      console.log(`%c getCityCouncil 🛑 `,
-                  this.consoleLog.error,
-                  `\n\n ${e} \n\n`);
-    })
   },
   watch: {
     addressSearchAuto: debounce(function(val){
@@ -1934,55 +1819,10 @@ export default {
     ...mapFields([
       'consoleLog',
       'locations',
-      'sanitation',
-      'contacts'
+      'sanitation'
     ]),
     currentYear() {
       return new Date().getFullYear();
-    },
-    districtPaths() {
-      let lngLat  = [],
-        geoCoords = [];
-
-      if(this.councilDistrictRepGeoJson.length > 1) {
-        let raw = [];
-        this.councilDistrictRepGeoJson.forEach((r) => {
-          raw.push(r.geometry.coordinates)
-        })
-        var repJson = [].concat.apply([],[].concat.apply([], raw));
-
-      } else {
-        var repJson = this.councilDistrictRepGeoJson[0].geometry.coordinates[0][0];
-      }
-
-      // to-do: use the data and not the district
-      //        to make this distinction
-      if(this.councilDistrict.id === 1) {
-        let projCoords = repJson.map((p) => {
-          return p.map((e) => {
-            return proj4(this.coordsProjection).inverse(e);
-          })
-        });
-
-        let projCoordsLatLng = projCoords.map((p) => {
-          return p.map((e) => {
-            return {lat: e[1], lng: e[0]}
-          })
-        });
-
-        return projCoordsLatLng;
-      } else {
-        repJson.forEach((p) => {
-          let pair = proj4(this.coordsProjection).inverse(p);
-          lngLat.push(pair)
-        });
-
-        lngLat.forEach((p) => {
-          geoCoords.push({lat: p[1], lng: p[0]})
-        });
-
-        return geoCoords;
-      }
     },
     bloomingtonBoundaryPaths() {
       let lngLat  = [],
@@ -2015,48 +1855,25 @@ export default {
         return output;
       }
     },
-    districtRepInfo() {
-      switch(this.councilDistrict.id) {
-        case 1:
-          return this.contacts.district[1];
-          break;
-        case 2:
-          return this.contacts.district[2];
-          break;
-        case 3:
-          return this.contacts.district[3];
-          break;
-        case 4:
-          return this.contacts.district[4];
-          break;
-        case 5:
-          return this.contacts.district[5];
-          break;
-        case 6:
-          return this.contacts.district[6];
-          break;
-      }
-    },
     districtRepImage() {
       let rep = this.councilDistrict.id;
       switch(rep) {
         case 1:
-          return 'contacts/district-representatives/1/chris-sturbaum.jpg';
+          return this.folks.district[1].image;
           break;
         case 2:
-          return 'contacts/district-representatives/2/dorothy-granger.jpg';
+          return this.folks.district[2].image;
           break;
-        case 3:
-          return 'contacts/district-representatives/3/allison-chopra.jpg';
+        case 3:  this.folks.district[3].image;
           break;
         case 4:
-          return 'contacts/district-representatives/4/dave-rollo.jpg';
+          return this.folks.district[4].image;
           break;
         case 5:
-          return 'contacts/district-representatives/5/isabel-piedmont-smith.jpg';
+          return this.folks.district[5].image;
           break;
         case 6:
-          return 'contacts/district-representatives/6/stephen-volan.jpg';
+          return this.folks.district[6].image;
           break;
       }
     },
@@ -2118,7 +1935,7 @@ export default {
       } else {
         return 0
       }
-    }
+    },
   },
   methods: {
     sFocus(){
@@ -2349,17 +2166,6 @@ export default {
         }
       }
     },
-    councilAtLarge() {
-      return new Promise((resolve, reject) => {
-        if(this.contacts.council) {
-          let councilALarge = this.contacts.council
-          .filter((item) => item.name === 'At-Large');
-          resolve(councilALarge);
-        } else {
-          reject(`Counldn't determine City Council at Large.`)
-        }
-      })
-    },
     addressChoice(address) {
       this.addressSearchAuto  = address.streetAddress;
       this.addressResData = address;
@@ -2389,22 +2195,7 @@ export default {
       this.districtRep        = null;
       this.errors.addressRes  = null;
       this.addressLookup(input);
-      // this.electedRepsLookup(input);
     },
-    // electedRepsLookup(address) {
-    //   this.getElectedReps(address)
-    //   .then((res) => {
-    //     console.dir(res);
-    //     this.electedReps = res;
-    //     console.log(`%c getElectedReps 👌 `,
-    //                   this.consoleLog.success);
-    //   })
-    //   .catch((e)  => {
-    //     console.log(`%c getElectedReps 🛑 `,
-    //                 this.consoleLog.error,
-    //                 `\n\n ${e} \n\n`);
-    //   })
-    // },
     isAddressMapped(lat, lon) {
       return lat !== null && lon !== null
     },
@@ -2451,6 +2242,7 @@ export default {
         this.getLocation(this.addressResData.id)
         .then((res) => {
           this.addressResChoices = null;
+          this.districtRepGeoCoords = null;
 
           this.locationResData   = res;
           this.$router.push({query : { address: this.locationResData.address.streetAddress}});
@@ -2472,8 +2264,9 @@ export default {
             console.log(`%c getCouncilDistrict 👌 `,
                         this.consoleLog.success);
 
-            this.councilDistrictRep(this.councilDistrict.id);
+            this.districtRepInfo(this.councilDistrict.id);
             this.getCouncilDistrictRepFeature(this.councilDistrict.id);
+            this.districtPaths();
           })
           .catch((e)  => {
             console.log(`%c getCouncilDistrict 🛑 `,
@@ -2491,6 +2284,28 @@ export default {
         })
       } else {
         console.dir('Need to select an Address first');
+      }
+    },
+    districtRepInfo(id) {
+      switch(id) {
+        case 1:
+          return this.districtRep = this.folks.district[1];
+          break;
+        case 2:
+          return this.districtRep = this.folks.district[2];
+          break;
+        case 3:
+          return this.districtRep = this.folks.district[3];
+          break;
+        case 4:
+          return this.districtRep = this.folks.district[4];
+          break;
+        case 5:
+          return this.districtRep = this.folks.district[5];
+          break;
+        case 6:
+          return this.districtRep = this.folks.district[6];
+          break;
       }
     },
     setLatLong(lat, lng) {
@@ -2523,40 +2338,52 @@ export default {
     getCouncilDistrictRepFeature(district) {
       this.councilDistrictRepGeoJson = this.councilDistrictsGeoJson.features.filter((d) => {
           return d.properties.DISTRICT === district;
-      })
+        })
+    },
+    districtPaths() {
+      let lngLat  = [],
+        geoCoords = [];
 
-      // if(this.councilDistrictRepGeoJson.length > 1) {
-      //   alert('more than one')
-      // }
-    },
-    councilDistrictRep(id) {
-      switch(id) {
-        case 1:
-          this.filterDistrictRep('District I')
-          break;
-        case 2:
-          this.filterDistrictRep('District II')
-          break;
-        case 3:
-          this.filterDistrictRep('District III')
-          break;
-        case 4:
-          this.filterDistrictRep('District IV')
-          break;
-        case 5:
-          this.filterDistrictRep('District V')
-          break;
-        case 6:
-          this.filterDistrictRep('District VI')
-          break;
-        default:
-          this.districtRep = null
+      if(this.councilDistrictRepGeoJson.length > 1) {
+        let raw = [];
+        this.councilDistrictRepGeoJson.forEach((r) => {
+          raw.push(r.geometry.coordinates)
+        })
+        var repJson = [].concat.apply([],[].concat.apply([], raw));
+
+      } else {
+        var repJson = this.councilDistrictRepGeoJson[0].geometry.coordinates[0][0];
       }
-    },
-    filterDistrictRep(district) {
-      this.districtRep = this.contacts.council
-      .filter((item) => item.name == district);
-    },
+
+      // to-do: use the data and not the district
+      //        to make this distinction
+      if(this.councilDistrict.id === 1) {
+        let projCoords = repJson.map((p) => {
+          return p.map((e) => {
+            return proj4(this.coordsProjection).inverse(e);
+          })
+        });
+
+        let projCoordsLatLng = projCoords.map((p) => {
+          return p.map((e) => {
+            return {lat: e[1], lng: e[0]}
+          })
+        });
+
+        this.districtRepGeoCoords = projCoordsLatLng;
+      } else {
+        repJson.forEach((p) => {
+          let pair = proj4(this.coordsProjection).inverse(p);
+          lngLat.push(pair)
+        });
+
+        lngLat.forEach((p) => {
+          geoCoords.push({lat: p[1], lng: p[0]})
+        });
+
+        this.districtRepGeoCoords = geoCoords;
+      }
+    }
   }
 }
 </script>

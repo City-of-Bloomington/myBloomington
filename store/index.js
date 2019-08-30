@@ -5,7 +5,6 @@ import {
 
 import locations    from './modules/locations'
 import sanitation   from './modules/sanitation'
-import contacts     from './modules/contacts'
 
 export const strict = false;
 
@@ -57,8 +56,7 @@ export default {
   namespaced:       true,
   modules: {
     locations:      locations,
-    sanitation:     sanitation,
-    contacts:       contacts
+    sanitation:     sanitation
   },
   mutations,
   actions,

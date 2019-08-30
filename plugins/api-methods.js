@@ -75,56 +75,6 @@ Vue.mixin({
       })
     },
     /**
-     * A promise returning elected representatives
-     * for an address.
-     *
-     * @promise     getCityCouncil
-     * @param       { String } address
-     * @resolve     { Object }
-     * @reject      { Error }
-     * @return      { Promise <Object> }
-     */
-    getElectedReps(address) {
-      return new Promise((resolve, reject) => {
-        axios.get(`https://www.googleapis.com/civicinfo/v2/representatives?key=${process.env.googleApiKey}&address=${address}`)
-        .then((res) => resolve(res.data))
-        .catch((e)  => reject(e))
-      })
-    },
-    /**
-     * A promise returning City Council
-     * district seats (members).
-     *
-     * @promise     getCityCouncil
-     * @resolve     { Object }
-     * @reject      { Error }
-     * @return      { Promise <Object> }
-     */
-    getCityCouncil() {
-      return new Promise((resolve, reject) => {
-        axios.get(`${process.env.baseUrl}${process.env.onBoardCityCouncilPath}`)
-        .then((res) => resolve(res.data.seats))
-        .catch((e)  => reject(e))
-      })
-    },
-    /**
-     * A Promise returning a Directory User via
-     * username.
-     *
-     * @promise     getDirectoryUser
-     * @param       { String } username
-     * @resolve     { Object }
-     * @reject      { Error }
-     * @return      { Promise <Object> }
-     */
-    getDirectoryUser(username){
-      return new Promise((resolve, reject) => {
-        axios.get(`${process.env.baseUrl}${process.env.directoryUsernamePath}${username}`)
-        .then((res) => resolve(res.data))
-        .catch((e)  => reject(e))
-      })
-    },
-    /**
      * A promise returning a Location result
      * via an Address ID.
      *
