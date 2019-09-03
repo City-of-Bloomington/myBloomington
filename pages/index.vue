@@ -1622,6 +1622,12 @@ export default {
     return {
       cityName:       process.env.cityName,
       folks:          JSON.parse(process.env.folks),
+      sanitation:     JSON.parse(process.env.sanitation),
+      locations:      {
+        indianapolis:   JSON.parse(process.env.indianapolis),
+        monroeCounty:   JSON.parse(process.env.monroeCounty),
+        bloomington:    JSON.parse(process.env.bloomington)
+      },
       searchHasFocus: false,
       mapMarkerToggle: {
         parks:       true,
@@ -1673,6 +1679,24 @@ export default {
         addressRes:       null,
         locationRes:      null,
         addressNotMapped: null,
+      },
+      consoleLog: {
+        info:           ['background: rgb(30, 90, 174)',
+                        'color: white',
+                        'display: block',
+                        'border-radius: 3px',
+                        'padding: 2px 0'].join(';'),
+
+        success:        ['background: rgb(76, 174, 79)',
+                        'color: white',
+                        'display: block',
+                        'border-radius: 3px',
+                        'padding: 2px 0'].join(';'),
+
+        error:          ['background: rgb(235, 59, 36)',
+                        'color: white','display: block',
+                        'border-radius: 3px',
+                        'padding: 2px 0'].join(';')
       }
     }
   },
@@ -1711,63 +1735,43 @@ export default {
       this.schoolsResData = res;
       this.schoolTypeToggle = this.schoolTypes.all;
 
-      console.log(`%c getLocalSchools 👌 `,
-                  this.consoleLog.success);
+      console.log(`getLocalSchools 👌`);
     })
     .catch((e)  => {
-      console.log(`%c getLocalSchools 🛑 `,
-                  this.consoleLog.error,
+      console.log(`getLocalSchools 🛑`,
                   `\n\n ${e} \n\n`);
     });
 
     this.getPlaygrounds()
     .then((res) => {
       this.playgroundsResData = res;
-      console.log(`%c getPlaygrounds 👌 `,
-                  this.consoleLog.success);
+      console.log(`getPlaygrounds 👌`);
     })
     .catch((e)  => {
-      console.log(`%c getPlaygrounds 🛑 `,
-                  this.consoleLog.error,
+      console.log(`getPlaygrounds 🛑`,
                   `\n\n ${e} \n\n`);
     });
 
     this.getCityOfBloomingtonParks()
     .then((res) => {
       this.parksResData = res;
-      console.log(`%c getCityOfBloomingtonParks 👌 `,
-                  this.consoleLog.success);
+      console.log(`getCityOfBloomingtonParks 👌`);
     })
     .catch((e) => {
-      console.log(`%c getCityOfBloomingtonParks 🛑 `,
-                  this.consoleLog.error,
+      console.log(`getCityOfBloomingtonParks 🛑`,
                   `\n\n ${e} \n\n`);
     });
 
     this.getCouncilDistrictsGeoJson()
     .then((res) => {
       this.councilDistrictsGeoJson = res;
-      console.log(`%c getCouncilDistrictsGeoJson 👌 `,
-                  this.consoleLog.success);
+      console.log(`getCouncilDistrictsGeoJson 👌`);
     })
     .catch((e) => {
-      console.log(`%c getCouncilDistrictsGeoJson 🛑 `,
-                  this.consoleLog.error,
+      console.log(`getCouncilDistrictsGeoJson 🛑`,
                   `\n\n ${e} \n\n`);
     });
   },
-  // async asyncData() {
-  //   let cityHallLatLong = { lat: 39.16992723, lng: -86.53680559 };
-
-  //   const boundary = await axios.get(`https://bloomington.in.gov/geoserver/publicgis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=publicgis:BloomingtonMunicipalBoundary&maxFeatures=50&outputFormat=application%2Fjson`);
-
-  //   const weather = await axios.get(`${process.env.weatherUrl}weather?lat=${cityHallLatLong.lat}&lon=${cityHallLatLong.lng}&units=imperial&appid=${process.env.weatherApiKey}`);
-
-  //   return {
-  //           bloomingtonBoundaryGeoJson: boundary.data.features,
-  //           weather: weather.data
-  //         };
-  // },
   mounted() {
     let searchInputElement = document.getElementById('address-search');
     if(searchInputElement)
@@ -1815,11 +1819,6 @@ export default {
     }
   },
   computed: {
-    ...mapFields([
-      'consoleLog',
-      'locations',
-      'sanitation'
-    ]),
     currentYear() {
       return new Date().getFullYear();
     },
