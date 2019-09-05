@@ -13,7 +13,7 @@
   "scripts": {
     "test": "jest",
     "dev": "nodemon server.js",
-    "debug": "HOST=0.0.0.0 node --inspect 0.0.0.0 node_modules/.bin/nuxt",
+    "debug": "HOST=0.0.0.0 node --inspect=0.0.0.0 node_modules/.bin/nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
     "startLocal": "NODE_ENV=production nodemon server.js",
