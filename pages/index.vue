@@ -30,12 +30,15 @@
                 id="address-search" />
             </form>
 
-            <!-- <ul v-if="autoSuggestRes && searchHasFocus"> -->
-            <ul v-if="autoSuggestRes">
+            <ul v-if="(autoSuggestRes && searchHasFocus) || (autoSuggestRes && searchResultsFocus)"
+                    v-click-outside="suggestionBlur">
               <template v-if="autoSuggestRes.length > 1">
                 <li v-for="a, i in autoSuggestRes"
+                    :key="i"
                     @click.prevent="addressChoice(a)">
-                  <a href="#">
+                  <a
+                    href="#"
+                    v-on:focus="suggestionFocus(i)">
                     {{ a.streetAddress }}
 
                     <fn1-badge :class="['jurisdiction-check', {'inside': a.jurisdiction_name === 'Bloomington', 'outside': a.jurisdiction_name != 'Bloomington'}]">
@@ -56,7 +59,9 @@
 
               <template v-else>
                 <li @click.prevent="addressChoice(autoSuggestRes)">
-                  <a href="#">
+                  <a
+                    href="#"
+                    v-on:focus="suggestionFocus()">
                     {{ autoSuggestRes.streetAddress }}
                     <fn1-badge :class="['jurisdiction-check', {'inside': autoSuggestRes.jurisdiction_name === 'Bloomington', 'outside': autoSuggestRes.jurisdiction_name != 'Bloomington'}]">
                       <template v-if="autoSuggestRes.jurisdiction_name === 'Bloomington'">
@@ -516,7 +521,7 @@
             <div class="container">
               <fn1-alert
                 v-if="searchEnteredWarning && searchHasFocus"
-                variant="warning" >
+                variant="warning">
                 <p>Please select an <strong>Address</strong> below.</p>
               </fn1-alert>
 
@@ -535,12 +540,16 @@
                     id="address-search" />
                 </form>
 
-                <ul v-if="autoSuggestRes && searchHasFocus">
+                <ul v-if="(autoSuggestRes && searchHasFocus) || (autoSuggestRes && searchResultsFocus)"
+                    v-click-outside="suggestionBlur">
                   <template v-if="autoSuggestRes.length > 1">
                     <li v-for="a, i in autoSuggestRes"
+                        :key="i"
                         @click.prevent="addressChoice(a)">
-                      <a href="#">
-                        {{ a.streetAddress }}
+                      <a
+                        href="#"
+                        v-on:focus="suggestionFocus(i)">
+                        1 :: {{ a.streetAddress }}
 
                         <fn1-badge :class="['jurisdiction-check', {'inside': a.jurisdiction_name === 'Bloomington', 'outside': a.jurisdiction_name != 'Bloomington'}]">
                           <template v-if="a.jurisdiction_name === 'Bloomington'">
@@ -560,8 +569,10 @@
 
                   <template v-else>
                     <li @click.prevent="addressChoice(autoSuggestRes)">
-                      <a href="#">
-                        {{ autoSuggestRes.streetAddress }}
+                      <a
+                        href="#"
+                        v-on:focus="suggestionFocus()">
+                        2 :: {{ autoSuggestRes.streetAddress }}
 
                         <fn1-badge :class="['jurisdiction-check', {'inside': autoSuggestRes.jurisdiction_name === 'Bloomington', 'outside': autoSuggestRes.jurisdiction_name != 'Bloomington'}]">
                           <template v-if="autoSuggestRes.jurisdiction_name === 'Bloomington'">
@@ -1650,6 +1661,7 @@ export default {
         bloomington:    JSON.parse(process.env.bloomington)
       },
       searchHasFocus: false,
+      searchResultsFocus: false,
       mapMarkerToggle: {
         parks:       true,
         playgrounds: true,
@@ -1699,24 +1711,6 @@ export default {
         addressRes:       null,
         locationRes:      null,
         addressNotMapped: null,
-      },
-      consoleLog: {
-        info:           ['background: rgb(30, 90, 174)',
-                        'color: white',
-                        'display: block',
-                        'border-radius: 3px',
-                        'padding: 2px 0'].join(';'),
-
-        success:        ['background: rgb(76, 174, 79)',
-                        'color: white',
-                        'display: block',
-                        'border-radius: 3px',
-                        'padding: 2px 0'].join(';'),
-
-        error:          ['background: rgb(235, 59, 36)',
-                        'color: white','display: block',
-                        'border-radius: 3px',
-                        'padding: 2px 0'].join(';')
       }
     }
   },
@@ -1852,7 +1846,8 @@ export default {
   },
   computed: {
     ...mapFields([
-      'locationResDataNew'
+      'locationResDataNew',
+      'consoleLog'
     ]),
     hasLocationData() {
       if(!this.loading && this.locationResDataNew){

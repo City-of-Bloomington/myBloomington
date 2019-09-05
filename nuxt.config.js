@@ -66,9 +66,11 @@ module.exports = {
 
   plugins: [
     { src:          '~/plugins/api-methods' },
+    { src:          '~/plugins/universal-methods' },
     { src:          '~/plugins/design-system' },
     { src:          '~/plugins/filters' },
     { src:          '~/plugins/google-map'},
+    { src:          '~/plugins/click-outside'},
     /*
     ** Note: Change domain & enable for launch.
     */
