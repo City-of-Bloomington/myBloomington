@@ -4,15 +4,8 @@ import {
   mapFields }       from 'vuex-map-fields'
 
 Vue.mixin({
-  data() {
-    return {
-    }
-  },
-  computed: {
-    ...mapFields([
-      'consoleLog',
-    ])
-  },
+  data() { return {} },
+  computed: {},
   methods: {
     /**
      * A promise returning Monroe Co. Safe Places.
@@ -112,8 +105,10 @@ Vue.mixin({
           .then((res) => {
             if(res.data.length == 1) {
               resolve(res.data[0])
+              console.dir('just 1 result');
             } else if(res.data.length == 0) {
-                reject(`No results for ${address}.`)
+              reject(`No results for ${address}.`)
+              console.dir('No results');
             } else if(res.data.length <= 20) {
               resolve(res.data)
               console.dir(`getAddress() Search Result Count: ${res.data.length}`);
