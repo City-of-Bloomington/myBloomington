@@ -515,7 +515,7 @@
           <div class="row">
             <div class="container">
               <fn1-alert
-                v-if="searchEnteredWarning"
+                v-if="searchEnteredWarning && searchHasFocus"
                 variant="warning" >
                 <p>Please select an <strong>Address</strong> below.</p>
               </fn1-alert>
@@ -2222,6 +2222,7 @@ export default {
       return this.showSearchEnteredWarning
     },
     addressChoice(address) {
+      this.autoSuggestRes = null;
       this.searchEnteredWarning = false;
       this.addressSearchAuto  = address.streetAddress;
       this.addressResData = address;
