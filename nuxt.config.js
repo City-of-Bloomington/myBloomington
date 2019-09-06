@@ -13,7 +13,15 @@ module.exports = {
         return { x: 0, y: 0 }
       }
     },
+    extendRoutes (routes, resolve) {
+      routes.forEach(item => {
+        if (item.path.includes('/result')) {
+          item.path = item.path.replace('/result', '')
+        }
+      })
+    }
   },
+
   head: {
     title:          pkg.name,
     meta: [
@@ -55,18 +63,22 @@ module.exports = {
     MAAddressesPath:          process.env.MASTER_ADDRESS_ADDRESS_PATH,
     directoryUsernamePath:    process.env.DIRECTORY_USERNAME_PATH,
     onBoardCityCouncilPath:   process.env.ONBOARD_CITY_COUNCIL_PATH,
+    cityBoundaryGeoJson:      process.env.CITY_BOUNDARY_PATH,
     googleApiKey:             process.env.GOOGLE_API_KEY,
     weatherApiKey:            process.env.WEATHER_API_KEY,
-    folks:                    process.env.FOLKS,
-    sanitation:               process.env.SANITATION,
-    indianapolis:             process.env.INDIANAPOLIS,
-    monroeCounty:             process.env.MONROE_COUNTY,
-    bloomington:              process.env.BLOOMINGTON
+    folks:                    JSON.parse(process.env.FOLKS),
+    sanitation:               JSON.parse(process.env.SANITATION),
+    indianapolis:             JSON.parse(process.env.INDIANAPOLIS),
+    monroeCounty:             JSON.parse(process.env.MONROE_COUNTY),
+    bloomington:              JSON.parse(process.env.BLOOMINGTON),
+    coordsProjection:         process.env.COORDS_PROJECTION,
+    cityHallLatLong:          JSON.parse(process.env.CITY_HALL_LAT_LONG)
   },
 
   plugins: [
     { src:          '~/plugins/api-methods' },
     { src:          '~/plugins/universal-methods' },
+    { src:          '~/plugins/universal-computed' },
     { src:          '~/plugins/design-system' },
     { src:          '~/plugins/filters' },
     { src:          '~/plugins/google-map'},

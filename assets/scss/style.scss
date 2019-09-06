@@ -1,6 +1,4 @@
 @import             'cobDS-tokens.scss';
-
-
 $text-color:        darken($color-grey, 55%);
 
 // these are totaly random, no rhyme or reason
@@ -74,6 +72,24 @@ body {
   @return mix(black, $color, $percentage);
 }
 
+@-webkit-keyframes solidColor {
+  0%    { background-color: $color-blue-dark }
+  50%   { background-color: $color-blue-light; }
+  100%  { background-color: $color-blue-dark }
+}
+
+@-moz-keyframes solidColor {
+  0%    { background-color: $color-blue-dark }
+  50%   { background-color: $color-blue-light; }
+  100%  { background-color: $color-blue-dark }
+}
+
+@keyframes solidColor {
+  0%    { background-color: $color-blue-dark }
+  50%   { background-color: $color-blue-light; }
+  100%  { background-color: $color-blue-dark }
+}
+
 body, html {
   font-family: $font-text;
 }
@@ -94,6 +110,282 @@ pre, code {
   padding: 1px 10px;
   font-size: $size-s;
   font-weight: $weight-semi-bold;
+}
+
+.alert {
+  z-index: 1;
+
+  p {
+    font-size: 18px;
+  }
+}
+
+#address-mapped-error-modal {
+  ::v-deep .modal-wrapper {
+    .modal-container {
+      width: 500px;
+
+      .modal-body {
+        max-height: 100%;
+
+        .badge {
+          margin: 5px 0 0 0;
+        }
+
+        .alert {
+          margin: 0;
+        }
+
+        p, blockquote {
+          font-weight: $weight-semi-bold;
+        }
+
+        blockquote {
+          color: $text-color;
+          border-left: 3px solid shade($color-ucla-gold-lighter, 40%);
+          margin: 0px 0px 15px 10px;
+          padding: 0 0 0 15px;
+          font-style: italic;
+        }
+      }
+    }
+  }
+}
+
+.modal-wrapper .modal-container .modal-body {
+  .alert {
+    margin: 0 0 20px 0;
+  }
+
+  .field-group {
+    label {
+      font-weight: $weight-semi-bold;
+      margin: 0 10px 0 0;
+    }
+  }
+}
+
+.button-group {
+  margin: 0 0 20px 0;
+
+  button {
+    padding: 5px 20px;
+    font-size: 18px;
+    border: 1px solid $color-grey;
+    background: rgba($color-cloud, 0.4);
+    color: lighten($text-color, 5%);
+    // color: white;
+    letter-spacing: 1px;
+    font-weight: 500;
+
+    &:hover,
+    &.active {
+      background: darken($color-cloud, 3%);
+    }
+  }
+}
+
+
+.badge {
+  padding: 2px 8px 0 8px;
+
+  &.jurisdiction-check {
+    svg {
+      width: 15px;
+      margin: 0 10px 0 0;
+    }
+
+    &.inside {
+      background-color: $color-green;
+    }
+
+    &.outside {
+      background-color: $color-vermilion;
+    }
+  }
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+
+  li {
+    color: lighten($text-color, 15%);
+    margin: 0 0 10px 0;
+  }
+}
+
+a {
+  color: $color-blue;
+
+  &:hover,
+  &:focus {
+    color: darken($color-blue, 5%);
+  }
+}
+
+.form-wrapper {
+  position: relative;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+
+  form {
+    z-index: 1;
+    width: 100%;
+
+    label {
+      @include visuallyHidden;
+    }
+
+    ::v-deep input {
+      box-shadow: none;
+      border: 1px solid $color-grey-dark;
+      color: $text-color;
+      font-size: 18px;
+      border-radius: $radius-default;
+      caret-color: $color-blue; //no IE support
+    }
+
+    ::v-deep button[type=submit] {
+      display: none;
+      background-color: $color-green;
+      border-color: $color-green;
+      margin: 0;
+
+      svg {}
+
+      &:hover,
+      &:focus {
+        background-color: darken($color-green, 5%);
+      }
+    }
+  }
+
+  ul {
+    position: absolute;
+    top: 40px;
+    border: 1px solid $color-grey-dark;
+    border-top: none;
+    overflow: scroll;
+    max-height: 300px;
+    width: 100%;
+    background-color: white;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.10);
+    -webkit-border-bottom-right-radius: $radius-default;
+    -webkit-border-bottom-left-radius: $radius-default;
+    -moz-border-radius-bottomright: $radius-default;
+    -moz-border-radius-bottomleft: $radius-default;
+    border-bottom-right-radius: $radius-default;
+    border-bottom-left-radius: $radius-default;
+
+    li {
+      display: flex;
+      padding: 15px 20px;
+      margin: 0;
+      cursor: pointer;
+      color: $text-color;
+
+      a {
+        color: $text-color;
+        font-weight: $weight-semi-bold;
+        text-decoration: none;
+        width: 100%;
+        display: flex;
+        align-items: center;
+      }
+
+      .badge {
+        margin-left: auto;
+      }
+
+      &:hover {
+        background-color: rgba($color-cloud, 0.5);
+      }
+
+      &:nth-child(even) {
+        background-color: rgba($color-cloud, 0.3);
+
+        &:hover {
+          background-color: rgba($color-cloud, 0.5);
+        }
+      }
+    }
+  }
+
+  // #no-location-search {
+  //   // position: absolute;
+  //   width: 100%;
+
+  //   label {
+  //     @include visuallyHidden;
+  //   }
+
+  //   ::v-deep input {
+  //     box-shadow: none;
+  //     border: 1px solid $color-grey-dark;
+  //     color: $text-color;
+  //     font-size: 30px;
+  //     z-index: 1;
+  //   }
+
+  //   ::v-deep button[type=submit] {
+  //     background-color: $color-green;
+  //     border-color: $color-green;
+  //     padding: 0 20px;
+  //     margin: 0;
+  //     z-index: 1;
+
+  //     svg {
+  //       width: 30px;
+  //       height: 30px;
+  //     }
+
+  //     &:hover,
+  //     &:focus {
+  //       background-color: darken($color-green, 5%);
+  //     }
+  //   }
+  // }
+}
+
+.vue-map-container,
+.vue-street-view-pano-container {
+  position: relative;
+
+  &:before {
+    display: none;
+    pointer-events: none;
+    z-index: 1;
+    position: absolute;
+    content: '';
+    height: 100%;
+    width: 100%;
+    background-color: rgba($color-blue-darker, 0.15);
+  }
+}
+
+.address-choices {
+  margin: 40px 0 0 0;
+
+  tr {
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba($color-cloud, 0.5);
+    }
+
+    &:nth-child(even) {
+      background-color: rgba($color-cloud, 0.3);
+
+      &:hover {
+        background-color: rgba($color-cloud, 0.5);
+      }
+    }
+  }
 }
 
 .container {

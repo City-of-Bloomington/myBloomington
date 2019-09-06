@@ -105,10 +105,8 @@ Vue.mixin({
           .then((res) => {
             if(res.data.length == 1) {
               resolve(res.data[0])
-              console.dir('just 1 result');
             } else if(res.data.length == 0) {
               reject(`No results for ${address}.`)
-              console.dir('No results');
             } else if(res.data.length <= 20) {
               resolve(res.data)
               console.dir(`getAddress() Search Result Count: ${res.data.length}`);
@@ -133,6 +131,20 @@ Vue.mixin({
     getCouncilDistrictsGeoJson() {
       return new Promise((resolve, reject) => {
         axios.get(`${process.env.baseUrl}${process.env.councilDistrictsGeoJson}`)
+        .then((res) => resolve(res.data))
+        .catch((e)  => reject(e))
+      })
+    },
+    getCityBoundaryGeoJson() {
+      return new Promise((resolve, reject) => {
+        axios.get(process.env.cityBoundaryGeoJson)
+        .then((res) => resolve(res.data.features))
+        .catch((e)  => reject(e))
+      })
+    },
+    getWeather() {
+      return new Promise((resolve, reject) => {
+        axios.get(`${process.env.weatherUrl}weather?lat=${this.cityHallLatLong.lat}&lon=${this.cityHallLatLong.lng}&units=imperial&appid=${process.env.weatherApiKey}`)
         .then((res) => resolve(res.data))
         .catch((e)  => reject(e))
       })

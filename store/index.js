@@ -7,6 +7,18 @@ export const strict = false;
 
 export const defaultState = () => ({
   locationResDataNew: {},
+  weather:            null,
+  folks:              process.env.folks,
+  sanitation:         process.env.sanitation,
+  locations:      {
+    indianapolis:     process.env.indianapolis,
+    monroeCounty:     process.env.monroeCounty,
+    bloomington:      process.env.bloomington
+  },
+  cityBoundary:       null,
+  cityName:           process.env.cityName,
+  coordsProjection:   process.env.coordsProjection,
+  cityHallLatLong:    process.env.cityHallLatLong,
   consoleLog: {
     info:           ['background: rgb(30, 90, 174)',
                     'color: white',
@@ -37,6 +49,12 @@ export const mutations = {
   SET_LOCATION_RESPONSE_DATA(state, payload) {
     state.locationResDataNew = payload;
   },
+  SET_CITY_BOUNDARY_RESPONSE_DATA(state, payload) {
+    state.cityBoundary = payload;
+  },
+  SET_WEATHER_RESPONSE_DATA(state, payload) {
+    state.weather = payload;
+  },
 }
 
 export const actions = {
@@ -45,6 +63,12 @@ export const actions = {
   },
   setLocationData(context, payload) {
     context.commit("SET_LOCATION_RESPONSE_DATA", payload)
+  },
+  setCityBoundaryData(context, payload) {
+    context.commit("SET_CITY_BOUNDARY_RESPONSE_DATA", payload)
+  },
+  setWeatherData(context, payload) {
+    context.commit("SET_WEATHER_RESPONSE_DATA", payload)
   },
   /**
    * Note: we can only use this via SSR
