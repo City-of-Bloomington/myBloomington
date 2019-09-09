@@ -1315,7 +1315,6 @@
         </template>
       </div>
     </div>
-    <footerComponent />
 
   <exampleModal
     id="address-mapped-error-modal"
