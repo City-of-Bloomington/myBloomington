@@ -528,5 +528,37 @@ Vue.mixin({
         return dateFormat.format('MMMM Do');
       }
     },
+    changeSchoolType(schoolType) {
+      switch(schoolType) {
+        case 'pre':
+          this.schoolType = 'pre';
+          this.schoolTypeToggle = this.schoolTypes.pre;
+          break;
+        case 'elm':
+          this.schoolType = 'elm';
+          this.schoolTypeToggle = this.schoolTypes.elm;
+          break;
+        case 'middle':
+          this.schoolType = 'middle';
+          this.schoolTypeToggle = this.schoolTypes.middle;
+          break;
+        case 'high':
+          this.schoolType = 'high';
+          this.schoolTypeToggle = this.schoolTypes.high;
+          break;
+        case 'admin':
+          this.schoolType = 'admin';
+          this.schoolTypeToggle = this.schoolTypes.admin;
+          break;
+        default:
+          this.schoolType = 'all';
+          this.schoolTypeToggle = this.schoolTypes.all;
+          break;
+      }
+    },
+     goToAddress(lat, lon) {
+      let url = `https://www.google.com/maps/dir/?api=1&origin=${this.latLong.lat},${this.latLong.lng}&destination=${lat},${lon}`;
+      return window.open(url, '_blank');
+    },
   }
 });
