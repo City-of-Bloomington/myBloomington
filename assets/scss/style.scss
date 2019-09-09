@@ -267,7 +267,7 @@ a {
 
   ul {
     position: absolute;
-    top: 40px;
+    top: 38px;
     border: 1px solid $color-grey-dark;
     border-top: none;
     overflow: scroll;
@@ -284,7 +284,7 @@ a {
 
     li {
       display: flex;
-      padding: 15px 20px;
+      padding: 0;
       margin: 0;
       cursor: pointer;
       color: $text-color;
@@ -294,8 +294,15 @@ a {
         font-weight: $weight-semi-bold;
         text-decoration: none;
         width: 100%;
+        padding: 15px 20px;
         display: flex;
         align-items: center;
+        border: 3px solid transparent;
+
+        &:focus {
+          outline: none;
+          border: 3px dashed $color-blue;
+        }
       }
 
       .badge {
@@ -303,14 +310,14 @@ a {
       }
 
       &:hover {
-        background-color: rgba($color-cloud, 0.5);
+        background-color: rgba($color-cloud, 0.75);
       }
 
       &:nth-child(even) {
-        background-color: rgba($color-cloud, 0.3);
+        background-color: rgba($color-cloud, 0.75);
 
         &:hover {
-          background-color: rgba($color-cloud, 0.5);
+          background-color: rgba($color-cloud, 0.75);
         }
       }
     }

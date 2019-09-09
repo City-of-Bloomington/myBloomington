@@ -26,13 +26,16 @@
         </form>
 
         <ul v-if="(autoSuggestRes && searchHasFocus) || (autoSuggestRes && searchResultsFocus)"
-                v-click-outside="suggestionBlur">
+            v-click-outside="suggestionBlur"
+            tabindex="-1">
           <template v-if="autoSuggestRes.length > 1">
             <li v-for="a, i in autoSuggestRes"
                 :key="i"
+                tabindex="-1"
                 @click.prevent="addressChoice(a)">
               <a
                 href="#"
+                tabindex="0"
                 v-on:focus="suggestionFocus(i)">
                 {{ a.streetAddress }}
 
@@ -53,9 +56,11 @@
           </template>
 
           <template v-else>
-            <li @click.prevent="addressChoice(autoSuggestRes)">
+            <li @click.prevent="addressChoice(autoSuggestRes)"
+                tabindex="-1">
               <a
                 href="#"
+                tabindex="0"
                 v-on:focus="suggestionFocus()">
                 {{ autoSuggestRes.streetAddress }}
                 <fn1-badge :class="['jurisdiction-check', {'inside': autoSuggestRes.jurisdiction_name === 'Bloomington', 'outside': autoSuggestRes.jurisdiction_name != 'Bloomington'}]">
