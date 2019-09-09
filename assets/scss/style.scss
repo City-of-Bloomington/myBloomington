@@ -1,4 +1,5 @@
 @import             'cobDS-tokens.scss';
+
 $text-color:        darken($color-grey, 55%);
 
 // these are totaly random, no rhyme or reason
@@ -192,6 +193,7 @@ pre, code {
   &.jurisdiction-check {
     svg {
       width: 15px;
+      height: 15px;
       margin: 0 10px 0 0;
     }
 
@@ -288,6 +290,10 @@ a {
       margin: 0;
       cursor: pointer;
       color: $text-color;
+
+      &:focus {
+        border: 3px solid red;
+      }
 
       a {
         color: $text-color;

@@ -8,6 +8,7 @@ import {
 Vue.mixin({
   data() { return {
     loading:              true,
+    keyDownFocus:         false,
 
     searchEnteredWarning: false,
     searchHasFocus:       false,
@@ -111,6 +112,7 @@ Vue.mixin({
     },
     suggestionBlur() {
       this.searchResultsFocus = false;
+      this.keyDownFocus = false;
 
       console.log('%c Hiding Address Search Suggestions via click-away ',
                   this.consoleLog.info);
@@ -267,10 +269,18 @@ Vue.mixin({
           this.locationResDataNew   = res;
           this.$store.dispatch('setLocationData', res);
 
+          // console.dir(encodeURIComponent(this.locationResDataNew.address.streetAddress).replace(/%20/g, "+"));
+
+          let addressUrlEncoded = encodeURIComponent(this.locationResDataNew.address.streetAddress).replace(/%20/g, "+");
+
+          console.dir(addressUrlEncoded);
+
           this.$router.replace({
             path: '/search',
             query: { address: this.locationResDataNew.address.streetAddress}
           });
+
+          console.dir('past');
 
           this.mapHeight         = this.mapHeightResult;
 

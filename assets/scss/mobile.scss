@@ -1,0 +1,13 @@
+@media (max-width: 575px) {
+  .badge {
+    padding: 5px !important;
+
+    &.jurisdiction-check {
+      svg {
+        margin: 0 !important;
+      }
+    }
+  }
+}
+@media (min-width: 576px) and (max-width: 767px) {}
+@media (min-width: 768px) and (max-width: 991px) {}

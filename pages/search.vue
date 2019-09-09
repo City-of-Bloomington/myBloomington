@@ -1386,6 +1386,8 @@ export default {
       if(addressQueryParam){
         vm.addressSearchAuto = addressQueryParam;
         vm.searchSubmit(addressQueryParam);
+      } else {
+        vm.$router.push('Home')
       }
     });
   },

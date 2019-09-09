@@ -42,7 +42,31 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-header {
-  padding: 15px 20px !important;
-}
+  header {
+    padding: 15px 20px !important;
+  }
+
+  @media (max-width: 575px) {
+    header {
+      ::v-deep a {
+        img {
+          width: 35px !important;
+          height: 35px !important;
+          margin: 0 !important;
+        }
+
+        h1, h2 {
+          display: none;
+        }
+      }
+    }
+  }
+
+  @media (min-width: 576px) and (max-width: 767px) {
+
+  }
+
+  @media (min-width: 768px) and (max-width: 991px) {
+
+  }
 </style>
