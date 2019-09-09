@@ -3,6 +3,7 @@
     <div v-if="!loading" class="container">
       <template v-if="!isMobile">
         <h1>Welcome,</h1>
+        <h2><span class="hi-lite">myBloomington</span> provides information related to a given Street Address.</h2>
       </template>
 
       <template v-else>
@@ -666,6 +667,7 @@ export default {
   @media (max-width: 575px) {
     .homepage {
       padding: 20px 0 0 0;
+      height: calc(100vh - 69px); // 69 = header height
 
       .container {
         padding: 0 20px;
