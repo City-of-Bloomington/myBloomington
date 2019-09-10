@@ -31,5 +31,14 @@ footer {
     color: $text-color;
     margin: 0 0 20px 0;
   }
+
+  @media (max-width: 575px) {
+    margin: 60px 0 0 0;
+
+    .container {
+      width: 100%;
+      padding: 20px;
+    }
+  }
 }
 </style>

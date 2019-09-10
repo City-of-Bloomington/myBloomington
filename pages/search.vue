@@ -43,7 +43,7 @@
       :zoom="zoom"
       ref="defaultMap"
       map-type-id="roadmap"
-      :style="`width: 100vw; height: ${mapHeight};`"
+      :style="getMapHeight"
       :options="{
         zoomControl:        true,
         mapTypeControl:     true,
@@ -100,7 +100,8 @@
       />
 
       <GmapCluster
-        :minimumClusterSize="2">
+        :minimumClusterSize="2"
+        v-if="!isMobile">
         <template
           v-for="p, i in nearbyParkMarkers()"
           v-if="mapMarkerToggle.parks">
@@ -156,7 +157,7 @@
     </GmapMap>
 
     <div class="overview">
-      <div class="row">
+      <div class="row" v-if="!isMobile">
         <div class="container">
           <div class="form-group inline">
             <fieldset>
@@ -211,9 +212,15 @@
           <div class="weather" v-if="weather">
               <img :src="`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`"
                    :alt="weather.main">
+
               <p>
-                <strong>Weather:</strong>
-                {{ weather.weather[0].main }} ~ {{ weather.main.temp }} &#176;F
+                <template v-if="!isMobile">
+                  <strong>Weather:</strong>
+                  {{ weather.weather[0].main }} ~ {{ weather.main.temp }} &#176;F
+                </template>
+                <template v-else>
+                  {{ weather.main.temp }} &#176;F
+                </template>
               </p>
           </div>
 
@@ -228,7 +235,14 @@
                 <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512" class="svg-inline--fa fa-times fa-w-11 fa-3x"><path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" class=""></path></svg>
                 Outside
               </template>
-              Bloomington City Limits
+
+              <template v-if="!isMobile">
+                Bloomington City Limits
+              </template>
+
+              <template v-else>
+                City Limits
+              </template>
             </fn1-badge>
           </div>
         </div>
@@ -246,13 +260,8 @@
 
           <div v-if="distanceToCityHall">
             <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="map-pin" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 288 512" class="svg-inline--fa fa-map-pin fa-w-9 fa-3x"><path fill="currentColor" d="M112 316.94v156.69l22.02 33.02c4.75 7.12 15.22 7.12 19.97 0L176 473.63V316.94c-10.39 1.92-21.06 3.06-32 3.06s-21.61-1.14-32-3.06zM144 0C64.47 0 0 64.47 0 144s64.47 144 144 144 144-64.47 144-144S223.53 0 144 0zm0 76c-37.5 0-68 30.5-68 68 0 6.62-5.38 12-12 12s-12-5.38-12-12c0-50.73 41.28-92 92-92 6.62 0 12 5.38 12 12s-5.38 12-12 12z" class=""></path></svg>
-            <p>Approx. <strong>{{ distanceToCityHall }} mi</strong> from <strong>City Hall</strong></p>
-            <!-- <p>
-              <strong>Lat:</strong>
-              {{ locationResDataNew.address.latitude }}
-              <strong>Lon:</strong>
-              {{ locationResDataNew.address.longitude }}
-            </p>-->
+
+            <p v-if="!isMobile">Approx. <strong>{{ distanceToCityHall }} mi</strong> from <strong>City Hall</strong></p>
           </div>
         </div>
       </div>
@@ -273,67 +282,121 @@
                 v-model="addressSearchAuto"
                 v-on:focusd="sFocus()"
                 v-on:blurd="sBlur()"
-                placeholder="Search - eg: 401 N Morton St"
+                placeholder="401 N Morton St"
                 ref="addressSearch"
                 name="address-search"
                 id="address-search" />
             </form>
 
-            <ul v-if="(autoSuggestRes && searchHasFocus) || (autoSuggestRes && searchResultsFocus)"
+            <template v-if="!isMobile">
+              <ul v-if="(autoSuggestRes && searchHasFocus) || (autoSuggestRes && searchResultsFocus) || keyDownFocus"
                 v-click-outside="suggestionBlur"
+                ref="addressSearchResults"
                 tabindex="-1">
-              <template v-if="autoSuggestRes.length > 1">
-                <li v-for="a, i in autoSuggestRes"
-                    :key="i"
-                    tabindex="-1"
-                    @click.prevent="addressChoice(a)">
-                  <a
-                    href="#"
-                    tabindex="0"
-                    v-on:focus="suggestionFocus(i)">
-                    {{ a.streetAddress }}
+                <template v-if="autoSuggestRes.length > 1">
+                  <li v-for="a, i in autoSuggestRes"
+                      :key="i"
+                      tabindex="-1"
+                      @click.prevent="addressChoice(a)">
+                    <a
+                      href="#"
+                      tabindex="0"
+                      v-on:focus="suggestionFocus(i)">
+                      {{ a.streetAddress }}
 
-                    <fn1-badge :class="['jurisdiction-check', {'inside': a.jurisdiction_name === 'Bloomington', 'outside': a.jurisdiction_name != 'Bloomington'}]">
-                      <template v-if="a.jurisdiction_name === 'Bloomington'">
-                        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-check fa-w-16 fa-3x"><path fill="currentColor" d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" class=""></path></svg>
-                        Inside
-                      </template>
+                      <fn1-badge :class="['jurisdiction-check', {'inside': a.jurisdiction_name === 'Bloomington', 'outside': a.jurisdiction_name != 'Bloomington'}]">
+                        <template v-if="a.jurisdiction_name === 'Bloomington'">
+                          <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-check fa-w-16 fa-3x"><path fill="currentColor" d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" class=""></path></svg>
+                          Inside
+                        </template>
 
-                      <template v-else>
-                        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512" class="svg-inline--fa fa-times fa-w-11 fa-3x"><path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" class=""></path></svg>
-                        Outside
-                      </template>
-                      Bloomington City Limits
-                    </fn1-badge>
-                  </a>
-                </li>
-              </template>
+                        <template v-else>
+                          <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512" class="svg-inline--fa fa-times fa-w-11 fa-3x"><path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" class=""></path></svg>
+                          Outside
+                        </template>
+                        Bloomington City Limits
+                      </fn1-badge>
+                    </a>
+                  </li>
+                </template>
 
-              <template v-else>
-                <li @click.prevent="addressChoice(autoSuggestRes)"
-                    tabindex="-1">
-                  <a
-                    href="#"
-                    tabindex="0"
-                    v-on:focus="suggestionFocus()">
-                    {{ autoSuggestRes.streetAddress }}
+                <template v-else>
+                  <li @click.prevent="addressChoice(autoSuggestRes)"
+                      tabindex="-1">
+                    <a
+                      href="#"
+                      tabindex="0"
+                      v-on:focus="suggestionFocus()">
+                      {{ autoSuggestRes.streetAddress }}
+                      <fn1-badge :class="['jurisdiction-check', {'inside': autoSuggestRes.jurisdiction_name === 'Bloomington', 'outside': autoSuggestRes.jurisdiction_name != 'Bloomington'}]">
+                        <template v-if="autoSuggestRes.jurisdiction_name === 'Bloomington'">
+                          <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-check fa-w-16 fa-3x"><path fill="currentColor" d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" class=""></path></svg>
+                          Inside
+                        </template>
 
-                    <fn1-badge :class="['jurisdiction-check', {'inside': autoSuggestRes.jurisdiction_name === 'Bloomington', 'outside': autoSuggestRes.jurisdiction_name != 'Bloomington'}]">
-                      <template v-if="autoSuggestRes.jurisdiction_name === 'Bloomington'">
-                        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-check fa-w-16 fa-3x"><path fill="currentColor" d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" class=""></path></svg>
-                        Inside
-                      </template>
+                        <template v-else>
+                          <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512" class="svg-inline--fa fa-times fa-w-11 fa-3x"><path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" class=""></path></svg>
+                          Outside
+                        </template>
+                        Bloomington City Limits
+                      </fn1-badge>
+                    </a>
+                  </li>
+                </template>
+              </ul>
+            </template>
 
-                      <template v-else>
-                        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512" class="svg-inline--fa fa-times fa-w-11 fa-3x"><path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" class=""></path></svg>
-                        Outside
-                      </template>
-                      Bloomington City Limits
-                    </fn1-badge>
-                  </a>
-                </li>
-              </template>
-            </ul>
+            <template v-else>
+              <ul v-if="autoSuggestRes"
+                v-click-outside="suggestionBlur"
+                ref="addressSearchResults"
+                tabindex="-1">
+                <template v-if="autoSuggestRes.length > 1">
+                  <li v-for="a, i in autoSuggestRes"
+                      :key="i"
+                      tabindex="-1"
+                      @click.prevent="addressChoice(a)">
+                    <a
+                      href="#"
+                      tabindex="0"
+                      v-on:focus="suggestionFocus(i)">
+                      {{ a.streetAddress }}
+
+                      <fn1-badge :class="['jurisdiction-check mobile-result', {'inside': a.jurisdiction_name === 'Bloomington', 'outside': a.jurisdiction_name != 'Bloomington'}]">
+                        <template v-if="a.jurisdiction_name === 'Bloomington'">
+                          <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-check fa-w-16 fa-3x"><path fill="currentColor" d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" class=""></path></svg>
+                        </template>
+
+                        <template v-else>
+                          <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512" class="svg-inline--fa fa-times fa-w-11 fa-3x"><path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" class=""></path></svg>
+                        </template>
+                      </fn1-badge>
+                    </a>
+                  </li>
+                </template>
+
+                <template v-else>
+                  <li @click.prevent="addressChoice(autoSuggestRes)"
+                      tabindex="-1">
+                    <a
+                      href="#"
+                      tabindex="0"
+                      v-on:focus="suggestionFocus()">
+                      {{ autoSuggestRes.streetAddress }}
+                      <fn1-badge :class="['jurisdiction-check mobile-result', {'inside': autoSuggestRes.jurisdiction_name === 'Bloomington', 'outside': autoSuggestRes.jurisdiction_name != 'Bloomington'}]">
+                        <template v-if="autoSuggestRes.jurisdiction_name === 'Bloomington'">
+                          <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-check fa-w-16 fa-3x"><path fill="currentColor" d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" class=""></path></svg>
+                        </template>
+
+                        <template v-else>
+                          <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512" class="svg-inline--fa fa-times fa-w-11 fa-3x"><path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" class=""></path></svg>
+                        </template>
+                      </fn1-badge>
+                    </a>
+                  </li>
+                </template>
+              </ul>
+            </template>
           </div>
         </div>
       </div>
@@ -588,7 +651,13 @@
 
                 <blockquote>
                   <p>The <a href="https://bloomington.in.gov/parks" alt="City of Bloomington Parks and Recreation">City of Bloomington Parks and Recreation</a> Department provides essential services, facilities and programs necessary for the positive development and well-being of the community through the provision of parks, greenways, trails and recreational facilities while working in cooperation with other service providers in the community in order to maximize all available resources.</p>
-                  <p><small>* Approximate distance.</small></p>
+                  <p v-if="!isMobile">
+                    <small>* Approximate distance.</small>
+                  </p>
+                  <p v-else>
+                    <strong>Note: </strong>
+                    Click a row for directions.
+                  </p>
                 </blockquote>
               </div>
             </header>
@@ -645,7 +714,13 @@
 
                 <blockquote>
                   <p>Playgrounds located nearby.</p>
-                  <p><small>* Approximate distance.</small></p>
+                  <p v-if="!isMobile">
+                    <small>* Approximate distance.</small>
+                  </p>
+                  <p v-else>
+                    <strong>Note: </strong>
+                    Click a row for directions.
+                  </p>
                 </blockquote>
               </div>
             </header>
@@ -706,7 +781,13 @@
 
                   <p><strong>Please Note:</strong> If you are seeking <strong>Safe Place Services</strong>, or are a <strong>youth in crisis</strong>, please contact the <strong>Binkley House Youth Shelter</strong> directly at <strong>812-349-2507</strong>.</p>
 
-                  <p><small>* Approximate distance.</small></p>
+                  <p v-if="!isMobile">
+                    <small>* Approximate distance.</small>
+                  </p>
+                  <p v-else>
+                    <strong>Note: </strong>
+                    Click a row for directions.
+                  </p>
                 </blockquote>
               </div>
             </header>
@@ -754,7 +835,13 @@
 
                   <!-- <p>External <strong>School District</strong> information may by found <a @click.prevent="openModal('schoolDistrictModal')" href="#" alt="MCCSC School Districts">here</a>.</p> -->
 
-                  <p><small>* Approximate distance.</small></p>
+                  <p v-if="!isMobile">
+                    <small>* Approximate distance.</small>
+                  </p>
+                  <p v-else>
+                    <strong>Note: </strong>
+                    Click a row for directions.
+                  </p>
                 </blockquote>
               </div>
             </header>
@@ -1483,6 +1570,18 @@ export default {
     this.$nextTick(() => {
       this.loading = false;
     });
+
+
+
+  },
+  updated() {
+    // this.$nextTick(() => {
+    //   console.dir('this is UPDATED');
+
+    //   this.autoSuggestRes = null;
+    //   console.dir('auto res :: below');
+    //   console.dir(JSON.stringify(this.autoSuggestRes));
+    // });
   },
   watch: {
     $route: function (to, from) {
@@ -1497,6 +1596,13 @@ export default {
   },
   computed: {
     // computed shared via: universal-computed.js
+    getMapHeight() {
+      if(this.isMobile) {
+        return 'width: 100vw; height: 150px;'
+      } else {
+        return 'width: 100vw; height: 450px;'
+      }
+    }
   },
   methods: {
     // methods shared via: universal-methods.js
@@ -2025,6 +2131,7 @@ export default {
         position: relative;
         background-color: $color-blue;
         padding: 0 0 25px 0;
+        border-bottom: 1px solid $color-grey;
 
         .alert {
           margin: 0 0 20px 0;
@@ -2051,6 +2158,200 @@ export default {
 
       img {
         width: 50px;
+      }
+    }
+  }
+
+  @media (max-width: 575px) {
+    .container {
+      width: 100%;
+    }
+
+    .overview {
+      .row {
+        &:first-of-type {
+          padding: 0;
+
+          .container {
+            padding: 0 20px 0 0;
+            align-items: center;
+          }
+        }
+
+        &:nth-of-type(2) {
+          padding: 15px 20px 0 20px;
+          background-color: $color-blue;
+
+          strong {
+            display: block;
+            margin: 0 0 5px 0;
+          }
+
+          p {
+            color: white;
+          }
+        }
+
+        &:nth-of-type(3) {
+          margin: -1px 0 0 0;
+          padding: 15px 20px;
+        }
+      }
+    }
+
+    .wrapper {
+      // background-color: green;
+      padding: 20px;
+    }
+
+    .row {
+      &.data {
+        header {
+          // background-color: red;
+          //
+          div {
+            margin: 0 0 10px 0;
+          }
+
+          h2 {
+            font-size: 20px;
+            margin: 0 0 20px 0;
+            padding: 0;
+          }
+
+          svg {
+            display: none;
+            // width: 35px;
+            // height: 35px;
+            // margin: 0 15px 0 0;
+          }
+
+          blockquote {
+            border-left: none;
+            width: 100%;
+            font-size: 16px;
+            padding: 0;
+          }
+        }
+      }
+    }
+
+
+    .locations {
+      display: none !important;
+    }
+
+    .contacts {
+      // background-color: red;
+
+      .row {
+        // background-color: pink;
+        flex-wrap: wrap;
+        margin: 0;
+
+        &.mayor,
+        &.clerk {
+          .img {
+            display: flex !important;
+            justify-content: center;
+            width: 100% !important;
+
+            margin: 0 !important;
+
+            &:before {
+              left: 20px !important;
+              width: 250px !important;
+            }
+
+            img {
+              width: 250px !important;
+              height: 333px !important
+            }
+          }
+
+          .about {
+            margin: 50px 0 0 0 !important;
+            width: 100% !important;
+          }
+        }
+      }
+    }
+
+    .button-group {
+      margin: 0 0 10px 0;
+
+      button {
+        padding: 5px 10px;
+        font-size: 16px;
+      }
+    }
+
+    .contacts > table,
+    table {
+      display: block;
+
+      tbody {
+        display: block;
+        // background-color: green;
+        width: 100%;
+
+        tr {
+          display: flex;
+          flex-wrap: wrap;
+          width: 100%;
+
+          &:first-child {
+            // background-color: pink;
+
+            th {
+              border: none;
+            }
+          }
+
+          th, td {
+            width: 100% !important;
+            padding: 5px 15px !important;
+          }
+
+          th {
+            padding: 15px 0 5px 0;
+            color: $text-color;
+          }
+
+          td {
+            padding: 0 0 15px 0;
+            border: none;
+          }
+        }
+      }
+    }
+
+    .parks,
+    .playgrounds,
+    .safe-places,
+    .schools {
+      table {
+        tbody {
+          tr {
+            border-top: 1px solid #ddd;
+
+            &:nth-child(1) {
+              border: none;
+            }
+
+            td {
+              padding: 15px 0;
+
+              &:nth-child(2) {
+
+              }
+
+              &:nth-child(odd) {
+                display: none;
+              }
+            }
+          }
+        }
       }
     }
   }

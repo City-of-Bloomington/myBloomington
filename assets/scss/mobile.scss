@@ -1,14 +1,21 @@
 @media (max-width: 575px) {
   .badge {
-    padding: 5px !important;
+    font-size: 14px;
 
-    &.legend {
-      padding: 2px 8px 0 8px !important;
-    }
-
-    &.jurisdiction-check:not(.legend) {
+    &.mobile-result {
+      padding: 5px !important;
       svg {
         margin: 0 !important;
+      }
+    }
+  }
+
+  .form-wrapper {
+    ul {
+      li {
+        a {
+          padding: 10px !important;
+        }
       }
     }
   }
