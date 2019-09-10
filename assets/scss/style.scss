@@ -93,6 +93,7 @@ body {
 
 body, html {
   font-family: $font-text;
+  height: 100%;
 }
 
 h1, h2, h3, h4, p, ol, ul {
@@ -189,6 +190,15 @@ pre, code {
 
 .badge {
   padding: 2px 8px 0 8px;
+
+  &.legend {
+    font-size: 14px;
+    margin: 0;
+
+    svg {
+      margin: 0 10px 0 0;
+    }
+  }
 
   &.jurisdiction-check {
     svg {

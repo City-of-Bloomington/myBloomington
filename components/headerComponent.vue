@@ -49,10 +49,13 @@ export default {
   @media (max-width: 575px) {
     header {
       ::v-deep a {
-        img {
-          width: 35px !important;
-          height: 35px !important;
-          margin: 0 !important;
+        &:first-of-type {
+
+          img {
+            width: 35px !important;
+            height: 35px !important;
+            margin: 0 !important;
+          }
         }
 
         h1, h2 {
