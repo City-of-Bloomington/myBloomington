@@ -61,29 +61,33 @@ Vue.mixin({
     }
   }},
   watch: {
-    addressSearchAuto: debounce(function(val){
-      let regExTest   = /\d+\s+\w+/,
-        addressTest = regExTest.test(val),
-        searchValue = this.addressSearchAuto;
+    addressSearchAuto: debounce(function(val, oldVal){
+      if(this.addressSearchAuto) {
+        let regExTest   = /\d+\s+\w+/,
+          addressTest = regExTest.test(val),
+          searchValue = this.addressSearchAuto;
 
-      if(searchValue.length > 3 &&
-         addressTest) {
-        this.getAddress(val)
-        .then((res) => {
-          this.autoSuggestRes = res;
-          console.log(`%c getAutoAddress 👌 `,
-                      this.consoleLog.success);
+        if(searchValue.length > 3 &&
+           addressTest) {
+          this.getAddress(val)
+          .then((res) => {
+            this.autoSuggestRes = res;
+            console.log(`%c getAutoAddress 👌 `,
+                        this.consoleLog.success);
 
-        })
-        .catch((e)  => {
-          console.log(`%c getAutoAddress 🛑 `,
-                      this.consoleLog.error,
-                      `\n\n ${e} \n\n`);
-        })
+          })
+          .catch((e)  => {
+            console.log(`%c getAutoAddress 🛑 `,
+                        this.consoleLog.error,
+                        `\n\n ${e} \n\n`);
+          })
+        } else {
+          console.dir('search no val');
+          this.autoSuggestRes = null;
+          this.searchEnteredWarning = false;
+        }
       } else {
-        console.dir('search no val');
         this.autoSuggestRes = null;
-        this.searchEnteredWarning = false;
       }
     }, 500),
   },
@@ -112,7 +116,9 @@ Vue.mixin({
     },
     suggestionBlur() {
       this.searchResultsFocus = false;
-      this.keyDownFocus = false;
+      this.keyDownFocus       = false;
+      this.addressSearchAuto  = null;
+      this.autoSuggestRes     = null;
 
       console.log('%c Hiding Address Search Suggestions via click-away ',
                   this.consoleLog.info);
@@ -273,7 +279,7 @@ Vue.mixin({
 
           let addressUrlEncoded = encodeURIComponent(this.locationResDataNew.address.streetAddress).replace(/%20/g, "+");
 
-          console.dir(addressUrlEncoded);
+          // console.dir(addressUrlEncoded);
 
           this.$router.replace({
             path: '/search',
@@ -286,12 +292,15 @@ Vue.mixin({
 
           this.errors.locationRes = null;
 
+
           this.cityHallDistance();
 
           console.log(`%c getLocation 👌 `,
                       this.consoleLog.success);
 
           this.setLatLong(this.locationResDataNew.address.latitude,this.locationResDataNew.address.longitude);
+
+          this.addressSearchAuto = null;
 
           this.getCouncilDistrict()
           .then((res) => {

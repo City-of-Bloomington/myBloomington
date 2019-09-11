@@ -281,7 +281,7 @@
                 v-model="addressSearchAuto"
                 v-on:focusd="sFocus()"
                 v-on:blurd="sBlur()"
-                placeholder="401 N Morton St"
+                :placeholder="locationResDataNew.address.streetAddress"
                 ref="addressSearch"
                 name="address-search"
                 id="address-search" />
@@ -1573,9 +1573,6 @@ export default {
     this.$nextTick(() => {
       this.loading = false;
     });
-
-
-
   },
   updated() {
     // this.$nextTick(() => {

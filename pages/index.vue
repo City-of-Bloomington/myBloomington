@@ -9,10 +9,10 @@
 
       <h3>
         <strong>
-          <span :class="[{'hide-viewport-small': autoSuggestRes }]">
+          <span v-if="!autoSuggestRes">
             Enter
           </span>
-          <span :class="[{'hide-viewport-small': !autoSuggestRes }]">
+          <span v-if="autoSuggestRes">
             Select
           </span>an Address
         </strong> to learn more:
