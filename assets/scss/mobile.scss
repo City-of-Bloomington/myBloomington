@@ -1,4 +1,13 @@
 @media (max-width: 575px) {
+
+  .hide-viewport-small {
+    display: none !important;
+  }
+
+  .show-viewport-small {
+    display: block !important;
+  }
+
   .badge {
     font-size: 14px;
 
@@ -21,5 +30,20 @@
   }
 }
 
-@media (min-width: 576px) and (max-width: 767px) {}
-@media (min-width: 768px) and (max-width: 991px) {}
+@media (min-width: 576px) and (max-width: 767px) {
+  .hide-viewport-medium {
+    display: none !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .hide-viewport-large {
+    display: none !important;
+  }
+}
+
+@media (min-width: 992px) {
+  .hide-viewport-xlarge {
+    display: none !important;
+  }
+}

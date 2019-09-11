@@ -1,39 +1,33 @@
 <template>
   <div class="homepage">
     <div v-if="!loading" class="container">
-
-      <noscript>Please enable Javascript to use this site.</noscript>
-
-      <template v-if="!isMobile">
+      <span
+        :class="[{'hide-viewport-small': autoSuggestRes }]">
         <h1>Welcome,</h1>
         <h2><span class="hi-lite">myBloomington</span> provides information related to a given Street Address.</h2>
-      </template>
-
-      <template v-else>
-        <template v-if="!autoSuggestRes">
-          <h1>Welcome,</h1>
-          <h2><span class="hi-lite">myBloomington</span> provides information related to a given Street Address.</h2>
-        </template>
-      </template>
+      </span>
 
       <h3>
         <strong>
-          <template v-if="isMobile && autoSuggestRes">
-            Select
-          </template>
-          <template v-else>
+          <span :class="[{'hide-viewport-small': autoSuggestRes }]">
             Enter
-          </template> an Address</strong> to learn more:
+          </span>
+          <span :class="[{'hide-viewport-small': !autoSuggestRes }]">
+            Select
+          </span>an Address
+        </strong> to learn more:
       </h3>
 
-      <div v-if="isMobile && autoSuggestRes"
-          style="display: flex; justify-content: space-between;">
-        <fn1-badge class="jurisdiction-check legend inside">
+      <!-- <div v-if="isMobile && autoSuggestRes"
+          > -->
+      <div
+        :class="['badge-legend', {'show-viewport-small': autoSuggestRes }]">
+        <fn1-badge class="jurisdiction-check inside">
           <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-check fa-w-16 fa-3x"><path fill="currentColor" d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" class=""></path></svg>
             Inside City Limits
         </fn1-badge>
 
-        <fn1-badge class="jurisdiction-check legend outside">
+        <fn1-badge class="jurisdiction-check outside">
           <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512" class="svg-inline--fa fa-times fa-w-11 fa-3x"><path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" class=""></path></svg>
             Outside City Limits
         </fn1-badge>
@@ -59,7 +53,7 @@
             id="address-search" />
         </form>
 
-        <template v-if="!isMobile">
+        <span class="hide-viewport-small">
           <ul v-if="(autoSuggestRes && searchHasFocus) || (autoSuggestRes && searchResultsFocus) || keyDownFocus"
             v-click-outside="suggestionBlur"
             ref="addressSearchResults"
@@ -115,9 +109,10 @@
               </li>
             </template>
           </ul>
-        </template>
+        </span>
 
-        <template v-else>
+        <span
+          class="hide-viewport-medium hide-viewport-large hide-viewport-xlarge">
           <ul v-if="autoSuggestRes"
             v-click-outside="suggestionBlur"
             ref="addressSearchResults"
@@ -167,7 +162,7 @@
               </li>
             </template>
           </ul>
-        </template>
+        </span>
       </div>
 
       <div class="disclaimer">

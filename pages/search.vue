@@ -43,7 +43,6 @@
       :zoom="zoom"
       ref="defaultMap"
       map-type-id="roadmap"
-      :style="getMapHeight"
       :options="{
         zoomControl:        true,
         mapTypeControl:     true,
@@ -100,8 +99,9 @@
       />
 
       <GmapCluster
-        :minimumClusterSize="2"
-        v-if="!isMobile">
+        v-if="!isMobile"
+        class="map-cluster"
+        :minimumClusterSize="2">
         <template
           v-for="p, i in nearbyParkMarkers()"
           v-if="mapMarkerToggle.parks">
@@ -157,7 +157,7 @@
     </GmapMap>
 
     <div class="overview">
-      <div class="row" v-if="!isMobile">
+      <div class="row">
         <div class="container">
           <div class="form-group inline">
             <fieldset>
@@ -214,13 +214,10 @@
                    :alt="weather.main">
 
               <p>
-                <template v-if="!isMobile">
-                  <strong>Weather:</strong>
-                  {{ weather.weather[0].main }} ~ {{ weather.main.temp }} &#176;F
-                </template>
-                <template v-else>
-                  {{ weather.main.temp }} &#176;F
-                </template>
+                <span class="hide-viewport-small">
+                  <strong>Weather:</strong> {{ weather.weather[0].main }} ~
+                </span>
+                {{ weather.main.temp }} &#176;F
               </p>
           </div>
 
@@ -236,13 +233,11 @@
                 Outside
               </template>
 
-              <template v-if="!isMobile">
-                Bloomington City Limits
-              </template>
-
-              <template v-else>
-                City Limits
-              </template>
+              <span>
+                <span class="hide-viewport-small">
+                  Bloomington
+                </span>&nbsp;City Limits
+              </span>
             </fn1-badge>
           </div>
         </div>
@@ -258,10 +253,14 @@
             </p>
           </div>
 
-          <div v-if="distanceToCityHall">
+          <div
+            v-if="distanceToCityHall"
+            class="hide-viewport-small">
             <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="map-pin" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 288 512" class="svg-inline--fa fa-map-pin fa-w-9 fa-3x"><path fill="currentColor" d="M112 316.94v156.69l22.02 33.02c4.75 7.12 15.22 7.12 19.97 0L176 473.63V316.94c-10.39 1.92-21.06 3.06-32 3.06s-21.61-1.14-32-3.06zM144 0C64.47 0 0 64.47 0 144s64.47 144 144 144 144-64.47 144-144S223.53 0 144 0zm0 76c-37.5 0-68 30.5-68 68 0 6.62-5.38 12-12 12s-12-5.38-12-12c0-50.73 41.28-92 92-92 6.62 0 12 5.38 12 12s-5.38 12-12 12z" class=""></path></svg>
 
-            <p v-if="!isMobile">Approx. <strong>{{ distanceToCityHall }} mi</strong> from <strong>City Hall</strong></p>
+            <p>
+              Approx. <strong>{{ distanceToCityHall }} mi</strong> from <strong>City Hall</strong>
+            </p>
           </div>
         </div>
       </div>
@@ -288,7 +287,9 @@
                 id="address-search" />
             </form>
 
-            <template v-if="!isMobile">
+            <span
+              v-if="!isMobile"
+              class="hide-viewport-small">
               <ul v-if="(autoSuggestRes && searchHasFocus) || (autoSuggestRes && searchResultsFocus) || keyDownFocus"
                 v-click-outside="suggestionBlur"
                 ref="addressSearchResults"
@@ -344,9 +345,9 @@
                   </li>
                 </template>
               </ul>
-            </template>
+            </span>
 
-            <template v-else>
+            <span v-else>
               <ul v-if="autoSuggestRes"
                 v-click-outside="suggestionBlur"
                 ref="addressSearchResults"
@@ -396,7 +397,7 @@
                   </li>
                 </template>
               </ul>
-            </template>
+            </span>
           </div>
         </div>
       </div>
@@ -410,7 +411,7 @@
           <p>{{ errors.addressRes }}</p>
         </fn1-alert>
 
-        <div v-if="addressResChoices" class="row data">
+        <!-- <div v-if="addressResChoices" class="row data">
           <header>
             <h2>Select an Address:</h2>
 
@@ -443,7 +444,7 @@
               </tr>
             </tbody>
           </table>
-        </div>
+        </div> -->
 
         <!-- <template v-for="c, i in JSON.parse(folks)">
           {{ c }}
@@ -651,10 +652,12 @@
 
                 <blockquote>
                   <p>The <a href="https://bloomington.in.gov/parks" alt="City of Bloomington Parks and Recreation">City of Bloomington Parks and Recreation</a> Department provides essential services, facilities and programs necessary for the positive development and well-being of the community through the provision of parks, greenways, trails and recreational facilities while working in cooperation with other service providers in the community in order to maximize all available resources.</p>
-                  <p v-if="!isMobile">
+
+                  <p class="hide-viewport-small">
                     <small>* Approximate distance.</small>
                   </p>
-                  <p v-else>
+
+                  <p>
                     <strong>Note: </strong>
                     Click a row for directions.
                   </p>
@@ -714,10 +717,12 @@
 
                 <blockquote>
                   <p>Playgrounds located nearby.</p>
-                  <p v-if="!isMobile">
+
+                  <p class="hide-viewport-small">
                     <small>* Approximate distance.</small>
                   </p>
-                  <p v-else>
+
+                  <p>
                     <strong>Note: </strong>
                     Click a row for directions.
                   </p>
@@ -781,10 +786,11 @@
 
                   <p><strong>Please Note:</strong> If you are seeking <strong>Safe Place Services</strong>, or are a <strong>youth in crisis</strong>, please contact the <strong>Binkley House Youth Shelter</strong> directly at <strong>812-349-2507</strong>.</p>
 
-                  <p v-if="!isMobile">
+                  <p class="hide-viewport-small">
                     <small>* Approximate distance.</small>
                   </p>
-                  <p v-else>
+
+                  <p>
                     <strong>Note: </strong>
                     Click a row for directions.
                   </p>
@@ -833,12 +839,11 @@
                   <p>Local <strong>Schools</strong> nearby the requested Address.</p>
                   <p><strong>Please Note:</strong> This <strong>does not</strong> indicate the appropriate <strong>School District</strong> nor any <strong>Higher Educational</strong> institutions.</p>
 
-                  <!-- <p>External <strong>School District</strong> information may by found <a @click.prevent="openModal('schoolDistrictModal')" href="#" alt="MCCSC School Districts">here</a>.</p> -->
-
-                  <p v-if="!isMobile">
+                  <p class="hide-viewport-small">
                     <small>* Approximate distance.</small>
                   </p>
-                  <p v-else>
+
+                  <p>
                     <strong>Note: </strong>
                     Click a row for directions.
                   </p>
@@ -1235,7 +1240,6 @@
               :center="latLong"
               :zoom="14"
               map-type-id="roadmap"
-              style="width: 100%; height: 550px"
               :options="{
                 zoomControl:        10,
                 mapTypeControl:     false,
@@ -1273,14 +1277,14 @@
               />
 
               <GmapPolygon
-                  :paths="districtRepGeoCoords"
-                  :options="{
-                    strokeColor:    'rgb(30, 90, 174)',
-                    strokeOpacity:  0.8,
-                    strokeWeight:   2,
-                    fillColor:      'rgb(30, 90, 174)',
-                    fillOpacity:    0.35
-                  }"
+                :paths="districtRepGeoCoords"
+                :options="{
+                  strokeColor:    'rgb(30, 90, 174)',
+                  strokeOpacity:  0.8,
+                  strokeWeight:   2,
+                  fillColor:      'rgb(30, 90, 174)',
+                  fillOpacity:    0.35
+                }"
               />
             </GmapMap>
 
@@ -1596,17 +1600,9 @@ export default {
   },
   computed: {
     // computed shared via: universal-computed.js
-    getMapHeight() {
-      if(this.isMobile) {
-        return 'width: 100vw; height: 150px;'
-      } else {
-        return 'width: 100vw; height: 450px;'
-      }
-    }
   },
   methods: {
     // methods shared via: universal-methods.js
-
     nearbyParkMarkers(){
       return this.nearbyMarkers(this.parksResData)
     },
@@ -1619,41 +1615,6 @@ export default {
     nearbySafePlaceMarkers(){
       return this.nearbyMarkers(this.safePlaceResData)
     },
-
-    // note: we may remove this entirely
-    // changeSchoolType(schoolType) {
-    //   switch(schoolType) {
-    //     case 'pre':
-    //       this.schoolType = 'pre';
-    //       this.schoolTypeToggle = this.schoolTypes.pre;
-    //       break;
-    //     case 'elm':
-    //       this.schoolType = 'elm';
-    //       this.schoolTypeToggle = this.schoolTypes.elm;
-    //       break;
-    //     case 'middle':
-    //       this.schoolType = 'middle';
-    //       this.schoolTypeToggle = this.schoolTypes.middle;
-    //       break;
-    //     case 'high':
-    //       this.schoolType = 'high';
-    //       this.schoolTypeToggle = this.schoolTypes.high;
-    //       break;
-    //     case 'admin':
-    //       this.schoolType = 'admin';
-    //       this.schoolTypeToggle = this.schoolTypes.admin;
-    //       break;
-    //     default:
-    //       this.schoolType = 'all';
-    //       this.schoolTypeToggle = this.schoolTypes.all;
-    //       break;
-    //   }
-    // },
-    // goToAddress(lat, lon) {
-    //   let url = `https://www.google.com/maps/dir/?api=1&origin=${this.latLong.lat},${this.latLong.lng}&destination=${lat},${lon}`;
-
-    //   return window.open(url, '_blank');
-    // },
   }
 }
 </script>
@@ -1743,6 +1704,11 @@ export default {
         }
       }
     }
+  }
+
+  .vue-map-container {
+    width: 100%;
+    height: 450px;
   }
 
   .row {
@@ -2163,6 +2129,14 @@ export default {
   }
 
   @media (max-width: 575px) {
+    .vue-map-container {
+      height: 200px;
+
+      .vue-map-hidden {
+        display: none;
+      }
+    }
+
     .container {
       width: 100%;
     }
@@ -2170,6 +2144,7 @@ export default {
     .overview {
       .row {
         &:first-of-type {
+          display: none;
           padding: 0;
 
           .container {
@@ -2179,22 +2154,27 @@ export default {
         }
 
         &:nth-of-type(2) {
-          padding: 15px 20px 0 20px;
-          background-color: $color-blue;
+          padding: 5px 20px;
+          // background-color: $color-blue;
 
           strong {
             display: block;
             margin: 0 0 5px 0;
           }
 
-          p {
-            color: white;
-          }
+          // p {
+          //   color: white;
+          // }
         }
 
         &:nth-of-type(3) {
           margin: -1px 0 0 0;
           padding: 15px 20px;
+        }
+
+         &:nth-of-type(4) {
+          margin: -1px 0 0 0;
+          padding: 0 20px 15px 20px;
         }
       }
     }
@@ -2206,6 +2186,10 @@ export default {
 
     .row {
       &.data {
+        &:last-child {
+          padding: 0;
+        }
+
         header {
           // background-color: red;
           //
@@ -2214,7 +2198,7 @@ export default {
           }
 
           h2 {
-            font-size: 20px;
+            font-size: 24px;
             margin: 0 0 20px 0;
             padding: 0;
           }
@@ -2238,16 +2222,41 @@ export default {
 
 
     .locations {
-      display: none !important;
+      flex-wrap: wrap;
+
+      .location {
+        padding: 0 !important;
+        width: 100% !important;
+        margin: 0 0 40px 0 !important;
+      }
+
+      ul {
+        li {
+          &:nth-child(2) {
+            font-size: 24px !important;
+          }
+        }
+      }
     }
 
     .contacts {
-      // background-color: red;
-
       .row {
-        // background-color: pink;
         flex-wrap: wrap;
         margin: 0;
+
+        &.mayor,
+        &.clerk,
+        &.council {
+          .about {
+            h2 {
+              font-size: 20px !important;
+            }
+
+            h4 {
+              font-size: 18px !important;
+            }
+          }
+        }
 
         &.mayor,
         &.clerk {
@@ -2255,12 +2264,13 @@ export default {
             display: flex !important;
             justify-content: center;
             width: 100% !important;
-
             margin: 0 !important;
 
             &:before {
-              left: 20px !important;
+              left: auto !important;
               width: 250px !important;
+              right: 50%;
+              margin-right: -100px;
             }
 
             img {
@@ -2272,6 +2282,39 @@ export default {
           .about {
             margin: 50px 0 0 0 !important;
             width: 100% !important;
+          }
+        }
+
+        &.council {
+          // background-color: red;
+
+          .contact {
+            // background-color: green;
+            flex-wrap: wrap;
+            margin: 0 0 40px 0 !important;
+
+            &:last-child {
+              margin: 0 !important;
+            }
+
+            .img {
+              width: 150px !important;
+              height: 150px !important;
+              margin: 0 0 20px 0 !important;
+
+              &:after {
+                width: 150px !important;
+                height: 150px !important;
+              }
+            }
+
+            .about {
+              width: 100%;
+
+              h4 {
+                margin: 0 0 10px 20px !important;
+              }
+            }
           }
         }
       }
@@ -2310,12 +2353,11 @@ export default {
 
           th, td {
             width: 100% !important;
-            padding: 5px 15px !important;
           }
 
           th {
-            padding: 15px 0 5px 0;
-            color: $text-color;
+            padding: 15px 0 10px 0;
+            color: lighten($text-color, 10%);
           }
 
           td {
@@ -2352,6 +2394,12 @@ export default {
             }
           }
         }
+      }
+    }
+
+    #districtRep {
+      .vue-map-container {
+        display: none;
       }
     }
   }
