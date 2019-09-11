@@ -287,9 +287,7 @@
                 id="address-search" />
             </form>
 
-            <span
-              v-if="!isMobile"
-              class="hide-viewport-small">
+            <span class="hide-viewport-small">
               <ul v-if="(autoSuggestRes && searchHasFocus) || (autoSuggestRes && searchResultsFocus) || keyDownFocus"
                 v-click-outside="suggestionBlur"
                 ref="addressSearchResults"
@@ -347,7 +345,8 @@
               </ul>
             </span>
 
-            <span v-else>
+            <span
+              class="hide-viewport-medium hide-viewport-large hide-viewport-xlarge">
               <ul v-if="autoSuggestRes"
                 v-click-outside="suggestionBlur"
                 ref="addressSearchResults"
