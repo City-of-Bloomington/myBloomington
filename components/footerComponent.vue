@@ -40,5 +40,14 @@ footer {
       padding: 20px;
     }
   }
+
+  @media (min-width: 576px) and (max-width: 767px) {
+    margin: 60px 0 0 0;
+
+    .container {
+      width: 100%;
+      padding: 20px;
+    }
+  }
 }
 </style>

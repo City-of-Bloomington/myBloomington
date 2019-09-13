@@ -66,7 +66,22 @@ export default {
   }
 
   @media (min-width: 576px) and (max-width: 767px) {
+    header {
+      ::v-deep a {
+        &:first-of-type {
 
+          img {
+            width: 35px !important;
+            height: 35px !important;
+            margin: 0 !important;
+          }
+        }
+
+        h1, h2 {
+          display: none;
+        }
+      }
+    }
   }
 
   @media (min-width: 768px) and (max-width: 991px) {

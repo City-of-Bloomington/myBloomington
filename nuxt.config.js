@@ -23,6 +23,7 @@ module.exports = {
   },
 
   head: {
+    noscript: [{innerHTML: 'myBloomington requires JavaScript.'}],
     title:          pkg.name,
     meta: [
       { charset:    'utf-8' },
@@ -83,6 +84,7 @@ module.exports = {
     { src:          '~/plugins/filters' },
     { src:          '~/plugins/google-map'},
     { src:          '~/plugins/click-outside'},
+    { src:          '~/plugins/mq', ssr: false},
     /*
     ** Note: Change domain & enable for launch.
     */

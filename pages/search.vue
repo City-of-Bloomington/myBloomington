@@ -214,7 +214,7 @@
                    :alt="weather.main">
 
               <p>
-                <span class="hide-viewport-small">
+                <span class="hide-viewport-small hide-viewport-medium">
                   <strong>Weather:</strong> {{ weather.weather[0].main }} ~
                 </span>
                 {{ weather.main.temp }} &#176;F
@@ -225,18 +225,18 @@
             <fn1-badge :class="['jurisdiction-check', {'inside': locationResDataNew.address.jurisdiction_name === 'Bloomington', 'outside': locationResDataNew.address.jurisdiction_name != 'Bloomington'}]">
               <template v-if="locationResDataNew.address.jurisdiction_name === 'Bloomington'">
                 <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-check fa-w-16 fa-3x"><path fill="currentColor" d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" class=""></path></svg>
-                Inside
+                Inside&nbsp;
               </template>
 
               <template v-else>
                 <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512" class="svg-inline--fa fa-times fa-w-11 fa-3x"><path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" class=""></path></svg>
-                Outside
+                Outside&nbsp;
               </template>
 
               <span>
-                <span class="hide-viewport-small">
-                  Bloomington
-                </span>&nbsp;City Limits
+                <span
+                  class="hide-viewport-small">Bloomington</span>
+                  City Limits
               </span>
             </fn1-badge>
           </div>
@@ -255,7 +255,7 @@
 
           <div
             v-if="distanceToCityHall"
-            class="hide-viewport-small">
+            class="hide-viewport-small hide-viewport-medium">
             <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="map-pin" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 288 512" class="svg-inline--fa fa-map-pin fa-w-9 fa-3x"><path fill="currentColor" d="M112 316.94v156.69l22.02 33.02c4.75 7.12 15.22 7.12 19.97 0L176 473.63V316.94c-10.39 1.92-21.06 3.06-32 3.06s-21.61-1.14-32-3.06zM144 0C64.47 0 0 64.47 0 144s64.47 144 144 144 144-64.47 144-144S223.53 0 144 0zm0 76c-37.5 0-68 30.5-68 68 0 6.62-5.38 12-12 12s-12-5.38-12-12c0-50.73 41.28-92 92-92 6.62 0 12 5.38 12 12s-5.38 12-12 12z" class=""></path></svg>
 
             <p>
@@ -273,6 +273,12 @@
             <p>Please select an <strong>Address</strong> below.</p>
           </fn1-alert>
 
+          <fn1-alert
+            v-if="errors.addressRes && addressSearchAuto"
+            variant="warning" >
+            <p>{{errors.addressRes}}</p>
+          </fn1-alert>
+
           <div class="form-wrapper">
             <form
               @submit.prevent
@@ -287,7 +293,7 @@
                 id="address-search" />
             </form>
 
-            <span class="hide-viewport-small">
+            <mq-layout :mq="['med', 'lrg']">
               <ul v-if="(autoSuggestRes && searchHasFocus) || (autoSuggestRes && searchResultsFocus) || keyDownFocus"
                 v-click-outside="suggestionBlur"
                 ref="addressSearchResults"
@@ -343,10 +349,9 @@
                   </li>
                 </template>
               </ul>
-            </span>
+            </mq-layout>
 
-            <span
-              class="hide-viewport-medium hide-viewport-large hide-viewport-xlarge">
+            <mq-layout mq="sm">
               <ul v-if="autoSuggestRes"
                 v-click-outside="suggestionBlur"
                 ref="addressSearchResults"
@@ -396,7 +401,7 @@
                   </li>
                 </template>
               </ul>
-            </span>
+            </mq-layout>
           </div>
         </div>
       </div>
@@ -404,51 +409,6 @@
 
     <div class="wrapper">
       <div class="container">
-        <fn1-alert v-if="errors.addressRes"
-                 dismissible
-                 variant="warning">
-          <p>{{ errors.addressRes }}</p>
-        </fn1-alert>
-
-        <!-- <div v-if="addressResChoices" class="row data">
-          <header>
-            <h2>Select an Address:</h2>
-
-            <blockquote>
-              <p><strong>"{{ addressSearch }}"</strong> returned <strong>~{{ addressResChoices.length }} results</strong>.</p>
-            </blockquote>
-          </header>
-
-          <table class="address-choices">
-            <caption class="sr-only">
-              Address Search Results
-            </caption>
-            <thead>
-              <tr>
-                <th scope="col">Street</th>
-                <th scope="col">City</th>
-                <th scope="col">State</th>
-                <th scope="col">Zip</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr v-for="a, i in addressResChoices"
-                  :key="i"
-                  @click="addressChoice(a)">
-                <th scope="row">{{a.streetAddress}}</th>
-                <td>{{a.city}}</td>
-                <td>{{ a.state }}</td>
-                <td>{{ a.zip }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div> -->
-
-        <!-- <template v-for="c, i in JSON.parse(folks)">
-          {{ c }}
-        </template> -->
-
         <template v-if="!addressResChoices && locationResDataNew">
           <div class="row data" v-if="locationResDataNew.purposes">
             <header>
@@ -1227,9 +1187,12 @@
             </div>
           </div>
 
-          <div class="row data"
-               id="districtRep"
-               ref="districtRep">
+          <div
+            v-if="districtRep"
+            class="row data"
+            id="districtRep"
+            ref="districtRep">
+
             <header>
               <h2>District Representative</h2>
             </header>
@@ -1287,7 +1250,7 @@
               />
             </GmapMap>
 
-            <div class="contacts" v-if="districtRep">
+            <div class="contacts">
               <div class="row council">
                 <div class="contact">
                   <div class="img"
@@ -1862,6 +1825,7 @@ export default {
               width: 100%;
               position: relative;
               z-index: 1;
+              box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.40);
             }
 
             &:before {
@@ -1938,6 +1902,7 @@ export default {
               background-position: top center;
               background-repeat: no-repeat;
               background-size: cover;
+              box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.40);
 
               &:after {
                 z-index: -1;
@@ -2257,21 +2222,19 @@ export default {
         &.mayor,
         &.clerk {
           .img {
-            display: flex !important;
-            justify-content: center;
             width: 100% !important;
             margin: 0 !important;
 
             &:before {
-              left: auto !important;
+              left: 0 !important;
               width: 250px !important;
-              right: 50%;
-              margin-right: -100px;
             }
 
             img {
+              margin: 0 0 0 25px;
               width: 250px !important;
-              height: 333px !important
+              height: 333px !important;
+
             }
           }
 
@@ -2282,10 +2245,7 @@ export default {
         }
 
         &.council {
-          // background-color: red;
-
           .contact {
-            // background-color: green;
             flex-wrap: wrap;
             margin: 0 0 40px 0 !important;
 
@@ -2352,12 +2312,12 @@ export default {
           }
 
           th {
-            padding: 15px 0 10px 0;
+            padding: 15px 0 10px 5px;
             color: lighten($text-color, 10%);
           }
 
           td {
-            padding: 0 0 15px 0;
+            padding: 0 0 15px 30px;
             border: none;
           }
         }
@@ -2378,11 +2338,7 @@ export default {
             }
 
             td {
-              padding: 15px 0;
-
-              &:nth-child(2) {
-
-              }
+              padding: 15px 0 15px 5px;
 
               &:nth-child(odd) {
                 display: none;
@@ -2398,5 +2354,539 @@ export default {
         display: none;
       }
     }
+  }
+
+  @media (min-width: 576px) and (max-width: 767px) {
+    .vue-map-container {
+      height: 200px;
+
+      .vue-map-hidden {
+        display: none;
+      }
+    }
+
+    .container {
+      width: 100%;
+    }
+
+    .overview {
+      .row {
+        &:first-of-type {
+          display: none;
+          padding: 0;
+
+          .container {
+            padding: 0 20px 0 0;
+            align-items: center;
+          }
+        }
+
+        &:nth-of-type(2) {
+          padding: 5px 20px;
+          // background-color: $color-blue;
+
+          strong {
+            display: block;
+            margin: 0 0 5px 0;
+          }
+
+          // p {
+          //   color: white;
+          // }
+        }
+
+        &:nth-of-type(3) {
+          margin: -1px 0 0 0;
+          padding: 15px 20px;
+        }
+
+         &:nth-of-type(4) {
+          margin: -1px 0 0 0;
+          padding: 0 20px 15px 20px;
+        }
+      }
+    }
+
+    .wrapper {
+      // background-color: green;
+      padding: 20px;
+    }
+
+    .row {
+      &.data {
+        &:last-child {
+          padding: 0;
+        }
+
+        header {
+          // background-color: red;
+          //
+          div {
+            margin: 0 0 10px 0;
+          }
+
+          h2 {
+            font-size: 24px;
+            margin: 0 0 20px 0;
+            padding: 0;
+          }
+
+          svg {
+            display: none;
+            // width: 35px;
+            // height: 35px;
+            // margin: 0 15px 0 0;
+          }
+
+          blockquote {
+            border-left: none;
+            width: 100%;
+            font-size: 16px;
+            padding: 0;
+          }
+        }
+      }
+    }
+
+
+    .locations {
+      flex-wrap: wrap;
+
+      .location {
+        padding: 0 !important;
+        width: 100% !important;
+        margin: 0 0 40px 0 !important;
+      }
+
+      ul {
+        li {
+          &:nth-child(2) {
+            font-size: 24px !important;
+          }
+        }
+      }
+    }
+
+    .contacts {
+      .row {
+        flex-wrap: wrap;
+        margin: 0;
+
+        &.mayor,
+        &.clerk,
+        &.council {
+          .about {
+            h2 {
+              font-size: 20px !important;
+            }
+
+            h4 {
+              font-size: 18px !important;
+            }
+          }
+        }
+
+        &.mayor,
+        &.clerk {
+          .img {
+            width: 100% !important;
+            margin: 0 !important;
+
+            &:before {
+              left: 0 !important;
+              width: 250px !important;
+            }
+
+            img {
+              margin: 0 0 0 25px;
+              width: 250px !important;
+              height: 333px !important;
+
+            }
+          }
+
+          .about {
+            margin: 50px 0 0 0 !important;
+            width: 100% !important;
+          }
+        }
+
+        &.council {
+          .contact {
+            flex-wrap: wrap;
+            margin: 0 0 40px 0 !important;
+
+            &:last-child {
+              margin: 0 !important;
+            }
+
+            .img {
+              width: 150px !important;
+              height: 150px !important;
+              margin: 0 0 20px 0 !important;
+
+              &:after {
+                width: 150px !important;
+                height: 150px !important;
+              }
+            }
+
+            .about {
+              width: 100%;
+
+              h4 {
+                margin: 0 0 10px 20px !important;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .button-group {
+      margin: 0 0 10px 0;
+
+      button {
+        padding: 5px 10px;
+        font-size: 16px;
+      }
+    }
+
+    .contacts > table,
+    table {
+      display: block;
+
+      tbody {
+        display: block;
+        // background-color: green;
+        width: 100%;
+
+        tr {
+          display: flex;
+          flex-wrap: wrap;
+          width: 100%;
+
+          &:first-child {
+            // background-color: pink;
+
+            th {
+              border: none;
+            }
+          }
+
+          th, td {
+            width: 100% !important;
+          }
+
+          th {
+            padding: 15px 0 10px 5px;
+            color: lighten($text-color, 10%);
+          }
+
+          td {
+            padding: 0 0 15px 30px;
+            border: none;
+          }
+        }
+      }
+    }
+
+    .parks,
+    .playgrounds,
+    .safe-places,
+    .schools {
+      table {
+        tbody {
+          tr {
+            border-top: 1px solid #ddd;
+
+            &:nth-child(1) {
+              border: none;
+            }
+
+            td {
+              padding: 15px 0 15px 5px;
+
+              &:nth-child(odd) {
+                display: none;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    #districtRep {
+      .vue-map-container {
+        display: none;
+      }
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 991px) {
+    .vue-map-container {
+      height: 200px;
+
+      .vue-map-hidden {
+        display: none;
+      }
+    }
+
+    .container {
+      width: 100%;
+    }
+
+    .overview {
+      .row {
+        &:first-of-type {
+          display: none;
+          padding: 0;
+
+          .container {
+            padding: 0 20px 0 0;
+            align-items: center;
+          }
+        }
+
+        &:nth-of-type(2) {
+          padding: 5px 20px;
+          // background-color: $color-blue;
+
+          strong {
+            display: block;
+            margin: 0 0 5px 0;
+          }
+
+          // p {
+          //   color: white;
+          // }
+        }
+
+        &:nth-of-type(3) {
+          margin: -1px 0 0 0;
+          padding: 15px 20px;
+        }
+
+         &:nth-of-type(4) {
+          margin: -1px 0 0 0;
+          padding: 0 20px 15px 20px;
+        }
+      }
+    }
+
+    .wrapper {
+      // background-color: green;
+      padding: 20px;
+    }
+
+    .row {
+      &.data {
+        &:last-child {
+          padding: 0;
+        }
+
+        header {
+          // background-color: red;
+          //
+          div {
+            margin: 0 0 10px 0;
+          }
+
+          h2 {
+            font-size: 24px;
+            margin: 0 0 20px 0;
+            padding: 0;
+          }
+
+          svg {
+            display: none;
+            // width: 35px;
+            // height: 35px;
+            // margin: 0 15px 0 0;
+          }
+
+          blockquote {
+            border-left: none;
+            width: 100%;
+            font-size: 16px;
+            padding: 0;
+          }
+        }
+      }
+    }
+
+
+    .locations {
+      flex-wrap: wrap;
+
+      .location {
+        padding: 0 !important;
+        width: 100% !important;
+        margin: 0 0 40px 0 !important;
+      }
+
+      ul {
+        li {
+          &:nth-child(2) {
+            font-size: 24px !important;
+          }
+        }
+      }
+    }
+
+    .contacts {
+      .row {
+        flex-wrap: wrap;
+        margin: 0;
+
+        &.mayor,
+        &.clerk,
+        &.council {
+          .about {
+            h2 {
+              font-size: 20px !important;
+            }
+
+            h4 {
+              font-size: 18px !important;
+            }
+          }
+        }
+
+        &.mayor,
+        &.clerk {
+          .img {
+            width: 100% !important;
+            margin: 0 !important;
+
+            &:before {
+              left: 0 !important;
+              width: 250px !important;
+            }
+
+            img {
+              margin: 0 0 0 25px;
+              width: 250px !important;
+              height: 333px !important;
+
+            }
+          }
+
+          .about {
+            margin: 50px 0 0 0 !important;
+            width: 100% !important;
+          }
+        }
+
+        &.council {
+          .contact {
+            flex-wrap: wrap;
+            margin: 0 0 40px 0 !important;
+
+            &:last-child {
+              margin: 0 !important;
+            }
+
+            .img {
+              width: 150px !important;
+              height: 150px !important;
+              margin: 0 0 20px 0 !important;
+
+              &:after {
+                width: 150px !important;
+                height: 150px !important;
+              }
+            }
+
+            .about {
+              width: 100%;
+
+              h4 {
+                margin: 0 0 10px 20px !important;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .button-group {
+      margin: 0 0 10px 0;
+
+      button {
+        padding: 5px 10px;
+        font-size: 16px;
+      }
+    }
+
+    // .contacts > table,
+    // table {
+    //   display: block;
+
+    //   tbody {
+    //     display: block;
+    //     // background-color: green;
+    //     width: 100%;
+
+    //     tr {
+    //       display: flex;
+    //       flex-wrap: wrap;
+    //       width: 100%;
+
+    //       &:first-child {
+    //         // background-color: pink;
+
+    //         th {
+    //           border: none;
+    //         }
+    //       }
+
+    //       th, td {
+    //         width: 100% !important;
+    //       }
+
+    //       th {
+    //         padding: 15px 0 10px 5px;
+    //         color: lighten($text-color, 10%);
+    //       }
+
+    //       td {
+    //         padding: 0 0 15px 30px;
+    //         border: none;
+    //       }
+    //     }
+    //   }
+    // }
+
+    // .parks,
+    // .playgrounds,
+    // .safe-places,
+    // .schools {
+    //   table {
+    //     tbody {
+    //       tr {
+    //         border-top: 1px solid #ddd;
+
+    //         &:nth-child(1) {
+    //           border: none;
+    //         }
+
+    //         td {
+    //           padding: 15px 0 15px 5px;
+
+    //           &:nth-child(odd) {
+    //             display: none;
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+
+    // #districtRep {
+    //   .vue-map-container {
+    //     display: none;
+    //   }
+    // }
   }
 </style>

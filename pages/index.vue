@@ -18,8 +18,6 @@
         </strong> to learn more:
       </h3>
 
-      <!-- <div v-if="isMobile && autoSuggestRes"
-          > -->
       <div
         :class="['badge-legend', {'show-viewport-small': autoSuggestRes }]">
         <fn1-badge class="jurisdiction-check inside">
@@ -39,6 +37,12 @@
         <p>Please select an <strong>Address</strong> below.</p>
       </fn1-alert>
 
+      <fn1-alert
+        v-if="errors.addressRes && addressSearchAuto"
+        variant="warning" >
+        <p>{{errors.addressRes}}</p>
+      </fn1-alert>
+
       <div class="form-wrapper">
         <form
           @submit.prevent
@@ -53,8 +57,9 @@
             id="address-search" />
         </form>
 
-        <span class="hide-viewport-small">
-          <ul v-if="(autoSuggestRes && searchHasFocus) || (autoSuggestRes && searchResultsFocus) || keyDownFocus"
+        <mq-layout :mq="['med', 'lrg']">
+          <ul
+            v-if="(autoSuggestRes && searchHasFocus) || (autoSuggestRes && searchResultsFocus) || keyDownFocus"
             v-click-outside="suggestionBlur"
             ref="addressSearchResults"
             tabindex="-1">
@@ -109,11 +114,11 @@
               </li>
             </template>
           </ul>
-        </span>
+        </mq-layout>
 
-        <span
-          class="hide-viewport-medium hide-viewport-large hide-viewport-xlarge">
-          <ul v-if="autoSuggestRes"
+        <mq-layout mq="sm">
+          <ul
+            v-if="autoSuggestRes"
             v-click-outside="suggestionBlur"
             ref="addressSearchResults"
             tabindex="-1">
@@ -162,7 +167,7 @@
               </li>
             </template>
           </ul>
-        </span>
+        </mq-layout>
       </div>
 
       <div class="disclaimer">
@@ -352,34 +357,20 @@
       title="Address Not Mapped">
 
       <fn1-alert
+        v-if="errors.addressNotMapped != null"
         slot="body"
         variant="warning">
+
         <p><strong>We Apologize -</strong></p>
-
-        <template v-if="errors.addressNotMapped != null">
-          <p><strong>Address:</strong></p>
-          <blockquote>
-            {{ errors.addressNotMapped.streetAddress }}<br>
-            {{ errors.addressNotMapped.city }}
-            {{ errors.addressNotMapped.state }},
-            {{ errors.addressNotMapped.zip }}
-
-            <fn1-badge :class="['jurisdiction-check', {'inside': errors.addressNotMapped.jurisdiction_name === 'Bloomington', 'outside': errors.addressNotMapped.jurisdiction_name != 'Bloomington'}]">
-              <template v-if="errors.addressNotMapped.jurisdiction_name === 'Bloomington'">
-                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="check" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-check fa-w-16 fa-3x"><path fill="currentColor" d="M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z" class=""></path></svg>
-                Inside
-              </template>
-
-              <template v-else>
-                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512" class="svg-inline--fa fa-times fa-w-11 fa-3x"><path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" class=""></path></svg>
-                Outside
-              </template>
-              Bloomington City Limits
-            </fn1-badge>
-          </blockquote>
-        </template>
-
+        <p><strong>Address:</strong></p>
+        <blockquote>
+          {{ errors.addressNotMapped.streetAddress }}<br>
+          {{ errors.addressNotMapped.city }}
+          {{ errors.addressNotMapped.state }},
+          {{ errors.addressNotMapped.zip }}
+        </blockquote>
         <p>Is in our database, but has yet to be mapped.</p>
+
       </fn1-alert>
 
       <fn1-button
@@ -574,6 +565,7 @@ export default {
 
         &:nth-of-type(2) {
           margin: 0 0 40px 0;
+          max-width: 700px;
 
           .headshot {
             width: 50px;
@@ -590,10 +582,13 @@ export default {
       a {
         border-radius: 50%;
         margin: 0 20px 0 0;
+        border: 3px dashed transparent;
 
-        &:focus {
+        &:focus,
+        &:hover {
           outline: none;
-          box-shadow: 0 2px 1px 2px white;
+          // box-shadow: -1px 3px 1px 2px white;
+          border: 3px dashed white;
         }
 
         &:last-of-type {
@@ -668,8 +663,9 @@ export default {
 
       form {
         ::v-deep input {
-          padding: 10px 20px;
+          padding: 10px 20px 10px 50px;
           font-size: 30px;
+          background-size: 30px;
         }
       }
 
@@ -717,6 +713,8 @@ export default {
           input {
             font-size: 18px;
             padding: 10px;
+            padding-left: 40px;
+            background-size: 20px;
           }
         }
 
@@ -737,10 +735,133 @@ export default {
   }
 
   @media (min-width: 576px) and (max-width: 767px) {
+    .homepage {
+      padding: 20px 0 0 0;
+      height: calc(100vh - 69px); // 69 = header height
 
+      .container {
+        padding: 0 20px;
+      }
+
+      h1 {
+        font-size: 40px;
+        margin: 0 0 15px 0;
+      }
+
+      h2 {
+        font-size: 20px;
+        line-height: 40px;
+
+        .hi-lite {
+          padding: 5px;
+        }
+      }
+
+      h3 {
+        font-size: 20px;
+      }
+
+      .form-wrapper {
+        margin: 10px 0 0 0;
+
+        ::v-deep form {
+          input {
+            font-size: 18px;
+            padding: 10px;
+            padding-left: 40px;
+            background-size: 20px;
+          }
+        }
+
+        ul {
+          li {
+            a {
+              padding: 10px;
+            }
+          }
+        }
+      }
+    }
+
+    .folks,
+    .map-container-wrapper {
+      display: none;
+    }
   }
 
   @media (min-width: 768px) and (max-width: 991px) {
+    .homepage {
+      padding: 20px 0 0 0;
+      height: calc(100vh - 69px); // 69 = header height
 
+      .container {
+        padding: 0 20px;
+      }
+
+      h1 {
+        font-size: 40px;
+        margin: 0 0 15px 0;
+      }
+
+      h2 {
+        font-size: 20px;
+        line-height: 40px;
+
+        .hi-lite {
+          padding: 5px;
+        }
+      }
+
+      h3 {
+        font-size: 20px;
+      }
+
+      .form-wrapper {
+        margin: 10px 0 0 0;
+
+        ::v-deep form {
+          input {
+            font-size: 18px;
+            padding: 10px;
+            padding-left: 40px;
+            background-size: 20px;
+          }
+        }
+
+        ul {
+          li {
+            a {
+              padding: 10px;
+            }
+          }
+        }
+      }
+    }
+
+    .folks,
+    .map-container-wrapper {
+      display: none;
+    }
+  }
+
+  @media (min-width: 992px) and (max-width: 1300px) {
+    .homepage {
+
+      .folks {
+        .row {
+          &:nth-of-type(2) {
+            max-width: 600px;
+
+            a {
+              margin: 0 20px 20px 0;
+
+              &:nth-child(n+9) {
+                margin: 0 20px 0 0;
+              }
+            }
+          }
+        }
+      }
+    }
   }
 </style>

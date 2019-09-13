@@ -77,6 +77,7 @@ Vue.mixin({
 
           })
           .catch((e)  => {
+            this.errors.addressRes = e;
             console.log(`%c getAutoAddress 🛑 `,
                         this.consoleLog.error,
                         `\n\n ${e} \n\n`);
@@ -115,10 +116,11 @@ Vue.mixin({
       this.searchResultsFocus = true;
     },
     suggestionBlur() {
-      this.searchResultsFocus = false;
-      this.keyDownFocus       = false;
-      this.addressSearchAuto  = null;
-      this.autoSuggestRes     = null;
+      this.searchResultsFocus   = false;
+      this.keyDownFocus         = false;
+      this.addressSearchAuto    = null;
+      this.autoSuggestRes       = null;
+      this.searchEnteredWarning = false;
 
       console.log('%c Hiding Address Search Suggestions via click-away ',
                   this.consoleLog.info);
@@ -248,7 +250,6 @@ Vue.mixin({
           this.latLong            = this.cityHallLatLong;
           this.mapHeight          = '100%';
           this.errors.addressRes  = 'This Address has not yet been Mapped.';
-          alert(this.errors.addressRes)
           console.log(`%c getAddress 👌 `,
                       this.consoleLog.success);
         }
