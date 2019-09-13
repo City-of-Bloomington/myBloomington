@@ -13,17 +13,9 @@ module.exports = {
         return { x: 0, y: 0 }
       }
     },
-    extendRoutes (routes, resolve) {
-      routes.forEach(item => {
-        if (item.path.includes('/result')) {
-          item.path = item.path.replace('/result', '')
-        }
-      })
-    }
   },
 
   head: {
-    noscript: [{innerHTML: 'myBloomington requires JavaScript.'}],
     title:          pkg.name,
     meta: [
       { charset:    'utf-8' },

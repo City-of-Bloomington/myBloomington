@@ -485,10 +485,6 @@ export default {
       color: white;
     }
 
-    h1, h2 {
-
-    }
-
     h1 {
       font-size: 80px;
       font-weight: 600;
@@ -682,7 +678,7 @@ export default {
   @media (max-width: 575px) {
     .homepage {
       padding: 20px 0 0 0;
-      height: calc(100vh - 69px); // 69 = header height
+      height: calc(100vh - 69px) !important; // 69 = header height
 
       .container {
         padding: 0 20px;

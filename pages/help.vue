@@ -74,4 +74,46 @@ h1, h2, h3, h4, p, ul {
 p {
   font-size: 18px;
 }
+
+@media (max-width: 575px) {
+  .wrapper {
+    padding: 20px 0 0 0;
+
+    .container {
+      padding: 0 20px;
+
+      section {
+        margin: 0;
+      }
+    }
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+  .wrapper {
+    padding: 20px 0 0 0;
+
+    .container {
+      padding: 0 20px;
+
+      section {
+        margin: 0;
+      }
+    }
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .wrapper {
+    padding: 20px 0 0 0;
+
+    .container {
+      padding: 0 20px;
+
+      section {
+        margin: 0;
+      }
+    }
+  }
+}
 </style>

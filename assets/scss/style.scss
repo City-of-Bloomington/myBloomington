@@ -1,5 +1,3 @@
-@import             'cobDS-tokens.scss';
-
 $text-color:        darken($color-grey, 55%);
 
 // these are totaly random, no rhyme or reason
@@ -12,6 +10,8 @@ $color-ee:   darken(#D4DCFF, 20%);
 $color-home: #7D83FF;
 $color-prmt: #007FFF;
 $color-shtr: darken(#1AFFD5, 20%);
+
+[v-cloak] { display: none; }
 
 html,
 body {
@@ -29,11 +29,6 @@ body {
 *:after {
   box-sizing: border-box;
   margin: 0;
-}
-
-.main-wrapper {
-  position: relative;
-  top: 120px;
 }
 
 @mixin visuallyHidden() {
@@ -262,7 +257,6 @@ a {
       border: 1px solid $color-grey-dark;
       color: $text-color;
       font-size: 18px;
-      border: 3px solid transparent;
       border-radius: $radius-default;
       caret-color: $color-blue; //no IE support
       padding-left: 40px;
@@ -273,7 +267,6 @@ a {
 
       &:focus,
       &:hover {
-        border: 3px dashed white;
         background-image: url("data:image/svg+xml,%3Csvg version='1.1' id='search-icon' focusable='false' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='512px' height='512px' viewBox='0 0 512 512' style='enable-background:new 0 0 512 512;' xml:space='preserve'%3E%3Cpath id='path' fill='%238c8c8c' d='M372,336c27.6-35.3,44-79.7,44-128C416,93.1,322.9,0,208,0S0,93.1,0,208s93.1,208,208,208 c48.3,0,92.7-16.4,128-44 M315.6,377.9L442.7,505c9.4,9.4,24.6,9.4,33.9,0l28.3-28.3c9.4-9.4,9.4-24.6,0.1-34L374.5,312.2 M208,336 c-70.7,0-128-57.2-128-128c0-70.7,57.2-128,128-128c70.7,0,128,57.2,128,128C336,278.7,278.8,336,208,336z'/%3E%3C/svg%3E");
       }
     }

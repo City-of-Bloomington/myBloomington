@@ -1,5 +1,4 @@
 @media (max-width: 575px) {
-
   .hide-viewport-small {
     display: none !important;
   }
@@ -16,6 +15,19 @@
       svg {
         margin: 0 !important;
       }
+    }
+  }
+
+  .wrapper {
+    h2 {
+      font-size: 24px !important;
+      margin: 0 0 20px 0 !important;
+      padding: 0 !important;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 24px;
     }
   }
 

@@ -1,4 +1,12 @@
 <template>
+  <div>
+  <div
+    v-if="false"
+    class="loading-wrapper">
+    <loader />
+    <h1>LOADING</h1>
+  </div>
+
   <div v-if="!loading && hasLocationData">
     <!-- <gmap-street-view-panorama
         style="width: 100%; height: 600px"
@@ -1414,6 +1422,7 @@
     </fn1-button>
   </exampleModal>
   </div>
+  </div>
 </template>
 
 <script>
@@ -1425,10 +1434,12 @@ import debounce        from 'lodash.debounce'
 import exampleSearch   from '~/components/exampleSearch'
 import exampleModal    from '~/components/exampleModal'
 import footerComponent from '~/components/footerComponent'
+import loader          from '~/components/loader'
 
 export default {
   layout: 'result',
   components: {
+    loader,
     exampleSearch,
     exampleModal,
     footerComponent
@@ -1535,6 +1546,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.loading = false;
+      // setTimeout(() => this.loading = false, 150);
     });
   },
   updated() {
@@ -1579,6 +1591,25 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .loading-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    width: 100%;
+    height: 100vh;
+
+    h1 {
+      color: $text-color;
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+  }
+
   .yard-waste-days {
     display: flex;
     flex-wrap: wrap;

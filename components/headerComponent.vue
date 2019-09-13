@@ -1,29 +1,31 @@
 <template>
-  <fn1-header
-    :logo="{
-      url:          `${baseUrl}`,
-      image:        `${headerLogo}`,
-      imageAlt:     `${cityName}`
-    }"
+  <div v-cloak>
+    <fn1-header
+      :logo="{
+        url:          `${baseUrl}`,
+        image:        `${headerLogo}`,
+        imageAlt:     `${cityName}`
+      }"
 
-    :logoHeadings="{
-      topHeading:   `${logoHeading}`,
-      subHeading:   `${logoSubHeading}`,
-    }"
+      :logoHeadings="{
+        topHeading:   `${logoHeading}`,
+        subHeading:   `${logoSubHeading}`,
+      }"
 
-    :application="{
-      name:         `${appName}`,
-      url:          `${baseUrl}${frontEndBase}`
-    }"
+      :application="{
+        name:         `${appName}`,
+        url:          `${baseUrl}${frontEndBase}`
+      }"
 
-    :navItems="[
-      { name:       'Help',
-        href:       'help' },
-      { name:       'Feedback',
-        href:       `${baseUrl}ureport/miscellaneous/53`}
-    ]"
-    :subNavItems="null">
-  </fn1-header>
+      :navItems="[
+        { name:       'Help',
+          href:       'help' },
+        { name:       'Feedback',
+          href:       `${baseUrl}ureport/miscellaneous/53`}
+      ]"
+      :subNavItems="null">
+    </fn1-header>
+  </div>
 </template>
 
 <script>
@@ -42,21 +44,34 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+[v-cloak] { display: none; }
   header {
     padding: 15px 20px !important;
-  }
 
-  @media (max-width: 575px) {
-    header {
-      ::v-deep a {
-        &:first-of-type {
-
-          img {
+    ::v-deep a {
+      &:first-of-type {
+        img {
+          @media (max-width: 575px) {
             width: 35px !important;
             height: 35px !important;
             margin: 0 !important;
           }
         }
+      }
+    }
+
+
+  }
+
+  @media (max-width: 575px) {
+    header {
+      ::v-deep div {
+
+        a > :not(nav) {
+        }
+      }
+
+      ::v-deep a {
 
         h1, h2 {
           display: none;

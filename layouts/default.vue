@@ -1,14 +1,18 @@
 <template>
   <div>
     <div><headerComponent /></div>
-    <div><nuxt /></div>
+    <div>
+      <noScript />
+      <nuxt />
+    </div>
   </div>
 </template>
 
 <script>
-import headerComponent      from '~/components/headerComponent'
+import headerComponent  from '~/components/headerComponent'
+import noScript         from '~/components/noScript'
 
 export default {
-  components: { headerComponent },
+  components: { headerComponent, noScript },
 }
 </script>
