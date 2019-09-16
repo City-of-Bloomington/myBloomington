@@ -19,6 +19,7 @@
     background-color: $color-blue;
   }
   p {
+    width: 100%;
     text-align: center;
     color: white;
     margin: 0 0 20px 0;

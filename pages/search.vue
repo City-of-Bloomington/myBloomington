@@ -887,6 +887,8 @@
               </tbody>
             </table>
 
+            <!-- NOTE: we need to set Data on this
+                 if we plan to use the feature. -->
             <exampleModal
               ref="schoolDistrictModal"
               title="School District Information">
@@ -1378,6 +1380,7 @@
     </div>
 
   <exampleModal
+    v-show="modals.addressMappedError"
     id="address-mapped-error-modal"
     ref="addressMappedErrorModal"
     title="Address Not Mapped">

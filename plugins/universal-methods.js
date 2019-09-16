@@ -58,7 +58,12 @@ Vue.mixin({
       addressRes:       null,
       locationRes:      null,
       addressNotMapped: null,
-    }
+    },
+
+    modals: {
+      addressMappedError: false,
+      schoolDistrict: false,
+    },
   }},
   watch: {
     addressSearchAuto: debounce(function(val, oldVal){
@@ -163,6 +168,7 @@ Vue.mixin({
       if(modalRef === 'schoolDistrictModal') {
         this.$refs.schoolDistrictModal.showModal = true;
       } else if (modalRef === 'addressMappedErrorModal') {
+        this.modals.addressMappedError = true;
         this.$refs.addressMappedErrorModal.showModal = true;
       }
     },
@@ -200,6 +206,7 @@ Vue.mixin({
       if(modalRef === 'schoolDistrictModal') {
         this.$refs.schoolDistrictModal.showModal = false;
       } else if (modalRef == 'addressMappedErrorModal') {
+        this.modals.addressMappedError = false;
         this.$refs.addressMappedErrorModal.showModal = false;
         this.errors.addressNotMapped = null;
         this.autoSuggestRes = null;

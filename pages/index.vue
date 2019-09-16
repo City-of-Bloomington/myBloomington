@@ -119,7 +119,6 @@
         <mq-layout mq="sm">
           <ul
             v-if="autoSuggestRes"
-            v-click-outside="suggestionBlur"
             ref="addressSearchResults"
             tabindex="-1">
             <template v-if="autoSuggestRes.length > 1">
@@ -352,6 +351,7 @@
     </div> -->
 
     <exampleModal
+      v-show="modals.addressMappedError"
       id="address-mapped-error-modal"
       ref="addressMappedErrorModal"
       title="Address Not Mapped">
