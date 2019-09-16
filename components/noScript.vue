@@ -1,5 +1,5 @@
 <template>
-  <noscript>
+  <noscript inline-template>
     <div>
       <p>
         We're sorry but <strong>myBloomington</strong> doesn't work properly without <strong>JavaScript enabled</strong>.
