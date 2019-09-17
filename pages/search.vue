@@ -1462,7 +1462,7 @@ export default {
     // data shared via: universal-methods.js
     return {}
   },
-  created() {
+  created: function() {
     this.$nextTick(() => {
       this.loading = true;
     });
@@ -1546,13 +1546,13 @@ export default {
                   `\n\n ${e} \n\n`);
     });
   },
-  mounted() {
+  mounted: function() {
     this.$nextTick(() => {
       this.loading = false;
       // setTimeout(() => this.loading = false, 150);
     });
   },
-  updated() {
+  updated: function() {
     // this.$nextTick(() => {
     //   console.dir('this is UPDATED');
 

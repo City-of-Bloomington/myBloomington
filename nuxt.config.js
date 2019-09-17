@@ -28,6 +28,9 @@ module.exports = {
         content:     process.env.npm_package_description || ''
       }
     ],
+    script: [
+      { src: 'https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.6.0/polyfill.min.js' }
+    ],
     link: [
       { rel:        'icon',
         type:       'image/x-icon',
@@ -38,6 +41,8 @@ module.exports = {
       }
     ]
   },
+
+
 
   env: {
     repo:                     pkg.repository.url,
@@ -75,7 +80,7 @@ module.exports = {
     { src:          '~/plugins/universal-computed' },
     { src:          '~/plugins/design-system' },
     { src:          '~/plugins/filters' },
-    { src:          '~/plugins/google-map'},
+    { src:          '~/plugins/google-map', ssr: false},
     { src:          '~/plugins/click-outside'},
     { src:          '~/plugins/mq', ssr: false},
     /*

@@ -412,7 +412,7 @@ export default {
     // data shared via: universal-methods.js
     return {}
   },
-  created() {
+  created: function() {
     this.$nextTick(() => {
       this.loading = true;
     });
@@ -441,12 +441,12 @@ export default {
                   `\n\n ${e} \n\n`);
     });
   },
-  mounted() {
+  mounted: function() {
     this.$nextTick(() => {
       this.loading = false;
     });
   },
-  updated() {
+  updated: function() {
     // this.$nextTick(() => {
     // // this causes woes for tab-accessibility result selection
     //   this.$refs.addressSearch.$el.children[0].focus();
