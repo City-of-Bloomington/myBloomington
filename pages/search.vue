@@ -418,7 +418,7 @@
     <div class="wrapper">
       <div class="container">
         <template v-if="!addressResChoices && locationResDataNew">
-          <div class="row data" v-if="locationResDataNew.purposes">
+          <section v-if="locationResDataNew.purposes">
             <header>
               <h2>About this Address</h2>
 
@@ -494,9 +494,9 @@
                 </template>
               </tbody>
             </table>
-          </div>
+          </section>
 
-          <div class="row data">
+          <section>
             <header>
               <h2>Sanitation Pickup</h2>
 
@@ -550,9 +550,407 @@
             <template v-else>
               <p>Expecting a sanitation pickup? Contact us: <a href="mailto:sanitation@bloomington.in.gov">sanitation@bloomington.in.gov</a></p>
             </template>
-          </div>
+          </section>
 
-          <div class="row data">
+          <section>
+            <header>
+              <h2>Elected City Officials</h2>
+            </header>
+
+            <div class="contacts">
+              <div class="row contact mayor">
+                <div class="img">
+                  <img :src="folks.officials.mayor.image"
+                       :title="`Mayor - ${folks.officials.mayor.name}`"
+                       :alt="`Mayor - ${folks.officials.mayor.name}`">
+                </div>
+
+                <div class="about">
+
+                  <h2>{{ folks.officials.mayor.name }}</h2>
+                  <h4>{{ folks.officials.mayor.title }}</h4>
+
+                  <p>John has worked extensively as a public servant in Democratic government, leading two state agencies, advising a Governor and Lieutenant Governor, and serving as an elected official. As the Secretary of the Indiana Family and Social Services Administration, he oversaw the implementation of Medicaid and welfare programs, services for the elderly, disabled, mentally ill, and children at risk, and state-wide community development and housing programs – all executed by a staff of 10,000 Hoosiers with an annual budget of $6 billion. Earlier he served as Commissioner of the Indiana Department of Environmental Management, the agency tasked with the statewide protection of Indiana’s air, water and land. John served as an elected member of the Board of Trustees for the Monroe County Community School Corporation.</p>
+
+                  <p>Throughout his time in Bloomington, John has served on many state and local commissions and boards, including chairing the Bloomington Commission on Sustainability and the Shalom Community Center board, as well as national boards such as the National Community Land Trust Network.</p>
+
+                  <table>
+                    <caption class="sr-only">
+                      Address Location Purposes
+                    </caption>
+                    <thead class="sr-only">
+                      <tr>
+                        <th scope="col">Purpose Type</th>
+                        <th scope="col">Purpose Name</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr>
+                        <th scope="row">Email:</th>
+                        <td>{{ folks.officials.mayor.email }}</td>
+                      </tr>
+
+                      <tr>
+                        <th scope="row">Telephone:</th>
+                        <td>{{ folks.officials.mayor.phone.office }}</td>
+                      </tr>
+
+                      <tr>
+                        <th scope="row">Mailing Address:</th>
+                        <td>
+                          Office of the Mayor<br>
+                          {{ folks.officials.mayor.streetAddress }} - Suite {{ folks.officials.mayor.suite }}<br>
+                          {{ folks.officials.mayor.cityStateZip }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="row council">
+                <div class="contact">
+                  <div class="img"
+                       :style="`background-image: url(${folks.council[1].image});`"></div>
+
+                  <div class="about">
+                    <h2>{{ folks.council[1].name }}</h2>
+                    <h4>{{ folks.council[1].title }}</h4>
+
+                    <table>
+                      <caption class="sr-only">
+                        City Council Member {{ folks.council[1].name }} {{ folks.council[1].title }}
+                      </caption>
+                      <thead class="sr-only">
+                        <tr>
+                          <th scope="col">Purpose Type</th>
+                          <th scope="col">Purpose Name</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        <tr>
+                          <th scope="row">Email:</th>
+                          <td>{{ folks.council[1].email }}</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row">Address:</th>
+                          <td>
+                            {{ folks.council[1].streetAddress }}<br>
+                            {{ folks.council[1].cityStateZip }}
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row">Phone (Office):</th>
+                          <td>{{ folks.council[1].phone.office }}</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row">Phone (Cell):</th>
+                          <td>{{ folks.council[1].phone.home }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="contact">
+                  <div class="img"
+                       :style="`background-image: url(${folks.council[2].image});`"></div>
+
+                  <div class="about">
+                    <h2>{{ folks.council[2].name }}</h2>
+                    <h4>{{ folks.council[2].title }}</h4>
+
+                    <table>
+                      <caption class="sr-only">
+                        City Council Member {{ folks.council[2].title }} {{ folks.council[2].name }}
+                      </caption>
+                      <thead class="sr-only">
+                        <tr>
+                          <th scope="col">Purpose Type</th>
+                          <th scope="col">Purpose Name</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        <tr>
+                          <th scope="row">Email:</th>
+                          <td>{{ folks.council[2].email }}</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row">Address:</th>
+                          <td>
+                            {{ folks.council[2].streetAddress }}<br>
+                            {{ folks.council[2].cityStateZip }}
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row">Phone:</th>
+                          <td>{{ folks.council[2].phone.office }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="contact">
+                  <div class="img"
+                       :style="`background-image: url(${folks.council[3].image});`"></div>
+
+                  <div class="about">
+                    <h2>{{ folks.council[3].name }}</h2>
+                    <h4>{{ folks.council[3].title }}</h4>
+
+                    <table>
+                      <caption class="sr-only">
+                        City Council Member {{ folks.council[3].name }} {{ folks.council[3].title }}
+                      </caption>
+                      <thead class="sr-only">
+                        <tr>
+                          <th scope="col">Purpose Type</th>
+                          <th scope="col">Purpose Name</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        <tr>
+                          <th scope="row">Email:</th>
+                          <td>{{ folks.council[3].email }}</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row">Address:</th>
+                          <td>
+                            {{ folks.council[3].streetAddress }}<br>
+                            {{ folks.council[3].cityStateZip }}
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row">Phone:</th>
+                          <td>{{ folks.council[3].phone.office }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div
+                  class="contact"
+                  v-if="districtRep"
+                  id="districtRep"
+                  ref="districtRep">
+                  <div class="img"
+                       :style="`background-image: url( ${districtRep.image} );`"></div>
+
+                  <div class="about">
+                    <h2>{{ districtRep.name }}</h2>
+                    <h4>{{ districtRep.title }}</h4>
+
+                    <GmapMap
+                      ref="districtMap"
+                      :center="latLong"
+                      :zoom="14"
+                      map-type-id="roadmap"
+                      :options="{
+                        zoomControl:        10,
+                        mapTypeControl:     false,
+                        scaleControl:       false,
+                        streetViewControl:  false,
+                        rotateControl:      false,
+                        fullscreenControl:  false,
+                        disableDefaultUi:   true,
+                        draggable:          true,
+                        styles: [
+                          {
+                            featureType:    'landscape',
+                            stylers: [
+                              {
+                                color:      '#f2f2f2',
+                                visibility: 'on'
+                              }
+                            ]
+                          },
+                          {
+                            featureType:    'poi',
+                            stylers: [
+                              {
+                                visibility: 'on'
+                              }
+                            ]
+                          },
+                        ]
+
+                      }">
+                      <GmapMarker
+                        :position="latLong"
+                        :clickable="false"
+                        :draggable="false"
+                      />
+
+                      <GmapPolygon
+                        :paths="districtRepGeoCoords"
+                        :options="{
+                          strokeColor:    'rgb(30, 90, 174)',
+                          strokeOpacity:  0.8,
+                          strokeWeight:   2,
+                          fillColor:      'rgb(30, 90, 174)',
+                          fillOpacity:    0.35
+                        }"
+                      />
+                    </GmapMap>
+
+                    <table>
+                      <caption class="sr-only">
+                        City Council District Representative {{ districtRep.name }} {{ districtRep.title }}
+                      </caption>
+                      <thead class="sr-only">
+                        <tr>
+                          <th scope="col">Purpose Type</th>
+                          <th scope="col">Purpose Name</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        <tr>
+                          <th scope="row">Email:</th>
+                          <td>{{ districtRep.email }}</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row">Address:</th>
+                          <td>
+                            {{ districtRep.streetAddress }}<br>
+                            {{ districtRep.cityStateZip }}
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row">Phone:</th>
+                          <td>{{ districtRep.phone.office }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div class="contact">
+                  <div class="img"
+                       :style="`background-image: url(${folks.officials.clerk.image});`"></div>
+
+                  <div class="about">
+                    <h2>{{ folks.officials.clerk.name }}</h2>
+                    <h4>{{ folks.officials.clerk.title }}</h4>
+
+                    <p>The City of Bloomington Clerk's Office strives to make city government as accessible and responsive to the community as possible. The office serves as an educational liaison between citizens and their government. We respond to inquiries by telephone, in writing, or in person from a variety of interested persons regarding matters pertaining to City Council actions, or related City information retained in the City Clerk's office. We work closely with the City Council to supply combined constituent services.</p>
+
+                    <p>For election information contact the <a href="https://www.co.monroe.in.us/department/?structureid=18" alt="Monroe County Clerk's Office">Monroe County Clerk's Office</a> or <a href="https://www.co.monroe.in.us/department/division.php?structureid=89" alt="Voter Registration">Voter Registration</a>.</p>
+
+                    <table>
+                      <caption class="sr-only">
+                        Address Location Purposes
+                      </caption>
+                      <thead class="sr-only">
+                        <tr>
+                          <th scope="col">Purpose Type</th>
+                          <th scope="col">Purpose Name</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        <tr>
+                          <th scope="row">Email:</th>
+                          <td>{{ folks.officials.clerk.email}}</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row">Telephone:</th>
+                          <td>{{ folks.officials.clerk.phone.office }}</td>
+                        </tr>
+
+                        <tr>
+                          <th scope="row">Mailing Address:</th>
+                          <td>
+                            City Clerk<br>
+                            {{ folks.officials.clerk.streetAddress }} - Suite {{ folks.officials.clerk.suite }}<br>
+                           {{ folks.officials.clerk.cityStateZip }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section v-if="locations">
+            <header>
+              <h2>Government Online</h2>
+            </header>
+
+            <div class="locations">
+              <div class="location" v-for="l, i in locations">
+                <ul>
+                  <li>{{ l.type }}</li>
+                  <li>{{ l.location }}</li>
+                </ul>
+
+                <table>
+                  <caption class="sr-only">
+                    Online Government Information
+                  </caption>
+                  <thead class="sr-only">
+                    <tr>
+                      <th scope="col">Key/Value</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr>
+                      <th scope="row">
+                        Web:
+
+                        <a :href="l.website.url"
+                           :alt="l.website.text">{{ l.website.text }}</a>
+                      </th>
+                    </tr>
+
+                    <tr>
+                      <th scope="row">
+                        Socials:
+                        <template v-for="s, i in l.socials">
+                          <a :href="s.url"
+                             :alt="s.text">
+                            <template v-if="s.type === 'instagram'">
+                              <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="instagram" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-instagram fa-w-14 fa-3x"><path fill="currentColor" d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z" class=""></path></svg>
+                            </template>
+                            <template v-if="s.type === 'twitter'">
+                              <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-twitter fa-w-16 fa-3x"><path fill="currentColor" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z" class=""></path></svg>
+                            </template>
+                            <template v-if="s.type === 'facebook'">
+                              <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="facebook-f" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="svg-inline--fa fa-facebook-f fa-w-10 fa-3x"><path fill="currentColor" d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z" class=""></path></svg>
+                            </template>
+                            <template v-if="s.type === 'youtube'">
+                              <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="youtube" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="svg-inline--fa fa-youtube fa-w-18 fa-3x"><path fill="currentColor" d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z" class=""></path></svg>
+                            </template>
+                          </a>
+                        </template>
+                      </th>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <section>
             <header>
               <h2>Coordinate Details</h2>
 
@@ -608,9 +1006,9 @@
                 </tr>
               </tbody>
             </table>
-          </div>
+          </section>
 
-          <div class="row data parks" v-if="parksResData">
+          <section class="parks" v-if="parksResData">
             <header>
               <h2>City Parks</h2>
 
@@ -673,9 +1071,9 @@
                 </tr>
               </tbody>
             </table>
-          </div>
+          </section>
 
-          <div class="row data playgrounds" v-if="playgroundsResData">
+          <section class="playgrounds" v-if="playgroundsResData">
             <header>
               <h2>Nearby Playgrounds</h2>
 
@@ -739,9 +1137,9 @@
                 </tr>
               </tbody>
             </table>
-          </div>
+          </section>
 
-          <div class="row data safe-places" v-if="safePlaceResData">
+          <section class="safe-places" v-if="safePlaceResData">
             <header>
               <h2>Safe Places</h2>
 
@@ -793,9 +1191,9 @@
                 </tr>
               </tbody>
             </table>
-          </div>
+          </section>
 
-          <div class="row data schools" v-if="schoolsResData">
+          <section class="schools" v-if="schoolsResData">
             <header>
               <h2>Nearby Schools</h2>
 
@@ -945,436 +1343,7 @@
                 Cancel
               </fn1-button>
             </exampleModal>
-          </div>
-
-          <div class="row data">
-            <header>
-              <h2>Elected City Officials</h2>
-            </header>
-
-            <div class="contacts">
-              <div class="row contact mayor">
-                <div class="img">
-                  <img :src="folks.officials.mayor.image"
-                       :title="`Mayor - ${folks.officials.mayor.name}`"
-                       :alt="`Mayor - ${folks.officials.mayor.name}`">
-                </div>
-
-                <div class="about">
-
-                  <h2>{{ folks.officials.mayor.name }}</h2>
-                  <h4>{{ folks.officials.mayor.title }}</h4>
-
-                  <p>John has worked extensively as a public servant in Democratic government, leading two state agencies, advising a Governor and Lieutenant Governor, and serving as an elected official. As the Secretary of the Indiana Family and Social Services Administration, he oversaw the implementation of Medicaid and welfare programs, services for the elderly, disabled, mentally ill, and children at risk, and state-wide community development and housing programs – all executed by a staff of 10,000 Hoosiers with an annual budget of $6 billion. Earlier he served as Commissioner of the Indiana Department of Environmental Management, the agency tasked with the statewide protection of Indiana’s air, water and land. John served as an elected member of the Board of Trustees for the Monroe County Community School Corporation.</p>
-
-                  <p>Throughout his time in Bloomington, John has served on many state and local commissions and boards, including chairing the Bloomington Commission on Sustainability and the Shalom Community Center board, as well as national boards such as the National Community Land Trust Network.</p>
-
-                  <table>
-                    <caption class="sr-only">
-                      Address Location Purposes
-                    </caption>
-                    <thead class="sr-only">
-                      <tr>
-                        <th scope="col">Purpose Type</th>
-                        <th scope="col">Purpose Name</th>
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      <tr>
-                        <th scope="row">Email:</th>
-                        <td>{{ folks.officials.mayor.email }}</td>
-                      </tr>
-
-                      <tr>
-                        <th scope="row">Telephone:</th>
-                        <td>{{ folks.officials.mayor.phone.office }}</td>
-                      </tr>
-
-                      <tr>
-                        <th scope="row">Mailing Address:</th>
-                        <td>
-                          Office of the Mayor<br>
-                          {{ folks.officials.mayor.streetAddress }} - Suite {{ folks.officials.mayor.suite }}<br>
-                          {{ folks.officials.mayor.cityStateZip }}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              <div class="row contact clerk">
-                <div class="img">
-                  <img :src="folks.officials.clerk.image"
-                       :title="`Clerk - ${folks.officials.clerk.name}`"
-                       :alt="`Clerk ${folks.officials.clerk.name}`">
-                </div>
-
-                <div class="about">
-                  <h2>{{ folks.officials.clerk.name }}</h2>
-                  <h4>{{ folks.officials.clerk.title }}</h4>
-
-                  <p>The City of Bloomington Clerk's Office strives to make city government as accessible and responsive to the community as possible. The office serves as an educational liaison between citizens and their government. We respond to inquiries by telephone, in writing, or in person from a variety of interested persons regarding matters pertaining to City Council actions, or related City information retained in the City Clerk's office. We work closely with the City Council to supply combined constituent services.</p>
-
-                  <p>For election information contact the <a href="https://www.co.monroe.in.us/department/?structureid=18" alt="Monroe County Clerk's Office">Monroe County Clerk's Office</a> or <a href="https://www.co.monroe.in.us/department/division.php?structureid=89" alt="Voter Registration">Voter Registration</a>.</p>
-
-                  <table>
-                    <caption class="sr-only">
-                      Address Location Purposes
-                    </caption>
-                    <thead class="sr-only">
-                      <tr>
-                        <th scope="col">Purpose Type</th>
-                        <th scope="col">Purpose Name</th>
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      <tr>
-                        <th scope="row">Email:</th>
-                        <td>{{ folks.officials.clerk.email}}</td>
-                      </tr>
-
-                      <tr>
-                        <th scope="row">Telephone:</th>
-                        <td>{{ folks.officials.clerk.phone.office }}</td>
-                      </tr>
-
-                      <tr>
-                        <th scope="row">Mailing Address:</th>
-                        <td>
-                          City Clerk<br>
-                          {{ folks.officials.clerk.streetAddress }} - Suite {{ folks.officials.clerk.suite }}<br>
-                         {{ folks.officials.clerk.cityStateZip }}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row data">
-            <header>
-              <h2>City Council</h2>
-            </header>
-
-            <div class="contacts">
-              <div class="row council">
-                <div class="contact">
-                  <div class="img"
-                       :style="`background-image: url(${folks.council[1].image});`"></div>
-
-                  <div class="about">
-                    <h2>{{ folks.council[1].name }}</h2>
-                    <h4>{{ folks.council[1].title }}</h4>
-
-                    <table>
-                      <caption class="sr-only">
-                        City Council Member {{ folks.council[1].name }} {{ folks.council[1].title }}
-                      </caption>
-                      <thead class="sr-only">
-                        <tr>
-                          <th scope="col">Purpose Type</th>
-                          <th scope="col">Purpose Name</th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        <tr>
-                          <th scope="row">Email:</th>
-                          <td>{{ folks.council[1].email }}</td>
-                        </tr>
-
-                        <tr>
-                          <th scope="row">Address:</th>
-                          <td>
-                            {{ folks.council[1].streetAddress }}<br>
-                            {{ folks.council[1].cityStateZip }}
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <th scope="row">Phone (Office):</th>
-                          <td>{{ folks.council[1].phone.office }}</td>
-                        </tr>
-
-                        <tr>
-                          <th scope="row">Phone (Cell):</th>
-                          <td>{{ folks.council[1].phone.home }}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                <div class="contact">
-                  <div class="img"
-                       :style="`background-image: url(${folks.council[2].image});`"></div>
-
-                  <div class="about">
-                    <h2>{{ folks.council[2].name }}</h2>
-                    <h4>{{ folks.council[2].title }}</h4>
-
-                    <table>
-                      <caption class="sr-only">
-                        City Council Member {{ folks.council[2].title }} {{ folks.council[2].name }}
-                      </caption>
-                      <thead class="sr-only">
-                        <tr>
-                          <th scope="col">Purpose Type</th>
-                          <th scope="col">Purpose Name</th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        <tr>
-                          <th scope="row">Email:</th>
-                          <td>{{ folks.council[2].email }}</td>
-                        </tr>
-
-                        <tr>
-                          <th scope="row">Address:</th>
-                          <td>
-                            {{ folks.council[2].streetAddress }}<br>
-                            {{ folks.council[2].cityStateZip }}
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <th scope="row">Phone:</th>
-                          <td>{{ folks.council[2].phone.office }}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                <div class="contact">
-                  <div class="img"
-                       :style="`background-image: url(${folks.council[3].image});`"></div>
-
-                  <div class="about">
-                    <h2>{{ folks.council[3].name }}</h2>
-                    <h4>{{ folks.council[3].title }}</h4>
-
-                    <table>
-                      <caption class="sr-only">
-                        City Council Member {{ folks.council[3].name }} {{ folks.council[3].title }}
-                      </caption>
-                      <thead class="sr-only">
-                        <tr>
-                          <th scope="col">Purpose Type</th>
-                          <th scope="col">Purpose Name</th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        <tr>
-                          <th scope="row">Email:</th>
-                          <td>{{ folks.council[3].email }}</td>
-                        </tr>
-
-                        <tr>
-                          <th scope="row">Address:</th>
-                          <td>
-                            {{ folks.council[3].streetAddress }}<br>
-                            {{ folks.council[3].cityStateZip }}
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <th scope="row">Phone:</th>
-                          <td>{{ folks.council[3].phone.office }}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div
-            v-if="districtRep"
-            class="row data"
-            id="districtRep"
-            ref="districtRep">
-
-            <header>
-              <h2>District Representative</h2>
-            </header>
-
-            <GmapMap
-              ref="districtMap"
-              :center="latLong"
-              :zoom="14"
-              map-type-id="roadmap"
-              :options="{
-                zoomControl:        10,
-                mapTypeControl:     false,
-                scaleControl:       false,
-                streetViewControl:  false,
-                rotateControl:      false,
-                fullscreenControl:  false,
-                disableDefaultUi:   true,
-                draggable:          true,
-                styles: [
-                  {
-                    featureType:    'landscape',
-                    stylers: [
-                      {
-                        color:      '#f2f2f2',
-                        visibility: 'on'
-                      }
-                    ]
-                  },
-                  {
-                    featureType:    'poi',
-                    stylers: [
-                      {
-                        visibility: 'on'
-                      }
-                    ]
-                  },
-                ]
-
-              }">
-              <GmapMarker
-                :position="latLong"
-                :clickable="false"
-                :draggable="false"
-              />
-
-              <GmapPolygon
-                :paths="districtRepGeoCoords"
-                :options="{
-                  strokeColor:    'rgb(30, 90, 174)',
-                  strokeOpacity:  0.8,
-                  strokeWeight:   2,
-                  fillColor:      'rgb(30, 90, 174)',
-                  fillOpacity:    0.35
-                }"
-              />
-            </GmapMap>
-
-            <div class="contacts">
-              <div class="row council">
-                <div class="contact">
-                  <div class="img"
-                       :style="`background-image: url( ${districtRep.image} );`"></div>
-
-                  <div class="about">
-                    <h2>{{ districtRep.name }}</h2>
-                    <h4>{{ districtRep.title }}</h4>
-
-                    <table>
-                      <caption class="sr-only">
-                        City Council District Representative {{ districtRep.name }} {{ districtRep.title }}
-                      </caption>
-                      <thead class="sr-only">
-                        <tr>
-                          <th scope="col">Purpose Type</th>
-                          <th scope="col">Purpose Name</th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        <tr>
-                          <th scope="row">Email:</th>
-                          <td>{{ districtRep.email }}</td>
-                        </tr>
-
-                        <tr>
-                          <th scope="row">Address:</th>
-                          <td>
-                            {{ districtRep.streetAddress }}<br>
-                            {{ districtRep.cityStateZip }}
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <th scope="row">Phone:</th>
-                          <td>{{ districtRep.phone.office }}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row data" v-if="locations">
-            <header>
-              <h2>Government Online</h2>
-            </header>
-
-            <div class="locations">
-              <div class="location" v-for="l, i in locations">
-                <ul>
-                  <li>{{ l.type }}</li>
-                  <li>{{ l.location }}</li>
-                  <!-- <li>
-                    <strong>Website:</strong>
-                    <a :href="l.website.url"
-                       :alt="l.website.text">{{ l.website.text }}</a>
-                  </li>
-                  <li>
-                    <strong>Phone:</strong>
-                    {{ l.phone.number }}
-                  </li> -->
-                </ul>
-
-                <table>
-                  <caption class="sr-only">
-                    Online Government Information
-                  </caption>
-                  <thead class="sr-only">
-                    <tr>
-                      <th scope="col">Key/Value</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    <tr>
-                      <th scope="row">
-                        Web:
-
-                        <a :href="l.website.url"
-                           :alt="l.website.text">{{ l.website.text }}</a>
-                      </th>
-                    </tr>
-
-                    <tr>
-                      <th scope="row">
-                        Socials:
-                        <template v-for="s, i in l.socials">
-                          <a :href="s.url"
-                             :alt="s.text">
-                            <template v-if="s.type === 'instagram'">
-                              <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="instagram" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-instagram fa-w-14 fa-3x"><path fill="currentColor" d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z" class=""></path></svg>
-                            </template>
-                            <template v-if="s.type === 'twitter'">
-                              <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-twitter fa-w-16 fa-3x"><path fill="currentColor" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z" class=""></path></svg>
-                            </template>
-                            <template v-if="s.type === 'facebook'">
-                              <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="facebook-f" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="svg-inline--fa fa-facebook-f fa-w-10 fa-3x"><path fill="currentColor" d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z" class=""></path></svg>
-                            </template>
-                            <template v-if="s.type === 'youtube'">
-                              <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="youtube" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="svg-inline--fa fa-youtube fa-w-18 fa-3x"><path fill="currentColor" d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z" class=""></path></svg>
-                            </template>
-                          </a>
-                        </template>
-                      </th>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
+          </section>
         </template>
       </div>
     </div>
@@ -1704,274 +1673,103 @@ export default {
     height: 450px;
   }
 
-  .row {
+  section {
+    // background-color: red;
     width: 100%;
+    padding: 0;
+    margin: 0 0 60px 0;
 
-    &.data {
+    &:last-of-type {
       margin: 0;
-      padding: 0 0 60px 0;
-      // border-bottom: 1px dashed lighten($color-grey, 5%);
+    }
 
-      header {
-        // background-color: green;
+    header {
+      // background-color: green;
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0;
+      padding: 0;
+
+      div {
         display: flex;
         flex-wrap: wrap;
-        margin: 0;
-        padding: 0;
-
-        div {
-          display: flex;
-          flex-wrap: wrap;
-          align-items: center;
-          width: 100%;
-          margin: 0 0 40px 0;
-        }
-
-        svg {
-          color: $color-silver;
-          width: 50px;
-          height: 50px;
-          margin: 0 40px 0 0;
-        }
-
-        blockquote {
-          width: calc(100% - 90px);
-          margin: 0;
-          padding: 0 0 0 40px;
-          font-size: 18px;
-
-          p {
-            width: 100%;
-            color: lighten($text-color, 5%);
-            margin: 0 0 10px 0;
-
-            &:last-of-type {
-              margin: 0;
-            }
-          }
-        }
-      }
-
-      .vue-map-container {
+        align-items: center;
+        width: 100%;
         margin: 0 0 40px 0;
-
-        &:before {display: none;}
       }
 
-      .locations {
-        // background-color: red;
-        display: flex;
-        justify-content: space-between;
+      svg {
+        color: $color-silver;
+        width: 50px;
+        height: 50px;
+        margin: 0 40px 0 0;
+      }
 
-        .location {
-          padding: 0 20px;
-          width: 33.33333337%;
-          // background-color: blue;
+      blockquote {
+        width: calc(100% - 90px);
+        margin: 0;
+        padding: 0 0 0 40px;
+        font-size: 18px;
 
-          &:first-child {
-            padding: 0 20px 0 0;
-          }
+        p {
+          width: 100%;
+          color: lighten($text-color, 5%);
+          margin: 0 0 10px 0;
 
-          &:last-child {
-            padding: 0 0 0 20px;
-          }
-        }
-
-        ul {
-          li {
-            color: lighten($text-color, 5%);
-
-            &:nth-child(1) {
-              letter-spacing: 1px;
-              text-transform: uppercase;
-              font-weight: $weight-semi-bold;
-              border-bottom: 1px solid $color-grey;
-              padding: 0 0 10px 0;
-              margin: 0 0 10px 0;
-            }
-
-            &:nth-child(2) {
-              letter-spacing: .5px;
-              font-size: 28px;
-              margin: 10px 0;
-              padding: 0 0 0 15px;
-            }
-
-            &:nth-child(n+3) {
-              color: red;
-            }
-          }
-        }
-
-        table {
-          tbody {
-            tr {
-              display: flex;
-              align-items: center;
-
-              th {
-                display: flex;
-                align-items: center;
-                width: 100%;
-              }
-            }
-          }
-          a {
-            margin: 0 0 0 20px;
-            text-decoration: none;
-            border-bottom: none;
-
-            &:hover,
-            &:focus {
-              svg {
-                color: $color-blue;
-              }
-            }
-          }
-          svg {
-            width: 20px;
-            height: 20px;
+          &:last-of-type {
             margin: 0;
           }
         }
       }
+    }
 
-      .contacts {
-        // background-color: green;
+    .vue-map-container {
+      margin: 0 0 40px 0;
 
-        table tbody tr th {
-          width: 225px;
+      &:before {display: none;}
+    }
+
+    .locations {
+      // background-color: red;
+      display: flex;
+      justify-content: space-between;
+
+      .location {
+        padding: 0 20px;
+        width: 33.33333337%;
+        // background-color: blue;
+
+        &:first-child {
+          padding: 0 20px 0 0;
         }
 
-        .mayor,
-        .clerk {
-          display: flex;
-          margin: 0 0 70px 0;
-          // background-color: red;
-
-          .img {
-            position: relative;
-            width: 300px;
-            margin: 0 40px 0 0;
-            display: table;
-
-            img {
-              width: 100%;
-              position: relative;
-              z-index: 1;
-              box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.40);
-            }
-
-            &:before {
-              position: absolute;
-              content: '';
-              left: -25px;
-              bottom: -22px;
-              width: 100%;
-              height: 100%;
-              display: block;
-              border-radius: $radius-default*3;
-              background-color: $color-grey-lighter;
-            }
-          }
-
-          .about {
-            width: calc(100% - 300px);
-
-            h2 {
-              font-size: 24px;
-              margin: 0 0 20px 0;
-
-              &:after {
-                background-color: $color-blue;
-              }
-            }
-
-            h4 {
-              color: lighten($text-color, 20%);
-              // font-weight: $weight-semi-bold;
-              font-size: 20px;
-              letter-spacing: 1px;
-              text-transform: uppercase;
-              margin: 0 0 20px 20px;
-              padding: 0 0 0 20px;
-              border-left: 2px solid $color-grey;
-            }
-
-            p {
-              letter-spacing: .5px;
-              font-weight: 500;
-              font-style: italic;
-              margin: 0 0 20px 0;
-              line-height: 25px;
-            }
-          }
+        &:last-child {
+          padding: 0 0 0 20px;
         }
+      }
 
-        .council {
-          // background-color: red;
-          display: flex;
-          flex-wrap: wrap;
-          // justify-content: space-between;
+      ul {
+        li {
+          color: lighten($text-color, 5%);
 
-          .contact {
-            display: flex;
-            // background-color: green;
-            width: 100%;
-            margin: 0 0 80px 0;
-
-            h4 {
-              margin: 0 0 20px 20px;
-              padding: 0 0 0 20px;
-              border-left: 2px solid $color-grey;
-            }
-
-            .img {
-              position: relative;
-              display: block;
-              margin: 0 40px 0 0;
-              width: 225px;
-              height: 225px;
-              border-radius: 50%;
-              background-position: top center;
-              background-repeat: no-repeat;
-              background-size: cover;
-              box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.40);
-
-              &:after {
-                z-index: -1;
-                position: absolute;
-                content: '';
-                width: 225px;
-                height: 225px;
-                left: -10px;
-                bottom: -15px;
-                display: block;
-                border-radius: 50%;
-                background-color: $color-grey-lighter;
-              }
-            }
+          &:nth-child(1) {
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: $weight-semi-bold;
+            border-bottom: 1px solid $color-grey;
+            padding: 0 0 10px 0;
+            margin: 0 0 10px 0;
           }
 
-          .about {
-            width: calc(100% - 265px);
+          &:nth-child(2) {
+            letter-spacing: .5px;
+            font-size: 28px;
+            margin: 10px 0;
+            padding: 0 0 0 15px;
+          }
 
-            h2 {
-              font-size: 24px;
-              margin: 0 0 20px 0;
-
-              &:after {
-                background-color: $color-blue;
-              }
-            }
-
-            h4 {
-              color: lighten($text-color, 20%);
-              // font-weight: $weight-semi-bold;
-              font-size: 20px;
-              letter-spacing: 1px;
-              text-transform: uppercase;
-            }
+          &:nth-child(n+3) {
+            color: red;
           }
         }
       }
@@ -1979,9 +1777,199 @@ export default {
       table {
         tbody {
           tr {
+            display: flex;
+            align-items: center;
+
             th {
-              width: 400px;
+              display: flex;
+              align-items: center;
+              width: 100%;
             }
+          }
+        }
+        a {
+          margin: 0 0 0 20px;
+          text-decoration: none;
+          border-bottom: none;
+
+          &:hover,
+          &:focus {
+            svg {
+              color: $color-blue;
+            }
+          }
+        }
+        svg {
+          width: 20px;
+          height: 20px;
+          margin: 0;
+        }
+      }
+    }
+
+    .contacts {
+      // background-color: green;
+
+      table tbody tr th {
+        width: 225px;
+      }
+
+      .mayor {
+        display: flex;
+        margin: 0 0 60px 0;
+
+        .img {
+          position: relative;
+          width: 300px;
+          margin: 0 40px 0 0;
+          display: table;
+
+          img {
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.40);
+          }
+
+          &:before {
+            position: absolute;
+            content: '';
+            left: -25px;
+            bottom: -22px;
+            width: 100%;
+            height: 100%;
+            display: block;
+            border-radius: $radius-default*3;
+            background-color: $color-grey-lighter;
+          }
+        }
+
+        .about {
+          margin-left: auto;
+          width: calc(100% - 320px);
+
+          h2 {
+            font-size: 24px;
+            margin: 0 0 20px 0;
+
+            &:after {
+              background-color: $color-blue;
+            }
+          }
+
+          h4 {
+            color: lighten($text-color, 20%);
+            // font-weight: $weight-semi-bold;
+            font-size: 20px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin: 0 0 20px 20px;
+            padding: 0 0 0 20px;
+            border-left: 2px solid $color-grey;
+          }
+
+          p {
+            letter-spacing: .5px;
+            font-weight: 500;
+            font-style: italic;
+            margin: 0 0 20px 0;
+            line-height: 25px;
+          }
+        }
+      }
+
+      .council {
+        // background-color: red;
+        display: flex;
+        flex-wrap: wrap;
+        // justify-content: space-between;
+
+        .contact {
+          display: flex;
+          border-top: 1px solid $color-grey-light;
+          // background-color: green;
+          width: 100%;
+          margin: 0 0 60px 0;
+          padding: 60px 0 0 0;
+
+          &:last-of-type {
+            margin: 0;
+          }
+
+          .vue-map-container {
+            height: 300px;
+            box-shadow: 0.25rem 0.25rem 0.75rem rgba(0, 0, 0, 0.20);
+          }
+
+          h4 {
+            margin: 0 0 20px 20px;
+            padding: 0 0 0 20px;
+            border-left: 2px solid $color-grey;
+          }
+
+          .img {
+            position: relative;
+            display: block;
+            margin: 0 40px 0 0;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background-position: top center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.40);
+
+            &:after {
+              z-index: -1;
+              position: absolute;
+              content: '';
+              width: 250px;
+              height: 250px;
+              left: -10px;
+              bottom: -15px;
+              display: block;
+              border-radius: 50%;
+              background-color: $color-grey-lighter;
+            }
+          }
+        }
+
+        .about {
+          width: calc(100% - 335px);
+          margin-left: auto;
+
+          h2 {
+            font-size: 24px;
+            margin: 0 0 20px 0;
+
+            &:after {
+              background-color: $color-blue;
+            }
+          }
+
+          h4 {
+            color: lighten($text-color, 20%);
+            font-size: 20px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+          }
+
+          p {
+            letter-spacing: .5px;
+            font-weight: 500;
+            font-style: italic;
+            margin: 0 0 20px 0;
+            line-height: 25px;
+          }
+        }
+      }
+    }
+
+    table {
+      tbody {
+        tr {
+          th {
+            width: 400px;
           }
         }
       }
@@ -2003,6 +1991,8 @@ export default {
     }
 
     .row {
+      width: 100%;
+
       .container {
         display: flex;
         flex-wrap: wrap;
@@ -2179,38 +2169,36 @@ export default {
       padding: 20px;
     }
 
-    .row {
-      &.data {
-        &:last-child {
+    section {
+      &:last-child {
+        padding: 0;
+      }
+
+      header {
+        // background-color: red;
+        //
+        div {
+          margin: 0 0 10px 0;
+        }
+
+        h2 {
+          font-size: 24px;
+          margin: 0 0 20px 0;
           padding: 0;
         }
 
-        header {
-          // background-color: red;
-          //
-          div {
-            margin: 0 0 10px 0;
-          }
+        svg {
+          display: none;
+          // width: 35px;
+          // height: 35px;
+          // margin: 0 15px 0 0;
+        }
 
-          h2 {
-            font-size: 24px;
-            margin: 0 0 20px 0;
-            padding: 0;
-          }
-
-          svg {
-            display: none;
-            // width: 35px;
-            // height: 35px;
-            // margin: 0 15px 0 0;
-          }
-
-          blockquote {
-            border-left: none;
-            width: 100%;
-            font-size: 16px;
-            padding: 0;
-          }
+        blockquote {
+          border-left: none !important;
+          width: 100%;
+          font-size: 16px;
+          padding: 0;
         }
       }
     }
@@ -2253,8 +2241,7 @@ export default {
           }
         }
 
-        &.mayor,
-        &.clerk {
+        &.mayor {
           .img {
             width: 100% !important;
             margin: 0 !important;
