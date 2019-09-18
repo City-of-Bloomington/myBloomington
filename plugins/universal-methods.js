@@ -10,6 +10,10 @@ Vue.mixin({
     loading:              true,
     keyDownFocus:         false,
 
+    appName:              process.env.appName,
+    baseUrl:              process.env.baseUrl,
+    frontEndBase:         process.env.frontEndBase,
+
     searchEnteredWarning: false,
     searchHasFocus:       false,
     searchResultsFocus:   false,

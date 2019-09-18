@@ -32,9 +32,6 @@
 export default {
   data() {
     return {
-      appName:            process.env.appName,
-      baseUrl:            process.env.baseUrl,
-      frontEndBase:       process.env.frontEndBase,
       logoHeading:        process.env.logoHeading,
       logoSubHeading:     process.env.logoSubHeading,
       headerLogo:         'city-of-bloomington-logo.svg'

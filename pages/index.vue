@@ -290,10 +290,9 @@
 
         <GmapMap
           :center="cityHallLatLong"
-          :zoom="13"
+          :zoom="12"
           ref="placeholderMap"
           map-type-id="roadmap"
-          :style="`width: 650px; height: 705px;`"
           :options="{
             zoomControl:        false,
             mapTypeControl:     false,
@@ -475,7 +474,7 @@ export default {
     flex-wrap: wrap;
     background-color: $color-blue;
     height: calc(100vh - 89px); // 89 = header height
-    padding: 100px 0 0 0;
+    padding: 50px 20px 0 20px;
 
     .container {
       z-index: 100;
@@ -512,7 +511,6 @@ export default {
     }
 
     .disclaimer {
-      z-index: 1;
       position: absolute;
       bottom: 20px;
 
@@ -577,7 +575,7 @@ export default {
 
       a {
         border-radius: 50%;
-        margin: 0 20px 0 0;
+        margin: 0 10px 0 0;
         border: 3px dashed transparent;
 
         &:focus,
@@ -620,17 +618,22 @@ export default {
       position: absolute;
       bottom: 0;
       right: 0;
-      width: 650px;
-      height: 705px;
+      width: 350px;
+      height: 380px;
       background-color: white;
       overflow: hidden;
+
+      .vue-map-container {
+        width: 350px;
+        height: 380px;
+      }
 
       svg {
         z-index: 1;
         position: absolute;
         content: '';
-        width: 650px;
-        height: 705px;
+        width: 350px;
+        height: 380px;
 
         #path-stroke {
           fill: none;
@@ -843,19 +846,44 @@ export default {
   @media (min-width: 992px) and (max-width: 1300px) {
     .homepage {
 
+
       .folks {
         .row {
           &:nth-of-type(2) {
             max-width: 600px;
 
             a {
-              margin: 0 20px 20px 0;
+              margin: 0 10px 10px 0;
 
               &:nth-child(n+9) {
-                margin: 0 20px 0 0;
+                margin: 0 10px 0 0;
               }
             }
           }
+        }
+      }
+
+      .map-container-wrapper {
+        z-index: 0;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 350px;
+        height: 380px;
+        background-color: white;
+        overflow: hidden;
+
+        .vue-map-container {
+          width: 350px;
+          height: 380px;
+        }
+
+        svg {
+          z-index: 1;
+          position: absolute;
+          content: '';
+          width: 350px;
+          height: 380px;
         }
       }
     }
