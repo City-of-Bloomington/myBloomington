@@ -65,6 +65,7 @@ module.exports = {
     cityBoundaryGeoJson:      process.env.CITY_BOUNDARY_PATH,
     googleApiKey:             process.env.GOOGLE_API_KEY,
     weatherApiKey:            process.env.WEATHER_API_KEY,
+    districtLookupPath:       process.env.MONROE_CO_DISTRICT_LOOKUP_URL,
     folks:                    JSON.parse(process.env.FOLKS),
     sanitation:               JSON.parse(process.env.SANITATION),
     indianapolis:             JSON.parse(process.env.INDIANAPOLIS),

@@ -587,6 +587,17 @@
 
                     <tbody>
                       <tr>
+                        <th scope="row">Website:</th>
+                        <td>
+                          <a
+                            :href="folks.officials.mayor.url"
+                            :alt="`Mayor - ${folks.officials.mayor.name}`"
+                            :title="`Mayor - ${folks.officials.mayor.name}`"
+                            target="_blank">{{ folks.officials.mayor.url }}
+                          </a>
+                        </td>
+                      </tr>
+                      <tr>
                         <th scope="row">Email:</th>
                         <td>{{ folks.officials.mayor.email }}</td>
                       </tr>
@@ -630,6 +641,17 @@
                       </thead>
 
                       <tbody>
+                        <tr>
+                          <th scope="row">Website:</th>
+                          <td>
+                            <a
+                              :href="folks.council[1].url"
+                              :alt="`Council Member - ${folks.council[1].name}`"
+                              :title="`Council Member - ${folks.council[1].name}`"
+                              target="_blank">{{ folks.council[1].url }}</a>
+                          </td>
+                        </tr>
+
                         <tr>
                           <th scope="row">Email:</th>
                           <td>{{ folks.council[1].email }}</td>
@@ -678,6 +700,17 @@
 
                       <tbody>
                         <tr>
+                          <th scope="row">Website:</th>
+                          <td>
+                            <a
+                              :href="folks.council[2].url"
+                              :alt="`Council Member - ${folks.council[2].name}`"
+                              :title="`Council Member - ${folks.council[2].name}`"
+                              target="_blank">{{ folks.council[2].url }}</a>
+                          </td>
+                        </tr>
+
+                        <tr>
                           <th scope="row">Email:</th>
                           <td>{{ folks.council[2].email }}</td>
                         </tr>
@@ -719,6 +752,17 @@
                       </thead>
 
                       <tbody>
+                        <tr>
+                          <th scope="row">Website:</th>
+                          <td>
+                            <a
+                              :href="folks.council[3].url"
+                              :alt="`Council Member - ${folks.council[3].name}`"
+                              :title="`Council Member - ${folks.council[3].name}`"
+                              target="_blank">{{ folks.council[3].url }}</a>
+                          </td>
+                        </tr>
+
                         <tr>
                           <th scope="row">Email:</th>
                           <td>{{ folks.council[3].email }}</td>
@@ -819,6 +863,16 @@
 
                       <tbody>
                         <tr>
+                          <th scope="row">Website:</th>
+                          <td>
+                            <a
+                              :href="districtRep.url"
+                              :alt="`Council District Representative - ${districtRep.name}`"
+                              :title="`Council District Representative - ${districtRep.name}`"
+                              target="_blank">{{ districtRep.url }}</a>
+                          </td>
+                        </tr>
+                        <tr>
                           <th scope="row">Email:</th>
                           <td>{{ districtRep.email }}</td>
                         </tr>
@@ -864,6 +918,16 @@
                       </thead>
 
                       <tbody>
+                        <tr>
+                          <th scope="row">Website:</th>
+                          <td>
+                            <a
+                              :href="folks.officials.clerk.url"
+                              :alt="`Clerk - ${folks.officials.clerk.name}`"
+                              :title="`Clerk - ${folks.officials.clerk.name}`"
+                              target="_blank">{{ folks.officials.clerk.url }}</a>
+                          </td>
+                        </tr>
                         <tr>
                           <th scope="row">Email:</th>
                           <td>{{ folks.officials.clerk.email}}</td>
@@ -1202,7 +1266,8 @@
 
                 <blockquote>
                   <p>Local <strong>Schools</strong> nearby the requested Address.</p>
-                  <p><strong>Please Note:</strong> This <strong>does not</strong> indicate the appropriate <strong>School District</strong> nor any <strong>Higher Educational</strong> institutions.</p>
+
+                  <p><strong>Please Note:</strong> This <strong>does not</strong> indicate the appropriate <a :href="districtLookupPath" title="Bloomington School Districts">School District</a></strong> nor any <strong>Higher Educational</strong> institutions.</p>
 
                   <p class="hide-viewport-small">
                     <small>* Approximate distance.</small>

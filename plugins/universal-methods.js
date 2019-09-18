@@ -44,6 +44,7 @@ Vue.mixin({
       "admin":          ['School Adminstration'],
       "all":            ['All','Preschool','Elementary School','P-6','P-12','K-8','Middle School','High School','School Adminstration','Continuing Education']
     },
+    districtLookupPath: process.env.districtLookupPath,
     schoolDistrictGradeLevel: null,
     gradeLevelError: false,
 
