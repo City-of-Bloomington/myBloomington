@@ -7,6 +7,16 @@
     <h1>LOADING</h1>
   </div>
 
+  <div v-if="!loading && !hasLocationData">
+    <div class="wrapper">
+      <div class="container">
+        <fn1-alert variant="warning">
+          <p><strong>Sorry, </strong> no location data available.</p>
+        </fn1-alert>
+      </div>
+    </div>
+  </div>
+
   <div v-if="!loading && hasLocationData">
     <!-- <gmap-street-view-panorama
         style="width: 100%; height: 600px"
@@ -1489,13 +1499,25 @@ export default {
     next(vm => {
       let addressQueryParam = to.query.address;
       if(addressQueryParam){
+        console.dir('s 1');
         vm.addressSearchAuto = addressQueryParam;
         vm.searchSubmit(addressQueryParam);
       } else {
-        vm.$router.push('Home')
+        console.dir('s 2');
+        vm.$router.replace('index')
       }
     });
   },
+  // beforeRouteUpdate (to, from, next) {
+  //   console.dir('S -- beforeRouteUpdate');
+  //   console.dir(to);
+  //   console.dir(from);
+  // },
+  // beforeRouteLeave (to, from, next) {
+  //   console.dir('S -- beforeRouteLeave');
+  //   console.dir(to);
+  //   console.dir(from);
+  // },
   data() {
     // data shared via: universal-methods.js
     return {}
@@ -1586,8 +1608,8 @@ export default {
   },
   mounted: function() {
     this.$nextTick(() => {
-      this.loading = false;
-      // setTimeout(() => this.loading = false, 150);
+      // this.loading = false;
+      setTimeout(() => this.loading = false, 350);
     });
   },
   updated: function() {
@@ -1601,12 +1623,15 @@ export default {
   },
   watch: {
     $route: function (to, from) {
+      console.dir('s route watcher');
       let addressToQueryParam   = to.query.address,
           addressFromQueryParam = from.query.address;
 
       if(addressToQueryParam !== addressFromQueryParam){
         this.addressSearchAuto = addressToQueryParam;
         this.searchSubmit(addressToQueryParam);
+      } else {
+        this.$router.replace('index');
       }
     }
   },

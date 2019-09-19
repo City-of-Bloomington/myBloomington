@@ -253,7 +253,7 @@ Vue.mixin({
           console.log(`%c getAddress 👌 `,
                       this.consoleLog.success);
         } else {
-          this.$router.replace({query : { }});
+          this.$router.replace('index');
           this.addressSearch      = null;
           this.addressResData     = null;
           this.locationResDataNew    = null;
@@ -267,11 +267,11 @@ Vue.mixin({
         }
       })
       .catch((e)  => {
-        this.$router.replace({query : { }});
+        this.$router.replace('index');
 
         this.addressSearch      = null;
         this.addressResData     = null;
-        this.locationResDataNew    = null;
+        this.locationResDataNew = null;
         this.errors.addressRes  = e;
         console.log(`%c getAddress 🛑 `,
                     this.consoleLog.error,
@@ -332,7 +332,7 @@ Vue.mixin({
           });
         })
         .catch((e) => {
-          this.$router.replace({query : { }});
+          this.$router.replace('index');
           this.locationResDataNew    = null;
           this.errors.locationRes = e;
           console.log(`%c getLocation 🛑 `,

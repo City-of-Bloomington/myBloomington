@@ -41,9 +41,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-[v-cloak] { display: none; }
+  [v-cloak] { display: none; }
   header {
     padding: 15px 20px !important;
+    border-bottom: 1px solid $color-grey;
 
     ::v-deep a {
       &:first-of-type {
