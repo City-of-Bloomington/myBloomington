@@ -591,7 +591,7 @@
 
                     <tbody>
                       <tr>
-                        <th scope="row">Website:</th>
+                        <th scope="row">Web:</th>
                         <td>
                           <a
                             :href="folks.officials.mayor.url"
@@ -646,7 +646,7 @@
 
                       <tbody>
                         <tr>
-                          <th scope="row">Website:</th>
+                          <th scope="row">Web:</th>
                           <td>
                             <a
                               :href="folks.council[1].url"
@@ -704,7 +704,7 @@
 
                       <tbody>
                         <tr>
-                          <th scope="row">Website:</th>
+                          <th scope="row">Web:</th>
                           <td>
                             <a
                               :href="folks.council[2].url"
@@ -757,7 +757,7 @@
 
                       <tbody>
                         <tr>
-                          <th scope="row">Website:</th>
+                          <th scope="row">Web:</th>
                           <td>
                             <a
                               :href="folks.council[3].url"
@@ -867,7 +867,7 @@
 
                       <tbody>
                         <tr>
-                          <th scope="row">Website:</th>
+                          <th scope="row">Web:</th>
                           <td>
                             <a
                               :href="districtRep.url"
@@ -923,7 +923,7 @@
 
                       <tbody>
                         <tr>
-                          <th scope="row">Website:</th>
+                          <th scope="row">Web:</th>
                           <td>
                             <a
                               :href="folks.officials.clerk.url"

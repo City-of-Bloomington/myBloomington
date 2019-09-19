@@ -476,6 +476,8 @@ table {
         letter-spacing: .5px;
         font-weight: $weight-semi-bold;
         color: lighten($text-color, 20%);
+        overflow-wrap: break-word;
+        word-wrap: break-word;
 
         small {
           display: block;
