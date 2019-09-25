@@ -68,7 +68,7 @@ module.exports = {
     districtLookupPath:       process.env.MONROE_CO_DISTRICT_LOOKUP_URL,
     folks:                    JSON.parse(process.env.FOLKS),
     sanitation:               JSON.parse(process.env.SANITATION),
-    indianapolis:             JSON.parse(process.env.INDIANAPOLIS),
+    indiana:                  JSON.parse(process.env.INDIANA),
     monroeCounty:             JSON.parse(process.env.MONROE_COUNTY),
     bloomington:              JSON.parse(process.env.BLOOMINGTON),
     coordsProjection:         process.env.COORDS_PROJECTION,

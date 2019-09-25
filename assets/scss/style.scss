@@ -484,7 +484,59 @@ table {
           margin: 5px 0;
           font-weight: $weight-normal;
         }
+
+        p {
+          font-weight: $weight-normal;
+          color: $text-color;
+          margin: 20px 0 10px 0;
+        }
       }
     }
+  }
+}
+
+.tabs-group {
+  margin: 0 0 60px 0;
+
+  ul {
+    border-bottom: 2px solid $color-grey;
+
+    > li {
+      position: relative;
+      text-transform: uppercase;
+      font-weight: $weight-semi-bold;
+      letter-spacing: .5px;
+      font-size: 28px;
+      color: lighten($text-color, 50%);
+
+
+      &:focus,
+      &:hover,
+      &.active {
+        color: lighten($text-color, 15%);
+        border-top-color: transparent;
+        border-right-color: transparent;
+        border-bottom: 2px solid $color-grey;
+        border-left-color: transparent;
+
+        &:after {
+          background-color: $color-orange-light;
+        }
+      }
+
+      &:after {
+        position: absolute;
+        content: '';
+        bottom: -2px;
+        left: 0;
+        height: 4px;
+        width: 125px;
+        background-color: transparent;
+      }
+    }
+  }
+
+  .tab-content {
+    padding: 40px 0 0 0;
   }
 }

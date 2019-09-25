@@ -11,9 +11,9 @@ export const defaultState = () => ({
   folks:              process.env.folks,
   sanitation:         process.env.sanitation,
   locations:      {
-    indianapolis:     process.env.indianapolis,
+    bloomington:      process.env.bloomington,
     monroeCounty:     process.env.monroeCounty,
-    bloomington:      process.env.bloomington
+    indiana:          process.env.indiana,
   },
   cityBoundary:       null,
   cityName:           process.env.cityName,
