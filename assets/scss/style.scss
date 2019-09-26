@@ -425,7 +425,7 @@ a {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  padding: 60px 0 0 0;
+  padding: 20px 0 0 0;
 
   h2 {
     position: relative;
@@ -516,7 +516,7 @@ table {
         color: lighten($text-color, 15%);
         border-top-color: transparent;
         border-right-color: transparent;
-        border-bottom: 2px solid $color-grey;
+        border-bottom: 1px solid $color-grey;
         border-left-color: transparent;
 
         &:after {

@@ -178,7 +178,6 @@
                 <legend class="sr-only">Toggle Map Markers:</legend>
                 <div class="inner-wrapper">
                   <input v-model="mapMarkerToggle.parks"
-                         id="parks"
                          value="parks"
                          type="checkbox"
                          name="parks">
@@ -188,7 +187,6 @@
 
                 <div class="inner-wrapper">
                   <input v-model="mapMarkerToggle.playgrounds"
-                         id="playgrounds"
                          value="playgrounds"
                          type="checkbox"
                          name="playgrounds">
@@ -198,7 +196,6 @@
 
                 <div class="inner-wrapper">
                   <input v-model="mapMarkerToggle.safePlaces"
-                         id="safePlaces"
                          value="safePlaces"
                          type="checkbox"
                          name="safePlaces">
@@ -208,7 +205,6 @@
 
                 <div class="inner-wrapper">
                   <input v-model="mapMarkerToggle.schools"
-                         id="schools"
                          value="schools"
                          type="checkbox"
                          name="schools">
@@ -423,6 +419,20 @@
       <div class="wrapper">
         <div class="container">
           <template v-if="!addressResChoices && locationResDataNew">
+            <div class="scroll-to-wrapper">
+              <span>Jump to Section:</span>
+              <select @change="anchorHashClick($event)">
+                <option disabled selected>--- Select a Section ---</option>
+                <option value="coords">Coordinates</option>
+                <option value="sanitation">Sanitation</option>
+                <option value="govt-online">Govt. Online</option>
+                <option value="officials">Officials</option>
+                <option value="parks">Parks</option>
+                <option value="playgrounds">Playgrounds</option>
+                <option value="schools">Schools</option>
+                <option value="safe-places">Safe Places</option>
+              </select>
+            </div>
 
             <!-- about -->
             <section v-if="locationResDataNew.purposes">
@@ -509,7 +519,7 @@
             </section>
 
             <!-- sanitation -->
-            <section>
+            <section id=sanitation>
               <header>
                 <h2>Sanitation Pickup</h2>
 
@@ -570,7 +580,7 @@
             </section>
 
             <!-- govt online -->
-            <section v-if="locations">
+            <section id="govt-online" v-if="locations">
               <header>
                 <h2>Government Online</h2>
               </header>
@@ -631,7 +641,7 @@
             </section>
 
             <!-- officials -->
-            <section>
+            <section id="officials">
               <header>
                 <h2>Elected City Officials</h2>
               </header>
@@ -1035,11 +1045,12 @@
             </section>
 
             <!-- TAB parks-schools? -->
-            <fn1-tabs>
+            <example-tabs ref="tabs" id="data-tabs">
               <!-- parks -->
               <fn1-tab
                 v-if="parksResData"
                 name="Parks"
+                id="parks"
                 :selected="true">
                 <section class="parks">
                   <header>
@@ -1107,6 +1118,7 @@
 
               <!-- playgrounds -->
               <fn1-tab
+                id="playgrounds"
                 v-if="playgroundsResData"
                 name="Playgrounds">
                 <section class="playgrounds">
@@ -1176,6 +1188,7 @@
 
               <!-- safe places -->
               <fn1-tab
+                id="safe-places"
                 v-if="safePlaceResData"
                 name="Safe Places">
                 <section class="safe-places">
@@ -1233,6 +1246,7 @@
 
               <!-- schools -->
               <fn1-tab
+                id="schools"
                 v-if="schoolsResData"
                 name="Schools">
                 <section class="schools">
@@ -1386,10 +1400,10 @@
                   </exampleModal>
                 </section>
               </fn1-tab>
-            </fn1-tabs>
+            </example-tabs>
 
             <!-- coords -->
-            <section>
+            <section id="coords">
               <header>
                 <h2>Coordinate Details</h2>
 
@@ -1508,6 +1522,7 @@ import moment          from 'moment'
 import debounce        from 'lodash.debounce'
 import exampleSearch   from '~/components/exampleSearch'
 import exampleModal    from '~/components/exampleModal'
+import exampleTabs     from '~/components/exampleTabs'
 import footerComponent from '~/components/footerComponent'
 import loader          from '~/components/loader'
 
@@ -1517,11 +1532,13 @@ export default {
     loader,
     exampleSearch,
     exampleModal,
+    exampleTabs,
     footerComponent
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
       let addressQueryParam = to.query.address;
+
       if(addressQueryParam){
         console.dir('s 1');
         vm.addressSearchAuto = addressQueryParam;
@@ -1532,16 +1549,6 @@ export default {
       }
     });
   },
-  // beforeRouteUpdate (to, from, next) {
-  //   console.dir('S -- beforeRouteUpdate');
-  //   console.dir(to);
-  //   console.dir(from);
-  // },
-  // beforeRouteLeave (to, from, next) {
-  //   console.dir('S -- beforeRouteLeave');
-  //   console.dir(to);
-  //   console.dir(from);
-  // },
   data() {
     // data shared via: universal-methods.js
     return {}
@@ -1632,18 +1639,8 @@ export default {
   },
   mounted: function() {
     this.$nextTick(() => {
-      // this.loading = false;
       setTimeout(() => this.loading = false, 350);
     });
-  },
-  updated: function() {
-    // this.$nextTick(() => {
-    //   console.dir('this is UPDATED');
-
-    //   this.autoSuggestRes = null;
-    //   console.dir('auto res :: below');
-    //   console.dir(JSON.stringify(this.autoSuggestRes));
-    // });
   },
   watch: {
     $route: function (to, from) {
@@ -1664,6 +1661,48 @@ export default {
   },
   methods: {
     // methods shared via: universal-methods.js
+    anchorHashClick(e) {
+      let jumpToRef       = e.target.value,
+          parksRef        = 'parks',
+          playgroundsRef  = 'playgrounds',
+          schoolsRef      = 'schools',
+          safePlacesRef   = 'safe-places';
+
+
+      if(jumpToRef == parksRef ||
+         jumpToRef == playgroundsRef ||
+         jumpToRef == schoolsRef ||
+         jumpToRef == safePlacesRef) {
+
+        var yOffset = -30;
+
+        this.$refs.tabs.$children.forEach(tab => {
+          switch(jumpToRef) {
+            case parksRef:
+              tab.isActive = tab.name == 'Parks';
+              break;
+            case playgroundsRef:
+              tab.isActive = tab.name == 'Playgrounds'
+              break;
+            case schoolsRef:
+              tab.isActive = tab.name == 'Schools'
+              break;
+            case safePlacesRef:
+              tab.isActive = tab.name == 'Safe Places'
+              break;
+          }
+        });
+
+        var yCoordinate = document.getElementById('data-tabs').getBoundingClientRect().top + window.pageYOffset;
+      } else {
+        var yCoordinate = document.getElementById(jumpToRef).getBoundingClientRect().top + window.pageYOffset,
+            yOffset = 0;
+      }
+      window.scrollTo({
+        top: yCoordinate + yOffset,
+        behavior: 'smooth'
+      });
+    },
     nearbyParkMarkers(){
       return this.nearbyMarkers(this.parksResData)
     },
@@ -1789,6 +1828,27 @@ export default {
   .vue-map-container {
     width: 100%;
     height: 450px;
+  }
+
+  .scroll-to-wrapper {
+    // background-color: red;
+    display: flex;
+    align-items: center;
+    padding: 0 0 15px 0;
+    margin: 0 0 40px 0;
+    border-bottom: 1px solid $color-grey;
+
+    span {
+      color: $text-color;
+      font-weight: $weight-semi-bold;
+      margin: 0 15px 0 0;
+    }
+
+    button {
+      background-color: red;
+      padding: 2px 15px 0 15px;
+      font-size: 16px;
+    }
   }
 
   section {
