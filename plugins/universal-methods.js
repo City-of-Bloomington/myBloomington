@@ -200,7 +200,6 @@ Vue.mixin({
           let preppedSt     = street.toUpperCase(),
               url           = `http://versalookup.mccsc.edu/elinkrp/Students/BasicTransBoundaryResults.aspx?BasicTB=Y&GradeID=${gradeID}&HHouseNumber=${houseNumber}&HStreet=${preppedSt}&HZip=${zip}&GradeDesc=${gradeLvl}`;
 
-          console.dir(url);
           return window.open(url, '_blank');
         } else {
           this.gradeLevelError = true;
@@ -299,13 +298,8 @@ Vue.mixin({
             query: { address: this.locationResDataNew.address.streetAddress}
           });
 
-          console.dir('past');
-
           this.mapHeight         = this.mapHeightResult;
-
           this.errors.locationRes = null;
-
-
           this.cityHallDistance();
 
           console.log(`%c getLocation 👌 `,

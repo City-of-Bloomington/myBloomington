@@ -343,6 +343,8 @@
           />
         </GmapMap>
       </div>
+
+
     </div>
 
     <!-- <div v-else>
@@ -400,25 +402,13 @@ export default {
     next(vm => {
       let addressQueryParam = to.query.address;
       if(addressQueryParam){
-        console.dir('h 1');
         vm.addressSearchAuto = addressQueryParam;
         vm.searchSubmit(addressQueryParam);
       } else {
-        console.dir('h 2');
         vm.$router.replace('index')
       }
     });
   },
-  // beforeRouteUpdate (to, from, next) {
-  //   console.dir('H -- beforeRouteUpdate');
-  //   console.dir(to);
-  //   console.dir(from);
-  // },
-  // beforeRouteLeave (to, from, next) {
-  //   console.dir('H -- beforeRouteLeave');
-  //   console.dir(to);
-  //   console.dir(from);
-  // },
   data() {
     // data shared via: universal-methods.js
     return {}
@@ -465,7 +455,6 @@ export default {
   },
   watch:    {
     $route: function (to, from) {
-      console.dir('h route watcher');
       let addressToQueryParam   = to.query.address,
           addressFromQueryParam = from.query.address;
 

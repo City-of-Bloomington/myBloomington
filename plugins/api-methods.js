@@ -101,7 +101,6 @@ Vue.mixin({
             encodeAddress = encodeURIComponent(address).replace(/%20/g, "+");
 
         if(addressTest) {
-          console.dir(address);
           axios.get(`${process.env.baseUrl}${process.env.MAAddressesPath}?format=json&address=${address}`)
           .then((res) => {
             if(res.data.length == 1) {

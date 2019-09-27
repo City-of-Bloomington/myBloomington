@@ -1044,7 +1044,7 @@
               </div>
             </section>
 
-            <!-- TAB parks-schools? -->
+            <!-- TABs: requuire modification to anchorHashClick() -->
             <example-tabs ref="tabs" id="data-tabs">
               <!-- parks -->
               <fn1-tab
@@ -1510,6 +1510,14 @@
           Close
         </fn1-button>
       </exampleModal>
+
+      <a
+        v-if="showToTopArrow"
+        class="scroll-to-top"
+        title="Scroll to top of the page"
+        @click="scrollToTop($event)">
+        <span>scroll to top of the page</span>
+      </a>
     </div>
   </div>
 </template>
@@ -1540,22 +1548,27 @@ export default {
       let addressQueryParam = to.query.address;
 
       if(addressQueryParam){
-        console.dir('s 1');
         vm.addressSearchAuto = addressQueryParam;
         vm.searchSubmit(addressQueryParam);
       } else {
-        console.dir('s 2');
         vm.$router.replace('index')
       }
     });
   },
   data() {
     // data shared via: universal-methods.js
-    return {}
+    return {
+      showScrollToTopArrow:  false,
+      topSectionPixels:      680,
+      scrolledFromTopAmount: null,
+      viewingHeight:         null,
+    }
   },
   created: function() {
     this.$nextTick(() => {
       this.loading = true;
+      window.addEventListener("resize", this.calcViewingHeight);
+      window.addEventListener("scroll", this.scrolledFromTop);
     });
 
     if(!this.cityBoundary) {
@@ -1640,11 +1653,15 @@ export default {
   mounted: function() {
     this.$nextTick(() => {
       setTimeout(() => this.loading = false, 350);
+      this.calcViewingHeight();
     });
+  },
+  destroyed: function() {
+    window.removeEventListener("resize", this.calcViewingHeight);
+    window.removeEventListener("scroll", this.scrolledFromTop);
   },
   watch: {
     $route: function (to, from) {
-      console.dir('s route watcher');
       let addressToQueryParam   = to.query.address,
           addressFromQueryParam = from.query.address;
 
@@ -1658,9 +1675,28 @@ export default {
   },
   computed: {
     // computed shared via: universal-computed.js
+    showToTopArrow() {
+      if(this.scrolledFromTopAmount >= this.topSectionPixels) {
+        return true;
+      }
+    }
   },
   methods: {
     // methods shared via: universal-methods.js
+    scrolledFromTop() {
+      this.scrolledFromTopAmount = window.scrollY || window.scrollTop || document.getElementsByTagName("html")[0].scrollTop;
+    },
+    calcViewingHeight() {
+      this.viewingHeight = window.innerHeight;
+    },
+    scrollToTop(e) {
+      e.preventDefault();
+      window.scroll({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      });
+    },
     anchorHashClick(e) {
       let jumpToRef       = e.target.value,
           parksRef        = 'parks',
@@ -1720,6 +1756,26 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .scroll-to-top {
+    cursor: pointer;
+    display: block;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    height: 40px;
+    width: 30px;
+    background-image: url("data:image/svg+xml,%3Csvg version='1.1' id='arrow-top' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 332.1 448' style='enable-background:new 0 0 332.1 448;' xml:space='preserve'%3E%3Cpath fill='%238c8c8c' d='M292.4,291.3l-95.4-98c-1.9-1.9-5.1-0.6-5.1,2.1V445c0,1.7-1.3,3-3,3h-46c-1.7,0-3-1.3-3-3V195.9c0-2.7-3.3-4-5.1-2.1 l-94.9,97.5c-1.2,1.2-3.1,1.2-4.3,0L2.1,258c-1.2-1.2-1.2-3.1,0-4.2L163.9,91.9c1.2-1.2,3.1-1.2,4.2,0L330,253.7 c1.2,1.2,1.2,3.1,0,4.2l-33.3,33.3C295.5,292.5,293.6,292.5,292.4,291.3z'/%3E%3Cpath fill='%238c8c8c' d='M332.1,3v46c0,1.7-1.3,3-3,3H3c-1.7,0-3-1.3-3-3V3c0-1.7,1.3-3,3-3h326.1C330.8,0,332.1,1.3,332.1,3z'/%3E%3C/svg%3E");
+
+    &:hover,
+    &:focus {
+      background-image: url("data:image/svg+xml,%3Csvg version='1.1' id='arrow-top' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 332.1 448' style='enable-background:new 0 0 332.1 448;' xml:space='preserve'%3E%3Cpath fill='%231e5aae' d='M292.4,291.3l-95.4-98c-1.9-1.9-5.1-0.6-5.1,2.1V445c0,1.7-1.3,3-3,3h-46c-1.7,0-3-1.3-3-3V195.9c0-2.7-3.3-4-5.1-2.1 l-94.9,97.5c-1.2,1.2-3.1,1.2-4.3,0L2.1,258c-1.2-1.2-1.2-3.1,0-4.2L163.9,91.9c1.2-1.2,3.1-1.2,4.2,0L330,253.7 c1.2,1.2,1.2,3.1,0,4.2l-33.3,33.3C295.5,292.5,293.6,292.5,292.4,291.3z'/%3E%3Cpath fill='%231e5aae' d='M332.1,3v46c0,1.7-1.3,3-3,3H3c-1.7,0-3-1.3-3-3V3c0-1.7,1.3-3,3-3h326.1C330.8,0,332.1,1.3,332.1,3z'/%3E%3C/svg%3E");
+    }
+
+    span {
+      @include visuallyHidden;
+    }
+  }
+
   .loading-wrapper {
     display: flex;
     flex-wrap: wrap;
