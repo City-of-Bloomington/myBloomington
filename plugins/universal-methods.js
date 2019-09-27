@@ -82,7 +82,7 @@ Vue.mixin({
           this.getAddress(val)
           .then((res) => {
             this.autoSuggestRes = res;
-            console.log(`%c getAutoAddress 👌 `,
+            console.log(`%c getAutoAddress 🔌 `,
                         this.consoleLog.success);
 
           })
@@ -249,7 +249,7 @@ Vue.mixin({
           this.addressResData     = res;
           this.errors.addressRes  = null;
           this.locationLookup();
-          console.log(`%c getAddress 👌 `,
+          console.log(`%c getAddress 🔌 `,
                       this.consoleLog.success);
         } else {
           this.$router.replace('index');
@@ -261,7 +261,7 @@ Vue.mixin({
           this.latLong            = this.cityHallLatLong;
           this.mapHeight          = '100%';
           this.errors.addressRes  = 'This Address has not yet been Mapped.';
-          console.log(`%c getAddress 👌 `,
+          console.log(`%c getAddress 🔌 `,
                       this.consoleLog.success);
         }
       })
@@ -302,7 +302,7 @@ Vue.mixin({
           this.errors.locationRes = null;
           this.cityHallDistance();
 
-          console.log(`%c getLocation 👌 `,
+          console.log(`%c getLocation 🔌 `,
                       this.consoleLog.success);
 
           this.setLatLong(this.locationResDataNew.address.latitude,this.locationResDataNew.address.longitude);
@@ -312,7 +312,7 @@ Vue.mixin({
           this.getCouncilDistrict()
           .then((res) => {
             this.councilDistrict = res;
-            console.log(`%c getCouncilDistrict 👌 `,
+            console.log(`%c getCouncilDistrict 🔌 `,
                         this.consoleLog.success);
 
             this.districtRepInfo(this.councilDistrict.id);
@@ -370,7 +370,7 @@ Vue.mixin({
 
       this.zoom = 17;
 
-      console.log(`%c updated latLng (gMap) 👌 `,
+      console.log(`%c updated latLng (gMap) 🔌 `,
                   this.consoleLog.success);
     },
     getCouncilDistrict() {

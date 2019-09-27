@@ -421,7 +421,7 @@ export default {
     this.getCityBoundaryGeoJson()
     .then((res) => {
       this.setCityBoundary(res);
-      console.log(`%c getCityBoundaryGeoJson 👌`,
+      console.log(`%c getCityBoundaryGeoJson 🔌`,
                   this.consoleLog.success);
     })
     .catch((e) => {
@@ -433,7 +433,7 @@ export default {
     this.getWeather()
     .then((res) => {
       this.$store.dispatch('setWeatherData', res);
-      console.log(`%c getWeather 👌`,
+      console.log(`%c getWeather 🔌`,
                   this.consoleLog.success);
     })
     .catch((e) => {

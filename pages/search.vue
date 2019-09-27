@@ -1575,7 +1575,7 @@ export default {
       this.getCityBoundaryGeoJson()
       .then((res) => {
         this.setCityBoundary(res);
-        console.log(`%c getCityBoundaryGeoJson 👌 `,
+        console.log(`%c getCityBoundaryGeoJson 🔌 `,
                     this.consoleLog.success);
       })
       .catch((e) => {
@@ -1588,7 +1588,7 @@ export default {
       this.getWeather()
       .then((res) => {
         this.$store.dispatch('setWeatherData', res);
-        console.log(`%c getWeather 👌`,
+        console.log(`%c getWeather 🔌`,
                     this.consoleLog.success);
       })
       .catch((e) => {
@@ -1601,7 +1601,7 @@ export default {
     this.getSafePlaces()
     .then((res) => {
       this.safePlaceResData = res;
-      console.log(`getSafePlaces 👌`);
+      console.log(`getSafePlaces 🔌`);
     })
     .catch((e)  => {
       console.log(`getSafePlaces 🛑`,
@@ -1613,7 +1613,7 @@ export default {
       this.schoolsResData = res;
       this.schoolTypeToggle = this.schoolTypes.all;
 
-      console.log(`getLocalSchools 👌`);
+      console.log(`getLocalSchools 🔌`);
     })
     .catch((e)  => {
       console.log(`getLocalSchools 🛑`,
@@ -1623,7 +1623,7 @@ export default {
     this.getPlaygrounds()
     .then((res) => {
       this.playgroundsResData = res;
-      console.log(`getPlaygrounds 👌`);
+      console.log(`getPlaygrounds 🔌`);
     })
     .catch((e)  => {
       console.log(`getPlaygrounds 🛑`,
@@ -1633,7 +1633,7 @@ export default {
     this.getCityOfBloomingtonParks()
     .then((res) => {
       this.parksResData = res;
-      console.log(`getCityOfBloomingtonParks 👌`);
+      console.log(`getCityOfBloomingtonParks 🔌`);
     })
     .catch((e) => {
       console.log(`getCityOfBloomingtonParks 🛑`,
@@ -1643,7 +1643,7 @@ export default {
     this.getCouncilDistrictsGeoJson()
     .then((res) => {
       this.councilDistrictsGeoJson = res;
-      console.log(`getCouncilDistrictsGeoJson 👌`);
+      console.log(`getCouncilDistrictsGeoJson 🔌`);
     })
     .catch((e) => {
       console.log(`getCouncilDistrictsGeoJson 🛑`,
