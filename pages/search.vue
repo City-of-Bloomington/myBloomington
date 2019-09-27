@@ -664,10 +664,7 @@
                     <h2>{{ folks.officials.mayor.name }}</h2>
                     <h4>{{ folks.officials.mayor.title }}</h4>
 
-                    <p>MAYOR INFO NOT BIO !!!NEED!!!</p>
-                    <!-- <p>John has worked extensively as a public servant in Democratic government, leading two state agencies, advising a Governor and Lieutenant Governor, and serving as an elected official. As the Secretary of the Indiana Family and Social Services Administration, he oversaw the implementation of Medicaid and welfare programs, services for the elderly, disabled, mentally ill, and children at risk, and state-wide community development and housing programs – all executed by a staff of 10,000 Hoosiers with an annual budget of $6 billion. Earlier he served as Commissioner of the Indiana Department of Environmental Management, the agency tasked with the statewide protection of Indiana’s air, water and land. John served as an elected member of the Board of Trustees for the Monroe County Community School Corporation.</p>
-
-                    <p>Throughout his time in Bloomington, John has served on many state and local commissions and boards, including chairing the Bloomington Commission on Sustainability and the Shalom Community Center board, as well as national boards such as the National Community Land Trust Network.</p> -->
+                    <p>The Office of the Mayor provides leadership, management, communication and strategic direction to the City of Bloomington government. This is accomplished through public engagement, in cooperation with City Council and the City Clerk, to determine and implement the priorities of our community’s residents.</p>
 
                     <table>
                       <caption class="sr-only">
@@ -1533,6 +1530,7 @@ import { mapFields }   from 'vuex-map-fields'
 import proj4           from 'proj4'
 import moment          from 'moment'
 import debounce        from 'lodash.debounce'
+import smoothscroll    from 'smoothscroll-polyfill'
 import exampleSearch   from '~/components/exampleSearch'
 import exampleModal    from '~/components/exampleModal'
 import exampleTabs     from '~/components/exampleTabs'
@@ -1570,8 +1568,11 @@ export default {
     }
   },
   created: function() {
+
+
     this.$nextTick(() => {
       this.loading = true;
+      smoothscroll.polyfill();
       window.addEventListener("resize", this.calcViewingHeight);
       window.addEventListener("scroll", this.scrolledFromTop);
     });
