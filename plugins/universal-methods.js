@@ -13,6 +13,7 @@ Vue.mixin({
     appName:              process.env.appName,
     baseUrl:              process.env.baseUrl,
     frontEndBase:         process.env.frontEndBase,
+    voterPrecinctsPath:   process.env.voterPrecinctsPath,
 
     searchEnteredWarning: false,
     searchHasFocus:       false,

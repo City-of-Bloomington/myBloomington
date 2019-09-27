@@ -65,7 +65,8 @@ module.exports = {
     monroeCounty:             JSON.parse(process.env.MONROE_COUNTY),
     bloomington:              JSON.parse(process.env.BLOOMINGTON),
     coordsProjection:         process.env.COORDS_PROJECTION,
-    cityHallLatLong:          JSON.parse(process.env.CITY_HALL_LAT_LONG)
+    cityHallLatLong:          JSON.parse(process.env.CITY_HALL_LAT_LONG),
+    voterPrecinctsPath:       process.env.MONROE_CO_VOTER_PRECINCTS_URL
   },
 
   plugins: [

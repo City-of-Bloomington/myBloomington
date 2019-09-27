@@ -511,8 +511,13 @@
                   </template>
 
                   <tr>
-                    <th scope="row">Voting Precinct</th>
-                    <th>link to monroe co election info?</th>
+                    <th scope="row">Voter Registration:</th>
+                    <th>
+                      <a
+                        :href="voterPrecinctsPath"
+                        target="_blank"
+                        title="Monroe Co. Voter Precincts">Monroe Co. Voter Precincts</a>
+                    </th>
                  </tr>
                 </tbody>
               </table>
@@ -1764,6 +1769,7 @@ export default {
     right: 20px;
     height: 40px;
     width: 30px;
+    background-repeat: no-repeat;
     background-image: url("data:image/svg+xml,%3Csvg version='1.1' id='arrow-top' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewBox='0 0 332.1 448' style='enable-background:new 0 0 332.1 448;' xml:space='preserve'%3E%3Cpath fill='%238c8c8c' d='M292.4,291.3l-95.4-98c-1.9-1.9-5.1-0.6-5.1,2.1V445c0,1.7-1.3,3-3,3h-46c-1.7,0-3-1.3-3-3V195.9c0-2.7-3.3-4-5.1-2.1 l-94.9,97.5c-1.2,1.2-3.1,1.2-4.3,0L2.1,258c-1.2-1.2-1.2-3.1,0-4.2L163.9,91.9c1.2-1.2,3.1-1.2,4.2,0L330,253.7 c1.2,1.2,1.2,3.1,0,4.2l-33.3,33.3C295.5,292.5,293.6,292.5,292.4,291.3z'/%3E%3Cpath fill='%238c8c8c' d='M332.1,3v46c0,1.7-1.3,3-3,3H3c-1.7,0-3-1.3-3-3V3c0-1.7,1.3-3,3-3h326.1C330.8,0,332.1,1.3,332.1,3z'/%3E%3C/svg%3E");
 
     &:hover,
@@ -2398,6 +2404,10 @@ export default {
       }
     }
 
+    .scroll-to-wrapper {
+      margin: 0 0 20px 0;
+    }
+
     .wrapper {
       // background-color: green;
       padding: 20px;
@@ -2540,6 +2550,25 @@ export default {
       }
     }
 
+    .tabs-group {
+
+      ::v-deep .tabs {
+        ul {
+          li {
+            font-size: 24px;
+            width: 100%;
+            text-align: left;
+            margin: 0;
+            padding: 5px 0;
+          }
+        }
+      }
+
+      ::v-deep .tab-content {
+        padding: 20px 0 0 0;
+      }
+    }
+
     .contacts > table,
     table {
       display: block;
@@ -2572,7 +2601,7 @@ export default {
           }
 
           td {
-            padding: 0 0 15px 30px;
+            padding: 0 15px 15px 30px;
             border: none;
           }
         }
