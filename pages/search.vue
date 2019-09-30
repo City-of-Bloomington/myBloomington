@@ -470,51 +470,71 @@
                     <td>{{ locationResDataNew.address.township_name | capitalizeFirst }}</td>
                   </tr>
 
-                  <template v-if="locationPurposes"
-                      v-for="p, i in locationPurposes">
-                      <template v-if="p.length > 1">
-                        <tr>
-                          <th scope="row">
-                            {{p[0].purpose_type | capitalizeFirst}}:
-                          </th>
+                  <template
+                    v-if="locationPurposes"
+                    v-for="p, i in locationPurposes">
+                    <template v-if="p.length > 1">
+                      <tr>
+                        <th scope="row">
+                          {{p[0].purpose_type | capitalizeFirst}}:
+                        </th>
 
-                          <td>
-                            <ul>
-                              <li v-for="e, i in p">
-                                {{ e.name | capitalizeFirst }}
-                              </li>
-                            </ul>
-                          </td>
-                        </tr>
-                      </template>
+                        <td>
+                          <ul>
+                            <li v-for="e, i in p">
+                              {{ e.name | capitalizeFirst }}
+                            </li>
+                          </ul>
+                        </td>
+                      </tr>
+                    </template>
 
-                      <template v-else>
-                        <tr v-for="e, i in p">
-                          <th scope="row">
-                            {{e.purpose_type | capitalizeFirst}}:
-                          </th>
-                          <td>
-                            <template v-if="e.purpose_type === 'CITY COUNCIL DISTRICT'">
-                              <a
-                                href="#"
-                                :alt="e.name | capitalizeFirst"
-                                data-jump="districtRep"
-                                @click.prevent="anchorHashClick($event)">{{e.name | capitalizeFirst}}</a>
-                            </template>
+                    <template v-else>
+                      <tr v-for="e, i in p">
+                        <th scope="row">
+                          <!-- {{e}} -->
+                          {{e.purpose_type | capitalizeFirst}}:
+                        </th>
 
-                            <template v-else-if="e.purpose_type === 'RESIDENTIAL PARKING ZONE'">
-                              {{e.name | capitalizeFirst}}<br>
-                              <small>
-                                - Permit required Monday – Friday, 8:00am – 5:00pm
-                              </small>
-                            </template>
+                        <td>
+                          <template
+                            v-if="e.purpose_type === 'NEIGHBORHOOD ASSOCIATION'">
+                             <a
+                              class="external"
+                              target="_blank"
+                              href="https://bloomington.in.gov/neighborhoods/associations"
+                              :alt="e.name | capitalizeFirst">{{e.name | capitalizeFirst}}</a>
+                          </template>
 
-                            <template v-else>
+                          <template
+                            v-else-if="e.purpose_type === 'CITY COUNCIL DISTRICT'">
+                            <a
+                              href="#"
+                              :alt="e.name | capitalizeFirst"
+                              data-jump="districtRep"
+                              @click.prevent="anchorHashClick($event)">{{e.name | capitalizeFirst}}</a>
+                          </template>
+
+                          <template
+                            v-else-if="e.purpose_type === 'RESIDENTIAL PARKING ZONE'">
+                            <a
+                              href="https://bloomington.in.gov/transportation/parking/neighborhood-parking"
+                              target="_blank"
+                              class="external"
+                              :alt="e.name | capitalizeFirst">
                               {{e.name | capitalizeFirst}}
-                            </template>
-                          </td>
-                        </tr>
-                      </template>
+                            </a><br>
+                            <small>
+                              - Permit required Monday – Friday, 8:00am – 5:00pm
+                            </small>
+                          </template>
+
+                          <template v-else>
+                            {{e.name | capitalizeFirst}}
+                          </template>
+                        </td>
+                      </tr>
+                    </template>
                   </template>
 
                   <tr>
@@ -1066,7 +1086,9 @@
             </section>
 
             <!-- TABs: requuire modification to anchorHashClick() -->
-            <example-tabs ref="tabs" id="data-tabs">
+            <example-tabs
+              ref="tabs"
+              id="data-tabs">
               <!-- parks -->
               <fn1-tab
                 v-if="parksResData"
@@ -1308,7 +1330,7 @@
                       <blockquote>
                         <p>Local <strong>Schools</strong> nearby the requested Address.</p>
 
-                        <p><strong>Please Note:</strong> This <strong>does not</strong> indicate the appropriate <a class="external" :href="districtLookupPath" alt="Bloomington School Districts">School District</a></strong> nor any <strong>Higher Educational</strong> institutions.</p>
+                        <p><strong>Please Note:</strong> This <strong>does not</strong> indicate the appropriate <a class="external" :href="districtLookupPath" target="_blank" alt="Bloomington School Districts">School District</a></strong> nor any <strong>Higher Educational</strong> institutions.</p>
 
                         <p class="hide-viewport-small">
                           <small>* Approximate distance.</small>
@@ -1468,6 +1490,8 @@
 
                   <blockquote>
                     <p> The <strong>{{ cityName }}</strong> <a class="external" href="https://bloomington.in.gov/gis" alt="City of Bloomington GIS" target="_blank">GIS Department</a> staff maintains spatial data and provides mapping and spatial analysis services to support operations of City Departments, Boards and Commissions.</p>
+
+                    <p>Native coordinate reference system is:<br><strong>NAD 83 State Plane Indiana West Zone (1302) US Survey Feet EPSG:2966</strong></p>
                   </blockquote>
                 </div>
               </header>
@@ -1484,34 +1508,14 @@
                   </thead>
 
                 <tbody>
-                  <tr>
-                    <th scope="row">Projection:</th>
-                    <td>NAD83 / Indiana West (ftUS)</td>
+                  <tr v-if="locationResDataNew.address.state_plane_x && locationResDataNew.address.state_plane_y">
+                    <th scope="row">State Plane X / Y:</th>
+                    <td>{{ locationResDataNew.address.state_plane_x }}, {{ locationResDataNew.address.state_plane_y }}</td>
                   </tr>
 
-                  <tr>
-                    <th scope="row">Authority:</th>
-                    <td>EPSG:2966</td>
-                  </tr>
-
-                  <tr v-if="locationResDataNew.address.state_plane_x">
-                    <th scope="row">State Plane (x):</th>
-                    <td>{{ locationResDataNew.address.state_plane_x }}</td>
-                  </tr>
-
-                  <tr v-if="locationResDataNew.address.state_plane_y">
-                    <th scope="row">State Plane (y):</th>
-                    <td>{{ locationResDataNew.address.state_plane_y }}</td>
-                  </tr>
-
-                  <tr v-if="locationResDataNew.address.latitude">
-                    <th scope="row">Latitude:</th>
-                    <td>{{ locationResDataNew.address.latitude }}</td>
-                  </tr>
-
-                  <tr v-if="locationResDataNew.address.longitude">
-                    <th scope="row">Longitude:</th>
-                    <td>{{ locationResDataNew.address.longitude }}</td>
+                  <tr v-if="locationResDataNew.address.latitude && locationResDataNew.address.longitude">
+                    <th scope="row">Latitude / Longitude:</th>
+                    <td>{{ locationResDataNew.address.latitude }}, {{ locationResDataNew.address.longitude }}</td>
                   </tr>
                 </tbody>
               </table>
