@@ -14,7 +14,7 @@
 
         <p>The information reported comes from the <strong>City of Bloomington Geographic Information Systems (GIS)</strong> and related databases.</p>
 
-        <p>To report missing <strong>City of Bloomington</strong> addresses or other errors, please contact the <strong>City of Bloomington GIS Staff</strong> at <a href="mailto: gis@bloomington.in.gov">gis@bloomington.in.gov</a>.</p>
+        <p>To report missing <strong>City of Bloomington</strong> addresses or other errors, please contact the <strong>City of Bloomington GIS Staff</strong> at <a class="external" target="_blank" href="mailto: gis@bloomington.in.gov">gis@bloomington.in.gov</a>.</p>
       </div>
     </div>
   </footer>

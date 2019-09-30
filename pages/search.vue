@@ -423,14 +423,19 @@
               <span>Jump to Section:</span>
               <select @change="anchorHashClick($event)">
                 <option disabled selected>--- Select a Section ---</option>
-                <option value="coords">Coordinates</option>
                 <option value="sanitation">Sanitation</option>
                 <option value="govt-online">Govt. Online</option>
-                <option value="officials">Officials</option>
+                <optgroup label="Elected Officials">
+                  <option value="mayor">Mayor</option>
+                  <option value="clerk">Clerk</option>
+                  <option value="council">Council</option>
+                  <option value="districtRep">District Representative</option>
+                </optgroup>
                 <option value="parks">Parks</option>
                 <option value="playgrounds">Playgrounds</option>
-                <option value="schools">Schools</option>
                 <option value="safe-places">Safe Places</option>
+                <option value="schools">Schools</option>
+                <option value="coords">Coordinates</option>
               </select>
             </div>
 
@@ -490,9 +495,11 @@
                           </th>
                           <td>
                             <template v-if="e.purpose_type === 'CITY COUNCIL DISTRICT'">
-                              <nuxt-link :to="{path: `/?address=${locationResDataNew.address.streetAddress}`, hash: 'districtRep'}">
-                                {{e.name | capitalizeFirst}}
-                              </nuxt-link>
+                              <a
+                                href="#"
+                                :alt="e.name | capitalizeFirst"
+                                data-jump="districtRep"
+                                @click.prevent="anchorHashClick($event)">{{e.name | capitalizeFirst}}</a>
                             </template>
 
                             <template v-else-if="e.purpose_type === 'RESIDENTIAL PARKING ZONE'">
@@ -515,8 +522,9 @@
                     <th>
                       <a
                         :href="voterPrecinctsPath"
+                        class="external"
                         target="_blank"
-                        title="Monroe Co. Voter Precincts">Monroe Co. Voter Precincts</a>
+                        alt="Monroe Co. Voter Precincts">Monroe Co. Voter Precincts</a>
                     </th>
                  </tr>
                 </tbody>
@@ -532,7 +540,7 @@
                   <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="trash" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-trash fa-w-14 fa-3x"><path fill="currentColor" d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z" class=""></path></svg>
 
                   <blockquote>
-                    <p>Please see <a href="https://bloomington.in.gov/trash">Trash &amp; Recycling Pickup</a> for details.</p>
+                    <p>Please see <a class="external" target="_blank" alt="Trash &amp; Recycling Pickup" href="https://bloomington.in.gov/trash">Trash &amp; Recycling Pickup</a> for details.</p>
 
                     <p><strong>Note:</strong> Some conditions <strong>may cause delays to the schedule below.</strong></p>
                   </blockquote>
@@ -560,7 +568,10 @@
                     <tr v-if="locationResDataNew.locations[0].recycle_week">
                       <th scope="row">Yard Waste:</th>
                       <td>
-                         <a :href="trashLink(locationResDataNew.locations[0].recycle_week, locationResDataNew.locations[0].trash_day).url" target="_blank">
+                         <a
+                          class="external"
+                          :alt="`Week ${locationResDataNew.locations[0].recycle_week | capitalizeFirst}`"
+                          :href="trashLink(locationResDataNew.locations[0].recycle_week, locationResDataNew.locations[0].trash_day).url" target="_blank">
                           Week {{ locationResDataNew.locations[0].recycle_week | capitalizeFirst }}
                         </a>
 
@@ -580,7 +591,7 @@
               </template>
 
               <template v-else>
-                <p>Expecting a sanitation pickup? Contact us: <a href="mailto:sanitation@bloomington.in.gov">sanitation@bloomington.in.gov</a></p>
+                <p>Expecting a sanitation pickup? Contact us: <a class="external" href="mailto:sanitation@bloomington.in.gov">sanitation@bloomington.in.gov</a></p>
               </template>
             </section>
 
@@ -599,7 +610,7 @@
 
                   <table>
                     <caption class="sr-only">
-                      Online Government Information REORDER!!! TOWNSHIP!!!
+                      Online Government Information
                     </caption>
                     <thead class="sr-only">
                       <tr>
@@ -612,8 +623,13 @@
                         <th scope="row">
                           Web:
 
-                          <a :href="l.website.url"
-                             :alt="l.website.text">{{ l.website.text }}</a>
+                          <a
+                            class="external"
+                            :href="l.website.url"
+                            target="_blank"
+                            :alt="l.website.text">
+                           {{ l.website.text }}
+                         </a>
                         </th>
                       </tr>
 
@@ -621,8 +637,11 @@
                         <th scope="row">
                           Socials:
                           <template v-for="s, i in l.socials">
-                            <a :href="s.url"
-                               :alt="s.text">
+                            <a
+                              class="external"
+                              target="_blank"
+                              :href="s.url"
+                              :alt="s.text">
                               <template v-if="s.type === 'instagram'">
                                 <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="instagram" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-instagram fa-w-14 fa-3x"><path fill="currentColor" d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z" class=""></path></svg>
                               </template>
@@ -652,7 +671,7 @@
               </header>
 
               <div class="contacts">
-                <div class="row contact mayor">
+                <div class="row contact mayor" id="mayor">
                   <div class="img">
                     <img :src="folks.officials.mayor.image"
                          :title="`Mayor - ${folks.officials.mayor.name}`"
@@ -682,9 +701,9 @@
                           <th scope="row">Web:</th>
                           <td>
                             <a
+                              class="external"
                               :href="folks.officials.mayor.url"
                               :alt="`Mayor - ${folks.officials.mayor.name}`"
-                              :title="`Mayor - ${folks.officials.mayor.name}`"
                               target="_blank">{{ folks.officials.mayor.url }}
                             </a>
                           </td>
@@ -712,7 +731,7 @@
                   </div>
                 </div>
 
-                <div class="row council">
+                <div class="row council" id="council">
                   <div class="contact">
                     <div class="img"
                          :style="`background-image: url(${folks.council[1].image});`"></div>
@@ -737,9 +756,9 @@
                             <th scope="row">Web:</th>
                             <td>
                               <a
+                                class="external"
                                 :href="folks.council[1].url"
                                 :alt="`Council Member - ${folks.council[1].name}`"
-                                :title="`Council Member - ${folks.council[1].name}`"
                                 target="_blank">{{ folks.council[1].url }}</a>
                             </td>
                           </tr>
@@ -795,9 +814,9 @@
                             <th scope="row">Web:</th>
                             <td>
                               <a
+                                class="external"
                                 :href="folks.council[2].url"
                                 :alt="`Council Member - ${folks.council[2].name}`"
-                                :title="`Council Member - ${folks.council[2].name}`"
                                 target="_blank">{{ folks.council[2].url }}</a>
                             </td>
                           </tr>
@@ -848,9 +867,9 @@
                             <th scope="row">Web:</th>
                             <td>
                               <a
+                                class="external"
                                 :href="folks.council[3].url"
                                 :alt="`Council Member - ${folks.council[3].name}`"
-                                :title="`Council Member - ${folks.council[3].name}`"
                                 target="_blank">{{ folks.council[3].url }}</a>
                             </td>
                           </tr>
@@ -958,9 +977,9 @@
                             <th scope="row">Web:</th>
                             <td>
                               <a
+                                class="external"
                                 :href="districtRep.url"
                                 :alt="`Council District Representative - ${districtRep.name}`"
-                                :title="`Council District Representative - ${districtRep.name}`"
                                 target="_blank">{{ districtRep.url }}</a>
                             </td>
                           </tr>
@@ -986,7 +1005,7 @@
                     </div>
                   </div>
 
-                  <div class="contact">
+                  <div class="contact" id="clerk">
                     <div class="img"
                          :style="`background-image: url(${folks.officials.clerk.image});`"></div>
 
@@ -996,7 +1015,7 @@
 
                       <p>The {{ cityName }} Clerk's Office strives to make city government as accessible and responsive to the community as possible. The office serves as an educational liaison between citizens and their government. We respond to inquiries by telephone, in writing, or in person from a variety of interested persons regarding matters pertaining to City Council actions, or related City information retained in the City Clerk's office. We work closely with the City Council to supply combined constituent services.</p>
 
-                      <p>For election information contact the <a href="https://www.co.monroe.in.us/department/?structureid=18" alt="Monroe County Clerk's Office">Monroe County Clerk's Office</a> or <a href="https://www.co.monroe.in.us/department/division.php?structureid=89" alt="Voter Registration">Voter Registration</a>.</p>
+                      <p>For election information contact the <a class="external" href="https://www.co.monroe.in.us/department/?structureid=18" target="_blank" alt="Monroe County Clerk's Office">Monroe County Clerk's Office</a> or <a class="external" href="https://www.co.monroe.in.us/department/division.php?structureid=89" target="_blank" alt="Voter Registration">Voter Registration</a>.</p>
 
                       <table>
                         <caption class="sr-only">
@@ -1014,9 +1033,9 @@
                             <th scope="row">Web:</th>
                             <td>
                               <a
+                                class="external"
                                 :href="folks.officials.clerk.url"
-                                :alt="`Clerk - ${folks.officials.clerk.name}`"
-                                :title="`Clerk - ${folks.officials.clerk.name}`"
+                                :alt="`Clerk - ${folks.officials.clerk.name}`""
                                 target="_blank">{{ folks.officials.clerk.url }}</a>
                             </td>
                           </tr>
@@ -1060,7 +1079,7 @@
                       <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="tree" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="svg-inline--fa fa-tree fa-w-12 fa-3x"><path fill="currentColor" d="M378.31 378.49L298.42 288h30.63c9.01 0 16.98-5 20.78-13.06 3.8-8.04 2.55-17.26-3.28-24.05L268.42 160h28.89c9.1 0 17.3-5.35 20.86-13.61 3.52-8.13 1.86-17.59-4.24-24.08L203.66 4.83c-6.03-6.45-17.28-6.45-23.32 0L70.06 122.31c-6.1 6.49-7.75 15.95-4.24 24.08C69.38 154.65 77.59 160 86.69 160h28.89l-78.14 90.91c-5.81 6.78-7.06 15.99-3.27 24.04C37.97 283 45.93 288 54.95 288h30.63L5.69 378.49c-6 6.79-7.36 16.09-3.56 24.26 3.75 8.05 12 13.25 21.01 13.25H160v24.45l-30.29 48.4c-5.32 10.64 2.42 23.16 14.31 23.16h95.96c11.89 0 19.63-12.52 14.31-23.16L224 440.45V416h136.86c9.01 0 17.26-5.2 21.01-13.25 3.8-8.17 2.44-17.47-3.56-24.26z" class=""></path></svg>
 
                       <blockquote>
-                        <p>The <strong>{{ cityName }}</strong> <a href="https://bloomington.in.gov/parks" alt="City of Bloomington Parks and Recreation">Parks and Recreation</a> Department provides essential services, facilities and programs necessary for the positive development and well-being of the community through the provision of parks, greenways, trails and recreational facilities while working in cooperation with other service providers in the community in order to maximize all available resources.</p>
+                        <p>The <strong>{{ cityName }}</strong> <a class="external" href="https://bloomington.in.gov/parks" alt="City of Bloomington Parks and Recreation">Parks and Recreation</a> Department provides essential services, facilities and programs necessary for the positive development and well-being of the community through the provision of parks, greenways, trails and recreational facilities while working in cooperation with other service providers in the community in order to maximize all available resources.</p>
 
                         <p class="hide-viewport-small">
                           <small>* Approximate distance.</small>
@@ -1087,32 +1106,38 @@
                       </thead>
 
                     <tbody>
-                      <tr v-for="p, i in viaDistance(parksResData.features)"
-                          :class="[{'clickable': p.address}]"
-                          v-if="i <= 10">
-                        <template v-if="p.address">
-                          <td>
-                            <a :href="`https://www.google.com/maps/dir/?api=1&origin=${latLong.lat},${latLong.lng}&destination=${p.lat},${p.lon}`"
-                               :alt="`Get Directions to ${p.name}`"
-                               :title="`Get Directions to ${p.name}`">
+                      <template
+                        v-for="p, i in viaDistance(parksResData.features)"
+                        v-if="i <= 10">
+                        <template v-if="p.lat && p.lon">
+                          <tr
+                            :class="[{'clickable': p.lat && p.lon}]"
+                             @click="goToAddress(p.lat, p.lon)">
+                            <td>
                               {{ p.dist }} mi *
-                            </a>
-                          </td>
-                          <td @click="goToAddress(p.lat, p.lon)">
-                            {{ p.name }}
-                            <!-- <small>{{ p.address }}</small> -->
-                          </td>
-                          <td @click="goToAddress(p.lat, p.lon)">
-                            <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="directions" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-directions fa-w-16 fa-3x"><path fill="currentColor" d="M502.61 233.32L278.68 9.39c-12.52-12.52-32.83-12.52-45.36 0L9.39 233.32c-12.52 12.53-12.52 32.83 0 45.36l223.93 223.93c12.52 12.53 32.83 12.53 45.36 0l223.93-223.93c12.52-12.53 12.52-32.83 0-45.36zm-100.98 12.56l-84.21 77.73c-5.12 4.73-13.43 1.1-13.43-5.88V264h-96v64c0 4.42-3.58 8-8 8h-32c-4.42 0-8-3.58-8-8v-80c0-17.67 14.33-32 32-32h112v-53.73c0-6.97 8.3-10.61 13.43-5.88l84.21 77.73c3.43 3.17 3.43 8.59 0 11.76z" class=""></path></svg>directions
-                          </td>
+                            </td>
+                            <td>
+                              <a
+                                href="#"
+                                class="external"
+                                @click.prevent>
+                                {{ p.name }}
+                              </a>
+                            </td>
+                            <td >
+                              <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="directions" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-directions fa-w-16 fa-3x"><path fill="currentColor" d="M502.61 233.32L278.68 9.39c-12.52-12.52-32.83-12.52-45.36 0L9.39 233.32c-12.52 12.53-12.52 32.83 0 45.36l223.93 223.93c12.52 12.53 32.83 12.53 45.36 0l223.93-223.93c12.52-12.53 12.52-32.83 0-45.36zm-100.98 12.56l-84.21 77.73c-5.12 4.73-13.43 1.1-13.43-5.88V264h-96v64c0 4.42-3.58 8-8 8h-32c-4.42 0-8-3.58-8-8v-80c0-17.67 14.33-32 32-32h112v-53.73c0-6.97 8.3-10.61 13.43-5.88l84.21 77.73c3.43 3.17 3.43 8.59 0 11.76z" class=""></path></svg>directions
+                            </td>
+                          </tr>
                         </template>
 
                         <template v-else>
-                          <td>{{ p.dist }} mi *</td>
-                          <td>{{ p.name }}</td>
-                          <td>- - -</td>
+                          <tr>
+                            <td>{{ p.dist }} mi *</td>
+                            <td>{{ p.name }}</td>
+                            <td>- - -</td>
+                          </tr>
                         </template>
-                      </tr>
+                      </template>
                     </tbody>
                   </table>
                 </section>
@@ -1156,33 +1181,38 @@
                       </thead>
 
                     <tbody>
-                      <!-- <tr v-for="p, i in viaDistance(parksResData.features)"
-                          v-if="i < 10"> -->
-                      <tr v-for="p, i in viaDistance(playgroundsResData.features)"
-                          :class="[{'clickable': p.address}]"
-                          v-if="i <= 10">
-                        <template v-if="p.address">
-                          <td>
-                            <a :href="`https://www.google.com/maps/dir/?api=1&origin=${latLong.lat},${latLong.lng}&destination=${p.lat},${p.lon}`"
-                               :alt="`Get Directions to ${p.name}`"
-                               :title="`Get Directions to ${p.name}`">
+                      <template
+                        v-for="p, i in viaDistance(playgroundsResData.features)"
+                        v-if="i <= 10">
+                        <template v-if="p.lat && p.lon">
+                          <tr
+                            :class="[{'clickable': p.lat && p.lon}]"
+                            @click="goToAddress(p.lat, p.lon)">
+                            <td>
                               {{ p.dist }} mi *
-                            </a>
-                          </td>
-                          <td @click="goToAddress(p.lat, p.lon)">
-                            {{ p.name }}
-                          </td>
-                          <td @click="goToAddress(p.lat, p.lon)">
-                            <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="directions" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-directions fa-w-16 fa-3x"><path fill="currentColor" d="M502.61 233.32L278.68 9.39c-12.52-12.52-32.83-12.52-45.36 0L9.39 233.32c-12.52 12.53-12.52 32.83 0 45.36l223.93 223.93c12.52 12.53 32.83 12.53 45.36 0l223.93-223.93c12.52-12.53 12.52-32.83 0-45.36zm-100.98 12.56l-84.21 77.73c-5.12 4.73-13.43 1.1-13.43-5.88V264h-96v64c0 4.42-3.58 8-8 8h-32c-4.42 0-8-3.58-8-8v-80c0-17.67 14.33-32 32-32h112v-53.73c0-6.97 8.3-10.61 13.43-5.88l84.21 77.73c3.43 3.17 3.43 8.59 0 11.76z" class=""></path></svg>directions
-                          </td>
+                            </td>
+                            <td >
+                              <a
+                                href="#"
+                                class="external"
+                                @click.prevent>
+                                {{ p.name }}
+                              </a>
+                            </td>
+                            <td>
+                              <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="directions" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-directions fa-w-16 fa-3x"><path fill="currentColor" d="M502.61 233.32L278.68 9.39c-12.52-12.52-32.83-12.52-45.36 0L9.39 233.32c-12.52 12.53-12.52 32.83 0 45.36l223.93 223.93c12.52 12.53 32.83 12.53 45.36 0l223.93-223.93c12.52-12.53 12.52-32.83 0-45.36zm-100.98 12.56l-84.21 77.73c-5.12 4.73-13.43 1.1-13.43-5.88V264h-96v64c0 4.42-3.58 8-8 8h-32c-4.42 0-8-3.58-8-8v-80c0-17.67 14.33-32 32-32h112v-53.73c0-6.97 8.3-10.61 13.43-5.88l84.21 77.73c3.43 3.17 3.43 8.59 0 11.76z" class=""></path></svg>directions
+                            </td>
+                          </tr>
                         </template>
 
                         <template v-else>
-                          <td>{{ p.dist }} mi *</td>
-                          <td>{{ p.name }}</td>
-                          <td>- - -</td>
+                          <tr>
+                            <td>{{ p.dist }} mi *</td>
+                            <td>{{ p.name }}</td>
+                            <td>- - -</td>
+                          </tr>
                         </template>
-                      </tr>
+                      </template>
                     </tbody>
                   </table>
                 </section>
@@ -1228,19 +1258,38 @@
                     </thead>
 
                     <tbody>
-                      <tr v-for="p, i in viaDistance(safePlaceResData.feed.entry)"
-                          :class="[{'clickable': p}]"
-                          v-if="i <= 10">
-                        <td @click="goToAddress(p.gsx$lat.$t, p.gsx$lon.$t)">
-                          {{ p.dist }} mi *
-                        </td>
-                        <td @click="goToAddress(p.gsx$lat.$t, p.gsx$lon.$t)">
-                          {{ p.gsx$name.$t }}
-                        </td>
-                        <td @click="goToAddress(p.gsx$lat.$t, p.gsx$lon.$t)">
-                            <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="directions" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-directions fa-w-16 fa-3x"><path fill="currentColor" d="M502.61 233.32L278.68 9.39c-12.52-12.52-32.83-12.52-45.36 0L9.39 233.32c-12.52 12.53-12.52 32.83 0 45.36l223.93 223.93c12.52 12.53 32.83 12.53 45.36 0l223.93-223.93c12.52-12.53 12.52-32.83 0-45.36zm-100.98 12.56l-84.21 77.73c-5.12 4.73-13.43 1.1-13.43-5.88V264h-96v64c0 4.42-3.58 8-8 8h-32c-4.42 0-8-3.58-8-8v-80c0-17.67 14.33-32 32-32h112v-53.73c0-6.97 8.3-10.61 13.43-5.88l84.21 77.73c3.43 3.17 3.43 8.59 0 11.76z" class=""></path></svg>directions
-                        </td>
-                      </tr>
+                      <template
+                        v-for="p, i in viaDistance(safePlaceResData.feed.entry)"
+                        v-if="i <= 10">
+                        <template v-if="p.gsx$lat.$t && p.gsx$lon.$t">
+                          <tr
+                            :class="[{'clickable': p}]"
+                            @click="goToAddress(p.gsx$lat.$t, p.gsx$lon.$t)">
+                            <td>
+                              {{ p.dist }} mi *
+                            </td>
+                            <td>
+                              <a
+                                href="#"
+                                class="external"
+                                @click.prevent>
+                                {{ p.gsx$name.$t }}
+                              </a>
+                            </td>
+                            <td>
+                              <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="directions" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-directions fa-w-16 fa-3x"><path fill="currentColor" d="M502.61 233.32L278.68 9.39c-12.52-12.52-32.83-12.52-45.36 0L9.39 233.32c-12.52 12.53-12.52 32.83 0 45.36l223.93 223.93c12.52 12.53 32.83 12.53 45.36 0l223.93-223.93c12.52-12.53 12.52-32.83 0-45.36zm-100.98 12.56l-84.21 77.73c-5.12 4.73-13.43 1.1-13.43-5.88V264h-96v64c0 4.42-3.58 8-8 8h-32c-4.42 0-8-3.58-8-8v-80c0-17.67 14.33-32 32-32h112v-53.73c0-6.97 8.3-10.61 13.43-5.88l84.21 77.73c3.43 3.17 3.43 8.59 0 11.76z" class=""></path></svg>directions
+                            </td>
+                          </tr>
+                        </template>
+
+                        <template v-else>
+                          <tr>
+                            <td>{{ p.dist }} mi *</td>
+                            <td>{{ p.gsx$name.$t }}</td>
+                            <td>- - -</td>
+                          </tr>
+                        </template>
+                      </template>
                     </tbody>
                   </table>
                 </section>
@@ -1259,7 +1308,7 @@
                       <blockquote>
                         <p>Local <strong>Schools</strong> nearby the requested Address.</p>
 
-                        <p><strong>Please Note:</strong> This <strong>does not</strong> indicate the appropriate <a :href="districtLookupPath" title="Bloomington School Districts">School District</a></strong> nor any <strong>Higher Educational</strong> institutions.</p>
+                        <p><strong>Please Note:</strong> This <strong>does not</strong> indicate the appropriate <a class="external" :href="districtLookupPath" alt="Bloomington School Districts">School District</a></strong> nor any <strong>Higher Educational</strong> institutions.</p>
 
                         <p class="hide-viewport-small">
                           <small>* Approximate distance.</small>
@@ -1312,33 +1361,38 @@
                       </thead>
 
                     <tbody>
-                      <!-- <tr v-for="p, i in viaDistance(parksResData.features)"
-                          v-if="i < 10"> -->
-                      <tr v-for="p, i in viaDistance(schoolsResData.features)"
-                          :class="[{'clickable': p.address}]"
-                          v-if="i <= 10 && schoolTypeToggle.includes(p.type)">
-                        <template v-if="p.address">
-                          <td>
-                            <a :href="`https://www.google.com/maps/dir/?api=1&origin=${latLong.lat},${latLong.lng}&destination=${p.lat},${p.lon}`"
-                               :alt="`Get Directions to ${p.name}`"
-                               :title="`Get Directions to ${p.name}`">
+                      <template
+                        v-for="p, i in viaDistance(schoolsResData.features)"
+                        v-if="i <= 10 && schoolTypeToggle.includes(p.type)">
+                        <template v-if="p.lat && p.lon">
+                          <tr
+                            :class="[{'clickable': p.lat && p.lon}]"
+                             @click="goToAddress(p.lat, p.lon)">
+                            <td>
                               {{ p.dist }} mi *
-                            </a>
-                          </td>
-                          <td @click="goToAddress(p.lat, p.lon)">
-                            {{ p.name }}
-                          </td>
-                          <td @click="goToAddress(p.lat, p.lon)">
-                            <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="directions" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-directions fa-w-16 fa-3x"><path fill="currentColor" d="M502.61 233.32L278.68 9.39c-12.52-12.52-32.83-12.52-45.36 0L9.39 233.32c-12.52 12.53-12.52 32.83 0 45.36l223.93 223.93c12.52 12.53 32.83 12.53 45.36 0l223.93-223.93c12.52-12.53 12.52-32.83 0-45.36zm-100.98 12.56l-84.21 77.73c-5.12 4.73-13.43 1.1-13.43-5.88V264h-96v64c0 4.42-3.58 8-8 8h-32c-4.42 0-8-3.58-8-8v-80c0-17.67 14.33-32 32-32h112v-53.73c0-6.97 8.3-10.61 13.43-5.88l84.21 77.73c3.43 3.17 3.43 8.59 0 11.76z" class=""></path></svg>directions
-                          </td>
+                            </td>
+                            <td>
+                              <a
+                                href="#"
+                                class="external"
+                                @click.prevent>
+                                {{ p.name }}
+                              </a>
+                            </td>
+                            <td>
+                              <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="directions" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-directions fa-w-16 fa-3x"><path fill="currentColor" d="M502.61 233.32L278.68 9.39c-12.52-12.52-32.83-12.52-45.36 0L9.39 233.32c-12.52 12.53-12.52 32.83 0 45.36l223.93 223.93c12.52 12.53 32.83 12.53 45.36 0l223.93-223.93c12.52-12.53 12.52-32.83 0-45.36zm-100.98 12.56l-84.21 77.73c-5.12 4.73-13.43 1.1-13.43-5.88V264h-96v64c0 4.42-3.58 8-8 8h-32c-4.42 0-8-3.58-8-8v-80c0-17.67 14.33-32 32-32h112v-53.73c0-6.97 8.3-10.61 13.43-5.88l84.21 77.73c3.43 3.17 3.43 8.59 0 11.76z" class=""></path></svg>directions
+                            </td>
+                          </tr>
                         </template>
 
                         <template v-else>
-                          <td>{{ p.dist }} mi *</td>
-                          <td>{{ p.name }}</td>
-                          <td>- - -</td>
+                          <tr>
+                            <td>{{ p.dist }} mi *</td>
+                            <td>{{ p.name }}</td>
+                            <td>- - -</td>
+                          </tr>
                         </template>
-                      </tr>
+                      </template>
                     </tbody>
                   </table>
 
@@ -1413,7 +1467,7 @@
                   <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="location-arrow" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-location-arrow fa-w-16 fa-3x"><path fill="currentColor" d="M444.52 3.52L28.74 195.42c-47.97 22.39-31.98 92.75 19.19 92.75h175.91v175.91c0 51.17 70.36 67.17 92.75 19.19l191.9-415.78c15.99-38.39-25.59-79.97-63.97-63.97z" class=""></path></svg>
 
                   <blockquote>
-                    <p> The <a href="https://bloomington.in.gov/gis" alt="City of Bloomington GIS">{{ cityName }} GIS</a> staff maintains spatial data and provides mapping and spatial analysis services to support operations of City Departments, Boards and Commissions.</p>
+                    <p> The <strong>{{ cityName }}</strong> <a class="external" href="https://bloomington.in.gov/gis" alt="City of Bloomington GIS" target="_blank">GIS Department</a> staff maintains spatial data and provides mapping and spatial analysis services to support operations of City Departments, Boards and Commissions.</p>
                   </blockquote>
                 </div>
               </header>
@@ -1516,7 +1570,7 @@
       <a
         v-if="showToTopArrow"
         class="scroll-to-top"
-        title="Scroll to top of the page"
+        alt="Scroll to top of the page"
         @click="scrollToTop($event)">
         <span>scroll to top of the page</span>
       </a>
@@ -1704,13 +1758,14 @@ export default {
       });
     },
     anchorHashClick(e) {
-      let jumpToRef       = e.target.value,
+      console.dir(e.target);
+      let jumpToRef       = e.target.value || e.target.dataset.jump,
           parksRef        = 'parks',
           playgroundsRef  = 'playgrounds',
           schoolsRef      = 'schools',
           safePlacesRef   = 'safe-places';
 
-
+      // we care about these bc they are tabs
       if(jumpToRef == parksRef ||
          jumpToRef == playgroundsRef ||
          jumpToRef == schoolsRef ||
