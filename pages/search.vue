@@ -1,54 +1,53 @@
 <template>
-  <div>
-    <!-- !hasLocationData alert -->
-    <div v-if="!loading && !hasLocationData">
-      <div class="wrapper">
-        <div class="container">
-          <fn1-alert variant="warning">
-            <p><strong>Sorry, </strong> no location data available.</p>
-          </fn1-alert>
-        </div>
+  <div class="top-wrapper">
+    <!-- <div class="wrapper" v-if="(!locationResDataNew && !addressMapped) || loading">
+      <div class="container">
+        <fn1-alert v-if="!locationResDataNew && !loading" variant="warning">
+          <p><strong>Sorry, </strong> no location data available.</p>
+        </fn1-alert>
+
+         <fn1-alert v-if="loading" variant="warning">
+          <p>Loading ...</p>
+        </fn1-alert>
       </div>
-    </div>
+    </div> -->
 
     <!-- hasLocationData -->
-    <div v-if="!loading && hasLocationData">
+    <div class="content-wrapper" v-if="!loading && locationResDataNew && addressMapped">
       <!-- <gmap-street-view-panorama
-          style="width: 100%; height: 600px"
-          ref="streetViewRef"
-          :position="latLong"
-          :pov="{heading: 0, pitch: 0}"
-          :zoom="0"
-          :options="{
-            zoomControl:        false,
-            mapTypeControl:     false,
-            scaleControl:       false,
-            streetViewControl:  false,
-            rotateControl:      false,
-            fullscreenControl:  false,
-            disableDefaultUi:   true,
-            draggable:          false,
-            styles: [
-              {
-                featureType:    'landscape',
-                stylers: [
-                  {
-                    color:      '#f2f2f2',
-                    visibility: 'on'
-                  }
-                ]
-              },
-              {
-                featureType:    'poi',
-                stylers: [
-                  {
-                    visibility: 'off'
-                  }
-                ]
-              }
-            ]
-          }"
-        >
+        style="width: 100%; height: 600px"
+        ref="streetViewRef"
+        :position="latLong"
+        :zoom="0"
+        :options="{
+          zoomControl:        false,
+          mapTypeControl:     false,
+          scaleControl:       false,
+          streetViewControl:  false,
+          rotateControl:      false,
+          fullscreenControl:  false,
+          disableDefaultUi:   true,
+          draggable:          false,
+          styles: [
+            {
+              featureType:    'landscape',
+              stylers: [
+                {
+                  color:      '#f2f2f2',
+                  visibility: 'on'
+                }
+              ]
+            },
+            {
+              featureType:    'poi',
+              stylers: [
+                {
+                  visibility: 'off'
+                }
+              ]
+            }
+          ]
+        }">
       </gmap-street-view-panorama> -->
 
       <GmapMap
@@ -121,7 +120,7 @@
             <GmapMarker
               :animation="2"
               :label="{text: `${p.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: '#337536', fontWeight: '600'}"
-              :icon="{url: 'marker-park.svg', labelOrigin: {x: 28, y: 85}}"
+              :icon="{url: 'marker-park-alt.svg', labelOrigin: {x: 28, y: 85}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
               :position="{lat: Number(p.lat), lng: Number(p.lon)}"
               :clickable="false"
               :draggable="false"
@@ -134,7 +133,7 @@
             <GmapMarker
               :animation="2"
               :label="{text: `${s.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: '#990000', fontWeight: '600'}"
-              :icon="{url: 'marker-school.svg', labelOrigin: {x: 28, y: 85}}"
+              :icon="{url: 'marker-school-alt.svg', labelOrigin: {x: 28, y: 85}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
               :position="{lat: Number(s.lat), lng: Number(s.lon)}"
               :clickable="false"
               :draggable="false"
@@ -147,7 +146,7 @@
             <GmapMarker
               :animation="2"
               :label="{text: `${p.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: '#1e5aae', fontWeight: '600'}"
-              :icon="{url: 'marker-playground.svg', labelOrigin: {x: 28, y: 85}}"
+              :icon="{url: 'marker-playground-alt.svg', labelOrigin: {x: 28, y: 85}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
               :position="{lat: Number(p.lat), lng: Number(p.lon)}"
               :clickable="false"
               :draggable="false"
@@ -160,7 +159,7 @@
             <GmapMarker
               :animation="2"
               :label="{text: `${s.gsx$name.$t}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: '#212121', fontWeight: '600'}"
-              :icon="{url: 'marker-safe-place.svg', labelOrigin: {x: 28, y: 85}}"
+              :icon="{url: 'marker-safe-place-alt.svg', labelOrigin: {x: 28, y: 85}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
               :position="{lat: Number(s.gsx$lat.$t), lng: Number(s.gsx$lon.$t)}"
               :clickable="false"
               :draggable="false"
@@ -177,6 +176,7 @@
                 <span>Toggle Map Markers:</span>
                 <legend class="sr-only">Toggle Map Markers:</legend>
                 <div class="inner-wrapper">
+                  <span class="legend parks"></span>
                   <input v-model="mapMarkerToggle.parks"
                          value="parks"
                          type="checkbox"
@@ -186,6 +186,7 @@
                 </div>
 
                 <div class="inner-wrapper">
+                  <span class="legend playgrounds"></span>
                   <input v-model="mapMarkerToggle.playgrounds"
                          value="playgrounds"
                          type="checkbox"
@@ -195,6 +196,7 @@
                 </div>
 
                 <div class="inner-wrapper">
+                  <span class="legend safe-places"></span>
                   <input v-model="mapMarkerToggle.safePlaces"
                          value="safePlaces"
                          type="checkbox"
@@ -204,6 +206,7 @@
                 </div>
 
                 <div class="inner-wrapper">
+                  <span class="legend schools"></span>
                   <input v-model="mapMarkerToggle.schools"
                          value="schools"
                          type="checkbox"
@@ -539,13 +542,13 @@
 
                   <tr>
                     <th scope="row">Voter Registration:</th>
-                    <th>
+                    <td>
                       <a
                         :href="voterPrecinctsPath"
                         class="external"
                         target="_blank"
                         alt="Monroe Co. Voter Precincts">Monroe Co. Voter Precincts</a>
-                    </th>
+                    </td>
                  </tr>
                 </tbody>
               </table>
@@ -590,7 +593,7 @@
                       <td>
                          <a
                           class="external"
-                          :alt="`Week ${locationResDataNew.locations[0].recycle_week | capitalizeFirst}`"
+                          :alt="'Week ' + locationResDataNew.locations[0].recycle_week | capitalizeFirst"
                           :href="trashLink(locationResDataNew.locations[0].recycle_week, locationResDataNew.locations[0].trash_day).url" target="_blank">
                           Week {{ locationResDataNew.locations[0].recycle_week | capitalizeFirst }}
                         </a>
@@ -1625,14 +1628,18 @@ export default {
       viewingHeight:         null,
     }
   },
+  beforeCreate: function() {
+    this.loading = true;
+  },
   created: function() {
-
-
     this.$nextTick(() => {
-      this.loading = true;
+      this.loading = false;
       smoothscroll.polyfill();
-      window.addEventListener("resize", this.calcViewingHeight);
-      window.addEventListener("scroll", this.scrolledFromTop);
+
+      if (process.client) {
+        window.addEventListener("resize", this.calcViewingHeight);
+        window.addEventListener("scroll", this.scrolledFromTop);
+      }
     });
 
     if(!this.cityBoundary) {
@@ -1716,7 +1723,8 @@ export default {
   },
   mounted: function() {
     this.$nextTick(() => {
-      setTimeout(() => this.loading = false, 350);
+
+      // setTimeout(() => this.loading = false, 450);
       this.calcViewingHeight();
     });
   },
@@ -1821,6 +1829,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .top-wrapper {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
+  .content-wrapper {
+    flex: 1;
+  }
+
   .scroll-to-top {
     cursor: pointer;
     display: block;
@@ -2285,6 +2303,28 @@ export default {
     justify-content: center;
     color: white;
     letter-spacing: .5px;
+
+    .legend {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+
+      &.parks {
+        background-color: #2D6326;
+      }
+
+      &.playgrounds {
+        background-color: #1947A0;
+      }
+
+      &.schools {
+        background-color: #821001;
+      }
+
+      &.safe-places {
+        background-color: #FCC324;
+      }
+    }
 
     h4 {
       margin: 0 0 15px 0;
