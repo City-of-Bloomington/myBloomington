@@ -119,7 +119,7 @@
             v-if="mapMarkerToggle.parks">
             <GmapMarker
               :animation="2"
-              :label="{text: `${p.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: '#337536', fontWeight: '600'}"
+              :label="{text: `${p.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: 'white', fontWeight: '600'}"
               :icon="{url: 'marker-park-alt.svg', labelOrigin: {x: 28, y: 85}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
               :position="{lat: Number(p.lat), lng: Number(p.lon)}"
               :clickable="false"
@@ -132,7 +132,7 @@
             v-if="mapMarkerToggle.schools">
             <GmapMarker
               :animation="2"
-              :label="{text: `${s.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: '#990000', fontWeight: '600'}"
+              :label="{text: `${s.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: 'white', fontWeight: '600'}"
               :icon="{url: 'marker-school-alt.svg', labelOrigin: {x: 28, y: 85}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
               :position="{lat: Number(s.lat), lng: Number(s.lon)}"
               :clickable="false"
@@ -145,7 +145,7 @@
             v-if="mapMarkerToggle.playgrounds">
             <GmapMarker
               :animation="2"
-              :label="{text: `${p.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: '#1e5aae', fontWeight: '600'}"
+              :label="{text: `${p.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: 'white', fontWeight: '600'}"
               :icon="{url: 'marker-playground-alt.svg', labelOrigin: {x: 28, y: 85}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
               :position="{lat: Number(p.lat), lng: Number(p.lon)}"
               :clickable="false"
@@ -158,7 +158,7 @@
             v-if="mapMarkerToggle.safePlaces">
             <GmapMarker
               :animation="2"
-              :label="{text: `${s.gsx$name.$t}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: '#212121', fontWeight: '600'}"
+              :label="{text: `${s.gsx$name.$t}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: 'white', fontWeight: '600'}"
               :icon="{url: 'marker-safe-place-alt.svg', labelOrigin: {x: 28, y: 85}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
               :position="{lat: Number(s.gsx$lat.$t), lng: Number(s.gsx$lon.$t)}"
               :clickable="false"
@@ -176,7 +176,6 @@
                 <span>Toggle Map Markers:</span>
                 <legend class="sr-only">Toggle Map Markers:</legend>
                 <div class="inner-wrapper">
-                  <span class="legend parks"></span>
                   <input v-model="mapMarkerToggle.parks"
                          value="parks"
                          type="checkbox"
@@ -186,7 +185,6 @@
                 </div>
 
                 <div class="inner-wrapper">
-                  <span class="legend playgrounds"></span>
                   <input v-model="mapMarkerToggle.playgrounds"
                          value="playgrounds"
                          type="checkbox"
@@ -196,7 +194,6 @@
                 </div>
 
                 <div class="inner-wrapper">
-                  <span class="legend safe-places"></span>
                   <input v-model="mapMarkerToggle.safePlaces"
                          value="safePlaces"
                          type="checkbox"
@@ -206,7 +203,6 @@
                 </div>
 
                 <div class="inner-wrapper">
-                  <span class="legend schools"></span>
                   <input v-model="mapMarkerToggle.schools"
                          value="schools"
                          type="checkbox"
@@ -216,6 +212,14 @@
                 </div>
               </fieldset>
             </div>
+
+            <fn1-button
+              @click.native="expandMap()"
+              class="expand-map"
+              title="Expand Map"
+              alt="Expand Map">
+              <span></span>
+            </fn1-button>
           </div>
         </div>
 
@@ -1600,6 +1604,11 @@ import loader          from '~/components/loader'
 
 export default {
   layout: 'result',
+  // transition (to, from) {
+  //   if (!from) { return 'slide-left' }
+  //   return +to.query < +from.query ? 'slide-right' : 'slide-left'
+  // },
+  transition: 'bounce',
   components: {
     loader,
     exampleSearch,
@@ -1622,6 +1631,7 @@ export default {
   data() {
     // data shared via: universal-methods.js
     return {
+      expandedMap:           false,
       showScrollToTopArrow:  false,
       topSectionPixels:      680,
       scrolledFromTopAmount: null,
@@ -1723,8 +1733,6 @@ export default {
   },
   mounted: function() {
     this.$nextTick(() => {
-
-      // setTimeout(() => this.loading = false, 450);
       this.calcViewingHeight();
     });
   },
@@ -1732,19 +1740,7 @@ export default {
     window.removeEventListener("resize", this.calcViewingHeight);
     window.removeEventListener("scroll", this.scrolledFromTop);
   },
-  watch: {
-    $route: function (to, from) {
-      let addressToQueryParam   = to.query.address,
-          addressFromQueryParam = from.query.address;
-
-      if(addressToQueryParam !== addressFromQueryParam){
-        this.addressSearchAuto = addressToQueryParam;
-        this.searchSubmit(addressToQueryParam);
-      } else {
-        this.$router.replace('index');
-      }
-    }
-  },
+  watch: {},
   computed: {
     // computed shared via: universal-computed.js
     showToTopArrow() {
@@ -1755,6 +1751,19 @@ export default {
   },
   methods: {
     // methods shared via: universal-methods.js
+    expandMap() {
+      let headerHeight    = 90,
+          expandRowHeight = 45,
+          newInnerHeight  = window.innerHeight - headerHeight - expandRowHeight;
+      if(!this.expandedMap) {
+        this.expandedMap = true;
+        this.$refs.defaultMap.$el.style.height = `${newInnerHeight}px`
+      } else {
+        this.expandedMap = false;
+        this.$refs.defaultMap.$el.style.height = '450px'
+      }
+
+    },
     scrolledFromTop() {
       this.scrolledFromTopAmount = window.scrollY || window.scrollTop || document.getElementsByTagName("html")[0].scrollTop;
     },
@@ -1770,7 +1779,6 @@ export default {
       });
     },
     anchorHashClick(e) {
-      console.dir(e.target);
       let jumpToRef       = e.target.value || e.target.dataset.jump,
           parksRef        = 'parks',
           playgroundsRef  = 'playgrounds',
@@ -2304,25 +2312,36 @@ export default {
     color: white;
     letter-spacing: .5px;
 
-    .legend {
-      width: 15px;
-      height: 15px;
-      border-radius: 50%;
+    label {
 
-      &.parks {
+      &[for="parks"],
+      &[for="playgrounds"],
+      &[for="schools"],
+      &[for="safePlaces"] {
+        letter-spacing: .5px;
+        padding: 2px 5px;
+        border-radius: $radius-default;
+        font-weight: $weight-semi-bold;
+      }
+
+      &[for="parks"] {
         background-color: #2D6326;
+        color: white;
       }
 
-      &.playgrounds {
+      &[for="playgrounds"] {
         background-color: #1947A0;
+        color: white;
       }
 
-      &.schools {
+      &[for="schools"] {
         background-color: #821001;
+        color: white;
       }
 
-      &.safe-places {
+      &[for="safePlaces"] {
         background-color: #FCC324;
+        color: darken(#FCC324, 35%);
       }
     }
 
@@ -2343,6 +2362,32 @@ export default {
         background-color: white;
         border-top: 1px solid $color-grey-dark;
         padding: 4px 0 0 0;
+
+        .container {
+          align-items: center;
+          flex-wrap: nowrap;
+        }
+
+        .expand-map {
+          margin-left: auto;
+          background-color: lighten($text-color, 25%);
+          padding: 5px 10px;
+          border-radius: 50%;
+          cursor: pointer;
+
+          &:hover,
+          &:focus,
+          &.active,
+          &:active {
+            background-color: $text-color;
+          }
+
+          span {
+            width: 10px;
+            height: 20px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 512'%3E%3Cpath fill='white' d='M227.03 388.97H156V123.03h71.03c10.691 0 16.045-12.926 8.485-20.485l-99.029-99.03c-4.686-4.686-12.284-4.686-16.971 0l-99.029 99.03c-7.56 7.56-2.206 20.485 8.485 20.485H100v265.94H28.97c-10.691 0-16.045 12.926-8.485 20.485l99.029 99.03c4.686 4.686 12.284 4.686 16.971 0l99.029-99.03c7.56-7.559 2.206-20.485-8.484-20.485z' class=''%3E%3C/path%3E%3C/svg%3E");
+          }
+        }
 
         .form-group {
           font-size: 16px;
