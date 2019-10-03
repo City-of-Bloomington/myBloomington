@@ -682,10 +682,10 @@ export default {
     }
   }
 
-  @media (max-width: 575px) {
+  @media (max-height: 777px) {
     .homepage {
       padding: 20px 0 0 0;
-      height: calc(100vh - 69px) !important; // 69 = header height
+      height: calc(100vh - 90px) !important; // 69 = header height
 
       .container {
         padding: 0 20px;
@@ -734,6 +734,67 @@ export default {
     .folks,
     .map-container-wrapper {
       display: none;
+    }
+  }
+
+  @media (max-width: 575px) {
+    .homepage {
+      padding: 20px 0 0 0;
+      height: calc(100vh - 90px) !important; // 69 = header height
+
+      .container {
+        padding: 0 20px;
+      }
+
+      h1 {
+        font-size: 40px;
+        margin: 0 0 15px 0;
+      }
+
+      h2 {
+        font-size: 20px;
+        line-height: 40px;
+
+        .hi-lite {
+          padding: 5px;
+        }
+      }
+
+      h3 {
+        font-size: 20px;
+      }
+
+      .form-wrapper {
+        margin: 10px 0 0 0;
+
+        ::v-deep form {
+          input {
+            font-size: 18px;
+            padding: 10px;
+            padding-left: 40px;
+            background-size: 20px;
+          }
+        }
+
+        ul {
+          li {
+            a {
+              padding: 10px;
+            }
+          }
+        }
+      }
+    }
+
+    .folks,
+    .map-container-wrapper {
+      display: none;
+    }
+  }
+
+  @media (max-device-width: 575px) {
+    .homepage {
+      height: calc(100vh - 70px) !important; // 69 = header height
     }
   }
 

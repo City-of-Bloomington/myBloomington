@@ -1644,9 +1644,9 @@ export default {
   created: function() {
     this.$nextTick(() => {
       this.loading = false;
-      smoothscroll.polyfill();
 
       if (process.client) {
+        smoothscroll.polyfill();
         window.addEventListener("resize", this.calcViewingHeight);
         window.addEventListener("scroll", this.scrolledFromTop);
       }
@@ -2497,6 +2497,7 @@ export default {
       }
     }
   }
+
 
   @media (max-width: 575px) {
     .vue-map-container {
