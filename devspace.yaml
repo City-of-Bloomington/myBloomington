@@ -1,0 +1,69 @@
+version: v1beta3
+
+images:
+  mybloomington:
+    image: "docker-repo.bloomington.in.gov/cob/mybloomington"
+    dockerfile: ./Dockerfile
+    tag: ds-${DEVSPACE_GIT_COMMIT}
+
+deployments:
+- name: mybloomington
+  helm:
+    tillerNamespace: kube-system
+    replaceImageTags: false #would rather specify tag myself
+    chart:
+      name: ./charts/mybloomington
+    valuesFiles:
+      - ./charts/mybloomington/cob.values.yaml
+    values:
+      image:
+        tag: ds-${DEVSPACE_GIT_COMMIT}
+        npmscript: "build+start"
+      environment:
+        NODE_ENV: "production"
+        FE_BASE: "mybloomington"
+      ingress:
+        hosts:
+        - host: kubeproxy.bloomington.in.gov
+          paths: /mybloomington
+
+
+dev:
+  sync:
+  - imageName: mybloomington
+    localSubPath: .
+    containerPath: /home/node/mybloomington
+    labelSelector:
+      app.kubernetes.io/instance: mybloomington
+      app.kubernetes.io/name: mybloomington
+    uploadExcludePaths:
+      - node_modules/
+      - .nuxt/
+      - .devspace/
+      - .package.json
+    downloadExcludePaths:
+      - .nuxt/
+      - node_modules/
+      - .package.json
+  open: 
+    - url: "https://bloomington.in.gov/adambloomington"
+
+
+profiles:
+# by default, the values specified are for prod so leave this profile 'empty'
+- name: prod
+
+- name: dev
+  patches:
+  - op: replace
+    path: deployments[0].helm.values.environment.NODE_ENV
+    value: "development"
+  - op: replace
+    path: deployments[0].helm.values.environment.FE_BASE
+    value: "adambloomington"
+  - op: replace
+    path: deployments[0].helm.values.image.npmscript
+    value: "devkube"
+  - op: replace
+    path: deployments[0].helm.values.ingress.hosts[0].paths
+    value: "/adambloomington"

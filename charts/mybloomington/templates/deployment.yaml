@@ -24,7 +24,7 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           command: ["npm"]
-          args: ["run-script", "debug"]
+          args: ["run-script", "{{ .Values.image.npmscript }}"]
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           envFrom:
           - configMapRef:
@@ -33,6 +33,9 @@ spec:
             - name: http
               containerPort: 9090
               protocol: TCP
+          #securityContext:
+          #  priviliged: true
+          #  allowPriviligeEscalation: true
           # livenessProbe:
           #   httpGet:
           #     path: /mybloomington
