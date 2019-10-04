@@ -22,7 +22,6 @@ typings/
 .node_repl_history
 *.tgz
 .yarn-integrity
-.env
 .cache
 .next
 .nuxt
@@ -37,3 +36,6 @@ sw.*
 certs/*
 make.conf
 Makefile
+
+charts/
+.env

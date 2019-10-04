@@ -92,3 +92,16 @@ sw.*
 
 # Certs
 certs/*
+
+# build files
+make.conf
+Makefile
+
+# editor files
+.vscode/
+
+# Ignore DevSpace cache and log folder
+.devspace/
+
+# internal values files
+cob.values.y*ml
