@@ -107,6 +107,8 @@ Vue.mixin({
               resolve(res.data[0])
             } else if(res.data.length == 0) {
               reject(`No results for ${address}.`)
+            } else if (res.data.length == 2) {
+              reject(`Please select!!!!`)
             } else if(res.data.length <= 20) {
               resolve(res.data)
               console.dir(`getAddress() Search Result Count: ${res.data.length}`);

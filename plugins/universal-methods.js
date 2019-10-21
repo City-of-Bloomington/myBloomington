@@ -217,6 +217,9 @@ Vue.mixin({
         this.autoSuggestRes = null;
       }
     },
+    isObjEmpty(obj) {
+      return !obj || Object.keys(obj).length === 0;
+    },
     addressChoice(address) {
       this.autoSuggestRes       = null;
       this.searchEnteredWarning = false;
@@ -262,7 +265,7 @@ Vue.mixin({
           this.latLong            = this.cityHallLatLong;
           this.mapHeight          = '100%';
           this.errors.addressRes  = 'This Address has not yet been Mapped.';
-          console.log(`%c getAddress 🔌 `,
+          console.log(`%c getAddress 🛑 `,
                       this.consoleLog.success);
         }
       })
@@ -278,10 +281,18 @@ Vue.mixin({
                     `\n\n ${e} \n\n`);
       })
     },
-    locationLookup() {
-      if(this.addressResData.id) {
-        this.getLocation(this.addressResData.id)
+    locationLookup(id) {
+      let lookupID = this.addressResData.id || id;
+
+      if(lookupID){
+        console.dir('HAS -- lookupID');
+        console.dir(lookupID);
+      }
+
+      if(lookupID) {
+        this.getLocation(lookupID)
         .then((res) => {
+          this.addressMapped      = true;
           this.addressResChoices = null;
           this.districtRepGeoCoords = null;
 
@@ -292,10 +303,11 @@ Vue.mixin({
 
           let addressUrlEncoded = encodeURIComponent(this.locationResDataNew.address.streetAddress).replace(/%20/g, "+");
 
-          // console.dir(addressUrlEncoded);
+          console.dir(addressUrlEncoded);
 
           this.$router.replace({
             path: '/search',
+            // query: { address: addressUrlEncoded}
             query: { address: this.locationResDataNew.address.streetAddress}
           });
 

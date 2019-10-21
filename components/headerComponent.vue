@@ -1,6 +1,6 @@
 <template>
   <div>
-    <fn1-header
+    <example-header
       :logo="{
         url:          `${baseUrl}`,
         image:        `${headerLogo}`,
@@ -24,12 +24,15 @@
           href:       `${baseUrl}ureport/miscellaneous/53`}
       ]"
       :subNavItems="null">
-    </fn1-header>
+    </example-header>
   </div>
 </template>
 
 <script>
+import exampleHeader  from '~/components/exampleHeader'
+
 export default {
+  components: {exampleHeader},
   data() {
     return {
       logoHeading:        process.env.logoHeading,

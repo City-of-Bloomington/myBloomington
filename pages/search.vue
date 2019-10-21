@@ -1,54 +1,8 @@
 <template>
   <div class="top-wrapper">
-    <!-- <div class="wrapper" v-if="(!locationResDataNew && !addressMapped) || loading">
-      <div class="container">
-        <fn1-alert v-if="!locationResDataNew && !loading" variant="warning">
-          <p><strong>Sorry, </strong> no location data available.</p>
-        </fn1-alert>
-
-         <fn1-alert v-if="loading" variant="warning">
-          <p>Loading ...</p>
-        </fn1-alert>
-      </div>
-    </div> -->
-
-    <!-- hasLocationData -->
-    <div class="content-wrapper" v-if="!loading && locationResDataNew && addressMapped">
-      <!-- <gmap-street-view-panorama
-        style="width: 100%; height: 600px"
-        ref="streetViewRef"
-        :position="latLong"
-        :zoom="0"
-        :options="{
-          zoomControl:        false,
-          mapTypeControl:     false,
-          scaleControl:       false,
-          streetViewControl:  false,
-          rotateControl:      false,
-          fullscreenControl:  false,
-          disableDefaultUi:   true,
-          draggable:          false,
-          styles: [
-            {
-              featureType:    'landscape',
-              stylers: [
-                {
-                  color:      '#f2f2f2',
-                  visibility: 'on'
-                }
-              ]
-            },
-            {
-              featureType:    'poi',
-              stylers: [
-                {
-                  visibility: 'off'
-                }
-              ]
-            }
-          ]
-        }">
-      </gmap-street-view-panorama> -->
+    <div
+      v-if="!loading && locationResDataNew && addressMapped"
+      class="content-wrapper">
 
       <GmapMap
         :center="latLong"
@@ -434,9 +388,9 @@
                 <option value="govt-online">Govt. Online</option>
                 <optgroup label="Elected Officials">
                   <option value="mayor">Mayor</option>
-                  <option value="clerk">Clerk</option>
-                  <option value="council">Council</option>
                   <option value="districtRep">District Representative</option>
+                  <option value="council">Council At-Large</option>
+                  <option value="clerk">Clerk</option>
                 </optgroup>
                 <option value="parks">Parks</option>
                 <option value="playgrounds">Playgrounds</option>
@@ -569,7 +523,14 @@
                   <blockquote>
                     <p>Please see <a class="external" target="_blank" alt="Trash &amp; Recycling Pickup" href="https://bloomington.in.gov/trash">Trash &amp; Recycling Pickup</a> for details.</p>
 
-                    <p><strong>Note:</strong> Some conditions <strong>may cause delays to the schedule below.</strong></p>
+                    <template v-if="locationResDataNew.locations[0].trash_day || locationResDataNew.locations[0].recycle_week">
+                      <p><strong>Note:</strong> Some conditions <strong>may cause delays to the schedule below.</strong></p>
+                    </template>
+
+                    <template v-else>
+                      <p><strong>Note: No sanitation pickup scheduled</strong>.</p>
+                      <p>If you were expecting one, contact: <a class="external" href="mailto:sanitation@bloomington.in.gov">sanitation@bloomington.in.gov</a></p>
+                    </template>
                   </blockquote>
                 </div>
               </header>
@@ -615,10 +576,6 @@
                     </tr>
                   </tbody>
                 </table>
-              </template>
-
-              <template v-else>
-                <p>Expecting a sanitation pickup? Contact us: <a class="external" href="mailto:sanitation@bloomington.in.gov">sanitation@bloomington.in.gov</a></p>
               </template>
             </section>
 
@@ -698,244 +655,74 @@
               </header>
 
               <div class="contacts">
-                <div class="row contact mayor" id="mayor">
-                  <div class="img">
-                    <img :src="folks.officials.mayor.image"
-                         :title="`Mayor - ${folks.officials.mayor.name}`"
-                         :alt="`Mayor - ${folks.officials.mayor.name}`">
-                  </div>
+                <div class="row">
+                  <section
+                    v-if="folks.officials.mayor"
+                    id="mayor">
+                    <personComponent
+                      :map="false"
+                      :imagePath="folks.officials.mayor.image"
+                      :name="folks.officials.mayor.name"
+                      :title="folks.officials.mayor.title"
+                      :about="['The Office of the Mayor provides leadership, management, communication and strategic direction to the City of Bloomington government. This is accomplished through public engagement, in cooperation with City Council and the City Clerk, to determine and implement the priorities of our community’s residents.']"
+                      :tableInfo="{
+                        website: {
+                          ahref: folks.officials.mayor.url,
+                          alt:   `Mayor - ${folks.officials.mayor.name}`,
+                          text:   folks.officials.mayor.url
+                        },
+                        email: {
+                          ahref: folks.officials.mayor.email,
+                          text:  folks.officials.mayor.email
+                        },
+                        telephone: [
+                          {
+                            label: 'Office',
+                            number: folks.officials.mayor.phone.office
+                          }
+                        ],
+                        address: {
+                          addressTitle: 'Office of the Mayor',
+                          streetAddress: folks.officials.mayor.streetAddress,
+                          suite: folks.officials.mayor.suite,
+                          cityStateZip: folks.officials.mayor.cityStateZip,
+                        }
+                      }" />
+                  </section>
 
-                  <div class="about">
-
-                    <h2>{{ folks.officials.mayor.name }}</h2>
-                    <h4>{{ folks.officials.mayor.title }}</h4>
-
-                    <p>The Office of the Mayor provides leadership, management, communication and strategic direction to the City of Bloomington government. This is accomplished through public engagement, in cooperation with City Council and the City Clerk, to determine and implement the priorities of our community’s residents.</p>
-
-                    <table>
-                      <caption class="sr-only">
-                        Address Location Purposes
-                      </caption>
-                      <thead class="sr-only">
-                        <tr>
-                          <th scope="col">Purpose Type</th>
-                          <th scope="col">Purpose Name</th>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        <tr>
-                          <th scope="row">Web:</th>
-                          <td>
-                            <a
-                              class="external"
-                              :href="folks.officials.mayor.url"
-                              :alt="`Mayor - ${folks.officials.mayor.name}`"
-                              target="_blank">{{ folks.officials.mayor.url }}
-                            </a>
-                          </td>
-                        </tr>
-                        <tr>
-                          <th scope="row">Email:</th>
-                          <td>{{ folks.officials.mayor.email }}</td>
-                        </tr>
-
-                        <tr>
-                          <th scope="row">Telephone:</th>
-                          <td>{{ folks.officials.mayor.phone.office }}</td>
-                        </tr>
-
-                        <tr>
-                          <th scope="row">Mailing Address:</th>
-                          <td>
-                            Office of the Mayor<br>
-                            {{ folks.officials.mayor.streetAddress }} - Suite {{ folks.officials.mayor.suite }}<br>
-                            {{ folks.officials.mayor.cityStateZip }}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                <div class="row council" id="council">
-                  <div class="contact">
-                    <div class="img"
-                         :style="`background-image: url(${folks.council[1].image});`"></div>
-
-                    <div class="about">
-                      <h2>{{ folks.council[1].name }}</h2>
-                      <h4>{{ folks.council[1].title }}</h4>
-
-                      <table>
-                        <caption class="sr-only">
-                          City Council Member {{ folks.council[1].name }} {{ folks.council[1].title }}
-                        </caption>
-                        <thead class="sr-only">
-                          <tr>
-                            <th scope="col">Purpose Type</th>
-                            <th scope="col">Purpose Name</th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          <tr>
-                            <th scope="row">Web:</th>
-                            <td>
-                              <a
-                                class="external"
-                                :href="folks.council[1].url"
-                                :alt="`Council Member - ${folks.council[1].name}`"
-                                target="_blank">{{ folks.council[1].url }}</a>
-                            </td>
-                          </tr>
-
-                          <tr>
-                            <th scope="row">Email:</th>
-                            <td>{{ folks.council[1].email }}</td>
-                          </tr>
-
-                          <tr>
-                            <th scope="row">Address:</th>
-                            <td>
-                              {{ folks.council[1].streetAddress }}<br>
-                              {{ folks.council[1].cityStateZip }}
-                            </td>
-                          </tr>
-
-                          <tr>
-                            <th scope="row">Phone (Office):</th>
-                            <td>{{ folks.council[1].phone.office }}</td>
-                          </tr>
-
-                          <tr>
-                            <th scope="row">Phone (Cell):</th>
-                            <td>{{ folks.council[1].phone.home }}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-
-                  <div class="contact">
-                    <div class="img"
-                         :style="`background-image: url(${folks.council[2].image});`"></div>
-
-                    <div class="about">
-                      <h2>{{ folks.council[2].name }}</h2>
-                      <h4>{{ folks.council[2].title }}</h4>
-
-                      <table>
-                        <caption class="sr-only">
-                          City Council Member {{ folks.council[2].title }} {{ folks.council[2].name }}
-                        </caption>
-                        <thead class="sr-only">
-                          <tr>
-                            <th scope="col">Purpose Type</th>
-                            <th scope="col">Purpose Name</th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          <tr>
-                            <th scope="row">Web:</th>
-                            <td>
-                              <a
-                                class="external"
-                                :href="folks.council[2].url"
-                                :alt="`Council Member - ${folks.council[2].name}`"
-                                target="_blank">{{ folks.council[2].url }}</a>
-                            </td>
-                          </tr>
-
-                          <tr>
-                            <th scope="row">Email:</th>
-                            <td>{{ folks.council[2].email }}</td>
-                          </tr>
-
-                          <tr>
-                            <th scope="row">Address:</th>
-                            <td>
-                              {{ folks.council[2].streetAddress }}<br>
-                              {{ folks.council[2].cityStateZip }}
-                            </td>
-                          </tr>
-
-                          <tr>
-                            <th scope="row">Phone:</th>
-                            <td>{{ folks.council[2].phone.office }}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-
-                  <div class="contact">
-                    <div class="img"
-                         :style="`background-image: url(${folks.council[3].image});`"></div>
-
-                    <div class="about">
-                      <h2>{{ folks.council[3].name }}</h2>
-                      <h4>{{ folks.council[3].title }}</h4>
-
-                      <table>
-                        <caption class="sr-only">
-                          City Council Member {{ folks.council[3].name }} {{ folks.council[3].title }}
-                        </caption>
-                        <thead class="sr-only">
-                          <tr>
-                            <th scope="col">Purpose Type</th>
-                            <th scope="col">Purpose Name</th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          <tr>
-                            <th scope="row">Web:</th>
-                            <td>
-                              <a
-                                class="external"
-                                :href="folks.council[3].url"
-                                :alt="`Council Member - ${folks.council[3].name}`"
-                                target="_blank">{{ folks.council[3].url }}</a>
-                            </td>
-                          </tr>
-
-                          <tr>
-                            <th scope="row">Email:</th>
-                            <td>{{ folks.council[3].email }}</td>
-                          </tr>
-
-                          <tr>
-                            <th scope="row">Address:</th>
-                            <td>
-                              {{ folks.council[3].streetAddress }}<br>
-                              {{ folks.council[3].cityStateZip }}
-                            </td>
-                          </tr>
-
-                          <tr>
-                            <th scope="row">Phone:</th>
-                            <td>{{ folks.council[3].phone.office }}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-
-                  <div
-                    class="contact"
+                  <section
                     v-if="districtRep"
-                    id="districtRep"
-                    ref="districtRep">
-                    <div class="img"
-                         :style="`background-image: url( ${districtRep.image} );`"></div>
+                    ref="districtRep"
+                    id="districtRep">
 
-                    <div class="about">
-                      <h2>{{ districtRep.name }}</h2>
-                      <h4>{{ districtRep.title }}</h4>
-
+                    <personComponent
+                      :map="true"
+                      :imagePath="districtRep.image"
+                      :name="districtRep.name"
+                      :title="districtRep.title"
+                      :tableInfo="{
+                        website: {
+                          ahref: districtRep.url,
+                          alt:   `Council District Representative - ${districtRep.name}`,
+                          text:   districtRep.url
+                        },
+                        email: {
+                          ahref: districtRep.email,
+                          text:  districtRep.email
+                        },
+                        telephone: [
+                          {
+                            label:  'Office',
+                            number: districtRep.phone.office
+                          }
+                        ],
+                        address: {
+                          streetAddress: districtRep.streetAddress,
+                          cityStateZip:  districtRep.cityStateZip,
+                        }
+                      }">
                       <GmapMap
+                        slot="map"
                         ref="districtMap"
                         :center="latLong"
                         :zoom="14"
@@ -987,107 +774,75 @@
                           }"
                         />
                       </GmapMap>
+                    </personComponent>
+                  </section>
 
-                      <table>
-                        <caption class="sr-only">
-                          City Council District Representative {{ districtRep.name }} {{ districtRep.title }}
-                        </caption>
-                        <thead class="sr-only">
-                          <tr>
-                            <th scope="col">Purpose Type</th>
-                            <th scope="col">Purpose Name</th>
-                          </tr>
-                        </thead>
+                  <section
+                    v-if="folks.council"
+                    id="council">
+                    <personComponent
+                      v-for="person, i in folks.council"
+                      :key="i"
+                      :map="false"
+                      :imagePath="person.image"
+                      :name="person.name"
+                      :title="person.title"
+                      :tableInfo="{
+                        website: {
+                          ahref: person.url,
+                          alt:   `City Council At-Large Representative - ${person.name}`,
+                          text:  person.url
+                        },
+                        email: {
+                          ahref: person.email,
+                          text:  person.email
+                        },
+                        telephone: [
+                          {
+                            label: 'Office',
+                            number: person.phone.office
+                          }
+                        ],
+                        address: {
+                          streetAddress: person.streetAddress,
+                          cityStateZip:  person.cityStateZip,
+                        }
+                      }" />
+                  </section>
 
-                        <tbody>
-                          <tr>
-                            <th scope="row">Web:</th>
-                            <td>
-                              <a
-                                class="external"
-                                :href="districtRep.url"
-                                :alt="`Council District Representative - ${districtRep.name}`"
-                                target="_blank">{{ districtRep.url }}</a>
-                            </td>
-                          </tr>
-                          <tr>
-                            <th scope="row">Email:</th>
-                            <td>{{ districtRep.email }}</td>
-                          </tr>
-
-                          <tr>
-                            <th scope="row">Address:</th>
-                            <td>
-                              {{ districtRep.streetAddress }}<br>
-                              {{ districtRep.cityStateZip }}
-                            </td>
-                          </tr>
-
-                          <tr>
-                            <th scope="row">Phone:</th>
-                            <td>{{ districtRep.phone.office }}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-
-                  <div class="contact" id="clerk">
-                    <div class="img"
-                         :style="`background-image: url(${folks.officials.clerk.image});`"></div>
-
-                    <div class="about">
-                      <h2>{{ folks.officials.clerk.name }}</h2>
-                      <h4>{{ folks.officials.clerk.title }}</h4>
-
-                      <p>The {{ cityName }} Clerk's Office strives to make city government as accessible and responsive to the community as possible. The office serves as an educational liaison between citizens and their government. We respond to inquiries by telephone, in writing, or in person from a variety of interested persons regarding matters pertaining to City Council actions, or related City information retained in the City Clerk's office. We work closely with the City Council to supply combined constituent services.</p>
-
-                      <p>For election information contact the <a class="external" href="https://www.co.monroe.in.us/department/?structureid=18" target="_blank" alt="Monroe County Clerk's Office">Monroe County Clerk's Office</a> or <a class="external" href="https://www.co.monroe.in.us/department/division.php?structureid=89" target="_blank" alt="Voter Registration">Voter Registration</a>.</p>
-
-                      <table>
-                        <caption class="sr-only">
-                          Address Location Purposes
-                        </caption>
-                        <thead class="sr-only">
-                          <tr>
-                            <th scope="col">Purpose Type</th>
-                            <th scope="col">Purpose Name</th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          <tr>
-                            <th scope="row">Web:</th>
-                            <td>
-                              <a
-                                class="external"
-                                :href="folks.officials.clerk.url"
-                                :alt="`Clerk - ${folks.officials.clerk.name}`""
-                                target="_blank">{{ folks.officials.clerk.url }}</a>
-                            </td>
-                          </tr>
-                          <tr>
-                            <th scope="row">Email:</th>
-                            <td>{{ folks.officials.clerk.email}}</td>
-                          </tr>
-
-                          <tr>
-                            <th scope="row">Telephone:</th>
-                            <td>{{ folks.officials.clerk.phone.office }}</td>
-                          </tr>
-
-                          <tr>
-                            <th scope="row">Mailing Address:</th>
-                            <td>
-                              City Clerk<br>
-                              {{ folks.officials.clerk.streetAddress }} - Suite {{ folks.officials.clerk.suite }}<br>
-                             {{ folks.officials.clerk.cityStateZip }}
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
+                  <section
+                    v-if="folks.officials.clerk"
+                    id="clerk">
+                    <personComponent
+                      :map="false"
+                      :imagePath="folks.officials.clerk.image"
+                      :name="folks.officials.clerk.name"
+                      :title="folks.officials.clerk.title"
+                      :about="[`The City of Bloomington's Clerk's Office strives to make city government as accessible and responsive to the community as possible. The office serves as an educational liaison between citizens and their government. We respond to inquiries by telephone, in writing, or in person from a variety of interested persons regarding matters pertaining to City Council actions, or related City information retained in the City Clerk's office. We work closely with the City Council to supply combined constituent services.`,`We work closely with the City Council to supply combined constituent services. For election information contact the <a class=external href='https://www.co.monroe.in.us/department/?structureid=18' target='_blank' alt='Monroe County Clerk's Office'>Monroe County Clerk's Office</a> or <a class='external' href='https://www.co.monroe.in.us/department/division.php?structureid=89' target='_blank' alt='Voter Registration'>Voter Registration</a>.`]"
+                      :tableInfo="{
+                        website: {
+                          ahref: folks.officials.clerk.url,
+                          alt:   `Mayor - ${folks.officials.clerk.name}`,
+                          text:   folks.officials.clerk.url
+                        },
+                        email: {
+                          ahref: folks.officials.clerk.email,
+                          text:  folks.officials.clerk.email
+                        },
+                        telephone: [
+                          {
+                            label: 'Office',
+                            number: folks.officials.clerk.phone.office
+                          }
+                        ],
+                        address: {
+                          addressTitle: 'City Clerk',
+                          streetAddress: folks.officials.clerk.streetAddress,
+                          suite: folks.officials.clerk.suite,
+                          cityStateZip: folks.officials.clerk.cityStateZip,
+                        }
+                      }" />
+                  </section>
                 </div>
               </div>
             </section>
@@ -1599,21 +1354,18 @@ import smoothscroll    from 'smoothscroll-polyfill'
 import exampleSearch   from '~/components/exampleSearch'
 import exampleModal    from '~/components/exampleModal'
 import exampleTabs     from '~/components/exampleTabs'
+import personComponent from '~/components/personComponent'
 import footerComponent from '~/components/footerComponent'
 import loader          from '~/components/loader'
 
 export default {
   layout: 'result',
-  // transition (to, from) {
-  //   if (!from) { return 'slide-left' }
-  //   return +to.query < +from.query ? 'slide-right' : 'slide-left'
-  // },
-  transition: 'bounce',
   components: {
     loader,
     exampleSearch,
     exampleModal,
     exampleTabs,
+    personComponent,
     footerComponent
   },
   beforeRouteEnter (to, from, next) {
@@ -1631,6 +1383,7 @@ export default {
   data() {
     // data shared via: universal-methods.js
     return {
+      titleAddress:          null,
       expandedMap:           false,
       showScrollToTopArrow:  false,
       topSectionPixels:      680,
@@ -1644,7 +1397,6 @@ export default {
   created: function() {
     this.$nextTick(() => {
       this.loading = false;
-
       if (process.client) {
         smoothscroll.polyfill();
         window.addEventListener("resize", this.calcViewingHeight);
@@ -1733,6 +1485,7 @@ export default {
   },
   mounted: function() {
     this.$nextTick(() => {
+      console.dir('RESULT mounted');
       this.calcViewingHeight();
     });
   },
@@ -2134,158 +1887,41 @@ export default {
     }
 
     .contacts {
-      // background-color: green;
-
       table tbody tr th {
         width: 225px;
       }
 
-      .mayor {
-        display: flex;
-        margin: 0 0 60px 0;
-
-        .img {
-          position: relative;
-          width: 300px;
-          margin: 0 40px 0 0;
-          display: table;
-
-          img {
-            width: 100%;
-            position: relative;
-            z-index: 1;
-            box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.40);
-          }
-
-          &:before {
-            position: absolute;
-            content: '';
-            left: -25px;
-            bottom: -22px;
-            width: 100%;
-            height: 100%;
-            display: block;
-            border-radius: $radius-default*3;
-            background-color: $color-grey-lighter;
-          }
-        }
-
-        .about {
-          margin-left: auto;
-          width: calc(100% - 320px);
-
-          h2 {
-            font-size: 24px;
-            margin: 0 0 20px 0;
-
-            &:after {
-              background-color: $color-blue;
-            }
-          }
-
-          h4 {
-            color: lighten($text-color, 20%);
-            // font-weight: $weight-semi-bold;
-            font-size: 20px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin: 0 0 20px 20px;
-            padding: 0 0 0 20px;
-            border-left: 2px solid $color-grey;
-          }
-
-          p {
-            letter-spacing: .5px;
-            font-weight: 500;
-            font-style: italic;
-            margin: 0 0 20px 0;
-            line-height: 25px;
-          }
-        }
-      }
-
-      .council {
-        // background-color: red;
+      .row {
         display: flex;
         flex-wrap: wrap;
-        // justify-content: space-between;
 
-        .contact {
-          display: flex;
-          border-top: 1px solid $color-grey-light;
-          // background-color: green;
-          width: 100%;
-          margin: 0 0 60px 0;
-          padding: 60px 0 0 0;
-
-          &:last-of-type {
-            margin: 0;
+        section {
+          .contact {
+            padding: 60px 0 0 0;
+            margin: 0 0 60px 0 !important;
           }
 
-          .vue-map-container {
-            height: 300px;
-            box-shadow: 0.25rem 0.25rem 0.75rem rgba(0, 0, 0, 0.20);
-          }
-
-          h4 {
-            margin: 0 0 20px 20px;
-            padding: 0 0 0 20px;
-            border-left: 2px solid $color-grey;
-          }
-
-          .img {
-            position: relative;
-            display: block;
-            margin: 0 40px 0 0;
-            width: 250px;
-            height: 250px;
-            border-radius: 50%;
-            background-position: top center;
-            background-repeat: no-repeat;
-            background-size: cover;
-            box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.40);
-
-            &:after {
-              z-index: -1;
-              position: absolute;
-              content: '';
-              width: 250px;
-              height: 250px;
-              left: -10px;
-              bottom: -15px;
-              display: block;
-              border-radius: 50%;
-              background-color: $color-grey-lighter;
-            }
-          }
-        }
-
-        .about {
-          width: calc(100% - 335px);
-          margin-left: auto;
-
-          h2 {
-            font-size: 24px;
-            margin: 0 0 20px 0;
-
-            &:after {
-              background-color: $color-blue;
+          &#mayor {
+            .contact {
+              margin: 0 !important;
+              border-top: none;
             }
           }
 
-          h4 {
-            color: lighten($text-color, 20%);
-            font-size: 20px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+          &#districtRep {
+            .contact {
+              margin: 0 !important;
+            }
           }
 
-          p {
-            letter-spacing: .5px;
-            font-weight: 500;
-            font-style: italic;
-            margin: 0 0 20px 0;
-            line-height: 25px;
+          &#council {
+            .contact {
+              margin: 0 0 60px 0;
+
+              &:last-child {
+                margin: 0 !important;
+              }
+            }
           }
         }
       }
@@ -2498,7 +2134,6 @@ export default {
     }
   }
 
-
   @media (max-width: 575px) {
     .vue-map-container {
       height: 200px;
@@ -2617,69 +2252,31 @@ export default {
         flex-wrap: wrap;
         margin: 0;
 
-        &.mayor,
-        &.clerk,
-        &.council {
-          .about {
-            h2 {
-              font-size: 20px !important;
-            }
-
-            h4 {
-              font-size: 18px !important;
-            }
-          }
-        }
-
-        &.mayor {
-          .img {
-            width: 100% !important;
-            margin: 0 !important;
-
-            &:before {
-              left: 0 !important;
-              width: 250px !important;
-            }
-
-            img {
-              margin: 0 0 0 25px;
-              width: 250px !important;
-              height: 333px !important;
-
-            }
-          }
-
-          .about {
-            margin: 50px 0 0 0 !important;
-            width: 100% !important;
-          }
-        }
-
-        &.council {
+        section {
           .contact {
-            flex-wrap: wrap;
+            padding: 40px 0 0 0 !important;
             margin: 0 0 40px 0 !important;
+          }
 
-            &:last-child {
+          &#mayor {
+            .contact {
+              margin: 0 !important;
+              border-top: none;
+            }
+          }
+
+          &#districtRep {
+            .contact {
               margin: 0 !important;
             }
+          }
 
-            .img {
-              width: 150px !important;
-              height: 150px !important;
-              margin: 0 0 20px 0 !important;
+          &#council {
+            .contact {
+              margin: 0 0 40px 0 !important;
 
-              &:after {
-                width: 150px !important;
-                height: 150px !important;
-              }
-            }
-
-            .about {
-              width: 100%;
-
-              h4 {
-                margin: 0 0 10px 20px !important;
+              &:last-child {
+                margin: 0 !important;
               }
             }
           }
@@ -2715,7 +2312,6 @@ export default {
       }
     }
 
-    .contacts > table,
     table {
       display: block;
 
@@ -2901,75 +2497,6 @@ export default {
       .row {
         flex-wrap: wrap;
         margin: 0;
-
-        &.mayor,
-        &.clerk,
-        &.council {
-          .about {
-            h2 {
-              font-size: 20px !important;
-            }
-
-            h4 {
-              font-size: 18px !important;
-            }
-          }
-        }
-
-        &.mayor,
-        &.clerk {
-          .img {
-            width: 100% !important;
-            margin: 0 !important;
-
-            &:before {
-              left: 0 !important;
-              width: 250px !important;
-            }
-
-            img {
-              margin: 0 0 0 25px;
-              width: 250px !important;
-              height: 333px !important;
-
-            }
-          }
-
-          .about {
-            margin: 50px 0 0 0 !important;
-            width: 100% !important;
-          }
-        }
-
-        &.council {
-          .contact {
-            flex-wrap: wrap;
-            margin: 0 0 40px 0 !important;
-
-            &:last-child {
-              margin: 0 !important;
-            }
-
-            .img {
-              width: 150px !important;
-              height: 150px !important;
-              margin: 0 0 20px 0 !important;
-
-              &:after {
-                width: 150px !important;
-                height: 150px !important;
-              }
-            }
-
-            .about {
-              width: 100%;
-
-              h4 {
-                margin: 0 0 10px 20px !important;
-              }
-            }
-          }
-        }
       }
     }
 
@@ -2982,13 +2509,11 @@ export default {
       }
     }
 
-    .contacts > table,
     table {
       display: block;
 
       tbody {
         display: block;
-        // background-color: green;
         width: 100%;
 
         tr {
@@ -2997,7 +2522,6 @@ export default {
           width: 100%;
 
           &:first-child {
-            // background-color: pink;
 
             th {
               border: none;
@@ -3168,75 +2692,6 @@ export default {
       .row {
         flex-wrap: wrap;
         margin: 0;
-
-        &.mayor,
-        &.clerk,
-        &.council {
-          .about {
-            h2 {
-              font-size: 20px !important;
-            }
-
-            h4 {
-              font-size: 18px !important;
-            }
-          }
-        }
-
-        &.mayor,
-        &.clerk {
-          .img {
-            width: 100% !important;
-            margin: 0 !important;
-
-            &:before {
-              left: 0 !important;
-              width: 250px !important;
-            }
-
-            img {
-              margin: 0 0 0 25px;
-              width: 250px !important;
-              height: 333px !important;
-
-            }
-          }
-
-          .about {
-            margin: 50px 0 0 0 !important;
-            width: 100% !important;
-          }
-        }
-
-        &.council {
-          .contact {
-            flex-wrap: wrap;
-            margin: 0 0 40px 0 !important;
-
-            &:last-child {
-              margin: 0 !important;
-            }
-
-            .img {
-              width: 150px !important;
-              height: 150px !important;
-              margin: 0 0 20px 0 !important;
-
-              &:after {
-                width: 150px !important;
-                height: 150px !important;
-              }
-            }
-
-            .about {
-              width: 100%;
-
-              h4 {
-                margin: 0 0 10px 20px !important;
-              }
-            }
-          }
-        }
       }
     }
 
@@ -3248,75 +2703,5 @@ export default {
         font-size: 16px;
       }
     }
-
-    // .contacts > table,
-    // table {
-    //   display: block;
-
-    //   tbody {
-    //     display: block;
-    //     // background-color: green;
-    //     width: 100%;
-
-    //     tr {
-    //       display: flex;
-    //       flex-wrap: wrap;
-    //       width: 100%;
-
-    //       &:first-child {
-    //         // background-color: pink;
-
-    //         th {
-    //           border: none;
-    //         }
-    //       }
-
-    //       th, td {
-    //         width: 100% !important;
-    //       }
-
-    //       th {
-    //         padding: 15px 0 10px 5px;
-    //         color: lighten($text-color, 10%);
-    //       }
-
-    //       td {
-    //         padding: 0 0 15px 30px;
-    //         border: none;
-    //       }
-    //     }
-    //   }
-    // }
-
-    // .parks,
-    // .playgrounds,
-    // .safe-places,
-    // .schools {
-    //   table {
-    //     tbody {
-    //       tr {
-    //         border-top: 1px solid #ddd;
-
-    //         &:nth-child(1) {
-    //           border: none;
-    //         }
-
-    //         td {
-    //           padding: 15px 0 15px 5px;
-
-    //           &:nth-child(odd) {
-    //             display: none;
-    //           }
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
-
-    // #districtRep {
-    //   .vue-map-container {
-    //     display: none;
-    //   }
-    // }
   }
 </style>

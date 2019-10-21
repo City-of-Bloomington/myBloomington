@@ -10,6 +10,9 @@ module.exports = {
 
   head: {
     title:          pkg.name,
+    htmlAttrs: {
+      lang: 'en',
+    },
     meta: [
       {'http-equiv':'X-UA-Compatible', content: 'IE=edge'},
       { charset:    'utf-8' },

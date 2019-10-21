@@ -47,6 +47,7 @@
         <form
           @submit.prevent
           @keyup.enter="searchEntered()">
+          <label for="address-search" class="sr-only">Address Search</label>
           <exampleSearch
             v-model="addressSearchAuto"
             v-on:focusd="sFocus()"
@@ -177,6 +178,11 @@
                :alt="`Mayor - ${folks.officials.mayor.name}`"
                :title="`Mayor - ${folks.officials.mayor.name}`"
                target="_blank">
+
+              <span class="sr-only">
+                {{`Mayor - ${folks.officials.mayor.name}`}}
+              </span>
+
               <div
                 class="headshot"
                 :style="`background-image: url(${folks.officials.mayor.image});`"></div>
@@ -186,6 +192,11 @@
                :alt="`Clerk - ${folks.officials.clerk.name}`"
                :title="`Clerk - ${folks.officials.clerk.name}`"
                target="_blank">
+
+              <span class="sr-only">
+                {{`Mayor - ${folks.officials.clerk.name}`}}
+              </span>
+
               <div
                 class="headshot"
                 :style="`background-image: url(${folks.officials.clerk.image});`"></div>
@@ -199,6 +210,11 @@
                :alt="`Council Member - ${folks.district[4].name}`"
                :title="`Council Member - ${folks.district[4].name}`"
                target="_blank">
+
+              <span class="sr-only">
+                {{`Council Member - ${folks.district[4].name}`}}
+              </span>
+
               <div
                 class="headshot"
                 :style="`background-image: url(${folks.district[4].image});`"></div>
@@ -208,6 +224,11 @@
                :alt="`Council Member - ${folks.district[2].name}`"
                :title="`Council Member - ${folks.district[2].name}`"
                target="_blank">
+
+              <span class="sr-only">
+                {{`Council Member - ${folks.district[2].name}`}}
+              </span>
+
               <div
                 class="headshot"
                 :style="`background-image: url(${folks.district[2].image});`"></div>
@@ -218,6 +239,11 @@
                :alt="`Council Member - ${folks.district[6].name}`"
                :title="`Council Member - ${folks.district[6].name}`"
                target="_blank">
+
+              <span class="sr-only">
+                {{`Council Member - ${folks.district[6].name}`}}
+              </span>
+
               <div
                 class="headshot"
                 :style="`background-image: url(${folks.district[6].image});`"></div>
@@ -227,6 +253,11 @@
                :alt="`Council Member - ${folks.council[2].name}`"
                :title="`Council Member - ${folks.council[2].name}`"
                target="_blank">
+
+              <span class="sr-only">
+                {{`Council Member - ${folks.council[2].name}`}}
+              </span>
+
               <div
                 class="headshot"
                 :style="`background-image: url(${folks.council[2].image});`"></div>
@@ -236,6 +267,11 @@
                :alt="`Council Member - ${folks.council[1].name}`"
                :title="`Council Member - ${folks.council[1].name}`"
                target="_blank">
+
+              <span class="sr-only">
+                {{`Council Member - ${folks.council[1].name}`}}
+              </span>
+
               <div
                 class="headshot"
                 :style="`background-image: url(${folks.council[1].image});`"></div>
@@ -245,6 +281,11 @@
                :alt="`Council Member - ${folks.council[3].name}`"
                :title="`Council Member - ${folks.council[3].name}`"
                target="_blank">
+
+              <span class="sr-only">
+                {{`Council Member - ${folks.council[3].name}`}}
+              </span>
+
               <div
                 class="headshot"
                 :style="`background-image: url(${folks.council[3].image});`"></div>
@@ -254,6 +295,11 @@
                :alt="`Council Member - ${folks.district[1].name}`"
                :title="`Council Member - ${folks.district[1].name}`"
                target="_blank">
+
+              <span class="sr-only">
+                {{`Council Member - ${folks.district[1].name}`}}
+              </span>
+
               <div
                 class="headshot"
                 :style="`background-image: url(${folks.district[1].image});`"></div>
@@ -263,6 +309,11 @@
                :alt="`Council Member - ${folks.district[3].name}`"
                :title="`Council Member - ${folks.district[3].name}`"
                target="_blank">
+
+              <span class="sr-only">
+                {{`Council Member - ${folks.district[3].name}`}}
+              </span>
+
               <div
                 class="headshot"
                 :style="`background-image: url(${folks.district[3].image});`"></div>
@@ -272,6 +323,11 @@
                :alt="`Council Member - ${folks.district[5].name}`"
                :title="`Council Member - ${folks.district[5].name}`"
                target="_blank">
+
+              <span class="sr-only">
+                {{`Council Member - ${folks.district[5].name}`}}
+              </span>
+
               <div
                 class="headshot"
                 :style="`background-image: url(${folks.district[5].image});`"></div>
@@ -289,6 +345,8 @@
 
 
         <GmapMap
+          :title="cityName"
+          tabindex="-1"
           :center="cityHallLatLong"
           :zoom="12"
           ref="placeholderMap"
