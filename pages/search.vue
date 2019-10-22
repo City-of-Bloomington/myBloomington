@@ -384,6 +384,7 @@
               <span>Jump to Section:</span>
               <select @change="anchorHashClick($event)">
                 <option disabled selected>--- Select a Section ---</option>
+                <option value="about">About</option>
                 <option value="sanitation">Sanitation</option>
                 <option value="govt-online">Govt. Online</option>
                 <optgroup label="Elected Officials">
@@ -401,27 +402,25 @@
             </div>
 
             <!-- about -->
-            <section v-if="locationResDataNew.purposes">
-              <header>
-                <h2>About this Address</h2>
+            <dataSectionComponent
+              v-if="locationResDataNew.purposes"
+              id="about"
+              title="About this Address">
 
-                <div>
-                  <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="map-marked-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="svg-inline--fa fa-map-marked-alt fa-w-18 fa-3x"><path fill="currentColor" d="M288 0c-69.59 0-126 56.41-126 126 0 56.26 82.35 158.8 113.9 196.02 6.39 7.54 17.82 7.54 24.2 0C331.65 284.8 414 182.26 414 126 414 56.41 357.59 0 288 0zm0 168c-23.2 0-42-18.8-42-42s18.8-42 42-42 42 18.8 42 42-18.8 42-42 42zM20.12 215.95A32.006 32.006 0 0 0 0 245.66v250.32c0 11.32 11.43 19.06 21.94 14.86L160 448V214.92c-8.84-15.98-16.07-31.54-21.25-46.42L20.12 215.95zM288 359.67c-14.07 0-27.38-6.18-36.51-16.96-19.66-23.2-40.57-49.62-59.49-76.72v182l192 64V266c-18.92 27.09-39.82 53.52-59.49 76.72-9.13 10.77-22.44 16.95-36.51 16.95zm266.06-198.51L416 224v288l139.88-55.95A31.996 31.996 0 0 0 576 426.34V176.02c0-11.32-11.43-19.06-21.94-14.86z"></path></svg>
+              <svg slot="icon" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="map-marked-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="svg-inline--fa fa-map-marked-alt fa-w-18 fa-3x"><path fill="currentColor" d="M288 0c-69.59 0-126 56.41-126 126 0 56.26 82.35 158.8 113.9 196.02 6.39 7.54 17.82 7.54 24.2 0C331.65 284.8 414 182.26 414 126 414 56.41 357.59 0 288 0zm0 168c-23.2 0-42-18.8-42-42s18.8-42 42-42 42 18.8 42 42-18.8 42-42 42zM20.12 215.95A32.006 32.006 0 0 0 0 245.66v250.32c0 11.32 11.43 19.06 21.94 14.86L160 448V214.92c-8.84-15.98-16.07-31.54-21.25-46.42L20.12 215.95zM288 359.67c-14.07 0-27.38-6.18-36.51-16.96-19.66-23.2-40.57-49.62-59.49-76.72v182l192 64V266c-18.92 27.09-39.82 53.52-59.49 76.72-9.13 10.77-22.44 16.95-36.51 16.95zm266.06-198.51L416 224v288l139.88-55.95A31.996 31.996 0 0 0 576 426.34V176.02c0-11.32-11.43-19.06-21.94-14.86z"></path></svg>
 
-                  <blockquote>
-                    <p>Information about this address: <strong>{{ locationResDataNew.address.streetAddress }}</strong>.</p>
-                  </blockquote>
-                </div>
-              </header>
+              <blockquote slot="excerpt">
+                <p>Information about this address: <strong>{{ locationResDataNew.address.streetAddress }}</strong>.</p>
+              </blockquote>
 
-              <table>
+              <table slot="table">
                 <caption class="sr-only">
                   Address Location Purposes
                 </caption>
                 <thead class="sr-only">
                   <tr>
-                    <th scope="col">Purpose Type</th>
-                    <th scope="col">Purpose Name</th>
+                    <th scope="col">Key</th>
+                    <th scope="col">Value</th>
                   </tr>
                 </thead>
 
@@ -510,32 +509,32 @@
                  </tr>
                 </tbody>
               </table>
-            </section>
+            </dataSectionComponent>
 
             <!-- sanitation -->
-            <section id=sanitation>
-              <header>
-                <h2>Sanitation Pickup</h2>
+            <dataSectionComponent
+              v-if="locationResDataNew.purposes"
+              id="about"
+              title="About this Address">
 
-                <div>
-                  <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="trash" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-trash fa-w-14 fa-3x"><path fill="currentColor" d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z" class=""></path></svg>
+              <svg slot=icon aria-hidden="true" focusable="false" data-prefix="fas" data-icon="trash" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-trash fa-w-14 fa-3x"><path fill="currentColor" d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z" class=""></path></svg>
 
-                  <blockquote>
-                    <p>Please see <a class="external" target="_blank" alt="Trash &amp; Recycling Pickup" href="https://bloomington.in.gov/trash">Trash &amp; Recycling Pickup</a> for details.</p>
+              <blockquote slot="excerpt">
+                <p>Please see <a class="external" target="_blank" alt="Trash &amp; Recycling Pickup" href="https://bloomington.in.gov/trash">Trash &amp; Recycling Pickup</a> for details.</p>
 
-                    <template v-if="locationResDataNew.locations[0].trash_day || locationResDataNew.locations[0].recycle_week">
-                      <p><strong>Note:</strong> Some conditions <strong>may cause delays to the schedule below.</strong></p>
-                    </template>
+                <template v-if="locationResDataNew.locations[0].trash_day || locationResDataNew.locations[0].recycle_week">
+                  <p><strong>Note:</strong> Some conditions <strong>may cause delays to the schedule below.</strong></p>
+                </template>
 
-                    <template v-else>
-                      <p><strong>Note: No sanitation pickup scheduled</strong>.</p>
-                      <p>If you were expecting one, contact: <a class="external" href="mailto:sanitation@bloomington.in.gov">sanitation@bloomington.in.gov</a></p>
-                    </template>
-                  </blockquote>
-                </div>
-              </header>
+                <template v-else>
+                  <p><strong>Note: No sanitation pickup scheduled</strong>.</p>
+                  <p>If you were expecting one, contact: <a class="external" href="mailto:sanitation@bloomington.in.gov">sanitation@bloomington.in.gov</a></p>
+                </template>
+              </blockquote>
 
-              <template v-if="locationResDataNew.locations[0].trash_day || locationResDataNew.locations[0].recycle_week">
+              <template
+                slot="table"
+                v-if="locationResDataNew.locations[0].trash_day || locationResDataNew.locations[0].recycle_week">
                 <table>
                   <caption class="sr-only">
                     Address Location Waste Pickup
@@ -577,15 +576,17 @@
                   </tbody>
                 </table>
               </template>
-            </section>
+            </dataSectionComponent>
 
             <!-- govt online -->
-            <section id="govt-online" v-if="locations">
-              <header>
-                <h2>Government Online</h2>
-              </header>
+            <dataSectionComponent
+              v-if="locations"
+              id="locations"
+              title="Government Online">
 
-              <div class="locations">
+              <div
+                slot="locations"
+                class="locations">
                 <div class="location" v-for="l, i in locations">
                   <ul>
                     <li>{{ l.type }}</li>
@@ -646,15 +647,17 @@
                   </table>
                 </div>
               </div>
-            </section>
+            </dataSectionComponent>
 
             <!-- officials -->
-            <section id="officials">
-              <header>
-                <h2>Elected City Officials</h2>
-              </header>
+            <dataSectionComponent
+              v-if="folks"
+              id="officials"
+              title="Elected City Officials">
 
-              <div class="contacts">
+              <div
+                slot="officials"
+                class="contacts">
                 <div class="row">
                   <section
                     v-if="folks.officials.mayor"
@@ -694,7 +697,6 @@
                     v-if="districtRep"
                     ref="districtRep"
                     id="districtRep">
-
                     <personComponent
                       :map="true"
                       :imagePath="districtRep.image"
@@ -845,7 +847,7 @@
                   </section>
                 </div>
               </div>
-            </section>
+            </dataSectionComponent>
 
             <!-- TABs: requuire modification to anchorHashClick() -->
             <example-tabs
@@ -1243,22 +1245,20 @@
             </example-tabs>
 
             <!-- coords -->
-            <section id="coords">
-              <header>
-                <h2>Coordinate Details</h2>
+            <dataSectionComponent
+              v-if="locationResDataNew.address"
+              id="coords"
+              title="Coordinate Details">
 
-                <div>
-                  <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="location-arrow" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-location-arrow fa-w-16 fa-3x"><path fill="currentColor" d="M444.52 3.52L28.74 195.42c-47.97 22.39-31.98 92.75 19.19 92.75h175.91v175.91c0 51.17 70.36 67.17 92.75 19.19l191.9-415.78c15.99-38.39-25.59-79.97-63.97-63.97z" class=""></path></svg>
+              <svg slot="icon" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="location-arrow" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-location-arrow fa-w-16 fa-3x"><path fill="currentColor" d="M444.52 3.52L28.74 195.42c-47.97 22.39-31.98 92.75 19.19 92.75h175.91v175.91c0 51.17 70.36 67.17 92.75 19.19l191.9-415.78c15.99-38.39-25.59-79.97-63.97-63.97z" class=""></path></svg>
 
-                  <blockquote>
-                    <p> The <strong>{{ cityName }}</strong> <a class="external" href="https://bloomington.in.gov/gis" alt="City of Bloomington GIS" target="_blank">GIS Department</a> staff maintains spatial data and provides mapping and spatial analysis services to support operations of City Departments, Boards and Commissions.</p>
+              <blockquote slot="excerpt">
+                <p>The <strong>{{ cityName }}</strong> <a class="external" href="https://bloomington.in.gov/gis" alt="City of Bloomington GIS" target="_blank">GIS Department</a> staff maintains spatial data and provides mapping and spatial analysis services to support operations of City Departments, Boards and Commissions.</p>
 
-                    <p>Native coordinate reference system is:<br><strong>NAD 83 State Plane Indiana West Zone (1302) US Survey Feet EPSG:2966</strong></p>
-                  </blockquote>
-                </div>
-              </header>
+                <p>Native coordinate reference system is:<br><strong>NAD 83 State Plane Indiana West Zone (1302) US Survey Feet EPSG:2966</strong></p>
+              </blockquote>
 
-              <table>
+              <table slot="table">
                 <caption class="sr-only">
                     Address Location Coordinate Details
                   </caption>
@@ -1281,7 +1281,7 @@
                   </tr>
                 </tbody>
               </table>
-            </section>
+            </dataSectionComponent>
           </template>
         </div>
       </div>
@@ -1345,18 +1345,19 @@
 </template>
 
 <script>
-import axios           from 'axios'
-import { mapFields }   from 'vuex-map-fields'
-import proj4           from 'proj4'
-import moment          from 'moment'
-import debounce        from 'lodash.debounce'
-import smoothscroll    from 'smoothscroll-polyfill'
-import exampleSearch   from '~/components/exampleSearch'
-import exampleModal    from '~/components/exampleModal'
-import exampleTabs     from '~/components/exampleTabs'
-import personComponent from '~/components/personComponent'
-import footerComponent from '~/components/footerComponent'
-import loader          from '~/components/loader'
+import axios                from 'axios'
+import { mapFields }        from 'vuex-map-fields'
+import proj4                from 'proj4'
+import moment               from 'moment'
+import debounce             from 'lodash.debounce'
+import smoothscroll         from 'smoothscroll-polyfill'
+import exampleSearch        from '~/components/exampleSearch'
+import exampleModal         from '~/components/exampleModal'
+import exampleTabs          from '~/components/exampleTabs'
+import personComponent      from '~/components/personComponent'
+import dataSectionComponent from '~/components/dataSectionComponent'
+import footerComponent      from '~/components/footerComponent'
+import loader               from '~/components/loader'
 
 export default {
   layout: 'result',
@@ -1366,6 +1367,7 @@ export default {
     exampleModal,
     exampleTabs,
     personComponent,
+    dataSectionComponent,
     footerComponent
   },
   beforeRouteEnter (to, from, next) {
