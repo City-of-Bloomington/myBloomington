@@ -21,7 +21,8 @@
         { name:       'Help',
           href:       'help' },
         { name:       'Feedback',
-          href:       `${baseUrl}ureport/miscellaneous/53`}
+          href:       `${baseUrl}ureport/miscellaneous/53`,
+          target:     '_blank' }
       ]"
       :subNavItems="null">
     </example-header>
@@ -59,8 +60,6 @@ export default {
         }
       }
     }
-
-
   }
 
   @media (max-width: 575px) {

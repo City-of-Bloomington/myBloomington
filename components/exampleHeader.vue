@@ -5,8 +5,12 @@
         <img v-if="logo" :src="logo.image" :alt="logo.imageAlt" />
 
         <div>
-          <h1 v-if="logoHeadings.topHeading" v-html="logoHeadings.topHeading"></h1>
-          <h2 v-if="logoHeadings.subHeading" v-html="logoHeadings.subHeading"></h2>
+          <h1
+            v-if="logoHeadings.topHeading"
+            v-html="logoHeadings.topHeading"></h1>
+          <h2
+            v-if="logoHeadings.subHeading"
+            v-html="logoHeadings.subHeading"></h2>
         </div>
       </a>
 
@@ -14,23 +18,23 @@
         v-if="application"
         :href="application.url"
         v-html="application.name"
-        :title="application.name"
-      ></a>
+        :target="application.target"
+        :title="application.name"></a>
 
       <nav
         v-if="navItems"
         id="navigation"
         role="navigation"
         aria-labelledby="navigation">
-        <ul >
+        <ul>
           <li v-for="(item, index) in navItems" :key="index">
             <a
               :href="item.href"
               :class="item.class"
               :disabled="item.disabled"
               :title="item.name"
-              v-html="item.name"
-            ></a>
+              :target="item.target"
+              v-html="item.name"></a>
           </li>
         </ul>
       </nav>
@@ -49,8 +53,8 @@
               :class="item.class"
               :disabled="item.disabled"
               :title="item.name"
-              v-html="item.name"
-            ></a>
+              :target="item.target"
+              v-html="item.name"></a>
           </li>
         </ul>
       </nav>
@@ -281,8 +285,6 @@ header {
 <docs>
   ```jsx
     <fn1-header
-
-
       :logo="{
         url:      'http://google.com',
         image:    './icons/city-of-bloomington-logo.svg',

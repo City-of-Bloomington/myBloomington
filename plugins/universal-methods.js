@@ -7,40 +7,41 @@ import {
 
 Vue.mixin({
   data() { return {
-    loading:              true,
-    keyDownFocus:         false,
+    loading:                true,
+    keyDownFocus:           false,
 
-    appName:              process.env.appName,
-    baseUrl:              process.env.baseUrl,
-    frontEndBase:         process.env.frontEndBase,
-    voterPrecinctsPath:   process.env.voterPrecinctsPath,
+    appName:                process.env.appName,
+    baseUrl:                process.env.baseUrl,
+    frontEndBase:           process.env.frontEndBase,
+    voterPrecinctsPath:     process.env.voterPrecinctsPath,
 
-    searchEnteredWarning: false,
-    searchHasFocus:       false,
-    searchResultsFocus:   false,
-    autoSuggestRes:       null,
+    searchEnteredWarning:   false,
+    searchHasFocus:         false,
+    searchResultsFocus:     false,
+    autoSuggestRes:         null,
 
-    latLong:              {},
-    mapHeight:            null,
-    mapHeightResult:      '450px',
-    distanceToCityHall:   null,
+    latLong:                {},
+    mapHeight:              null,
+    mapHeightResult:        '450px',
+    distanceToCityHall:      null,
     // zoom:                 13,
-    addressSearch:        null,
-    addressSearchAuto:    null,
-    addressResData:       null,
-    addressMapped:        null,
-    addressResChoices:    null,
-    councilDistrict:      null,
-    districtRep:          null,
+    addressSearch:           null,
+    addressSearchAuto:       null,
+    addressResData:          null,
+    addressMapped:           null,
+    addressResChoices:       null,
+    councilDistrict:         null,
+    districtRep:             null,
     councilDistrictsGeoJson: null,
     districtRepGeoCoords:    null,
+    districtRepGeoCoordsCenter: null,
 
-    parksResData:       null,
-    schoolsResData:     null,
-    playgroundsResData: null,
-    safePlaceResData:   null,
-    schoolTypeToggle:   null,
-    schoolType:         'all',
+    parksResData:            null,
+    schoolsResData:          null,
+    playgroundsResData:      null,
+    safePlaceResData:        null,
+    schoolTypeToggle:        null,
+    schoolType:              'all',
     schoolTypes: {
       "pre":            ['Preschool'],
       "elm":            ['Elementary School','P-6','P-12','K-8'],
@@ -49,9 +50,9 @@ Vue.mixin({
       "admin":          ['School Adminstration'],
       "all":            ['All','Preschool','Elementary School','P-6','P-12','K-8','Middle School','High School','School Adminstration','Continuing Education']
     },
-    districtLookupPath: process.env.districtLookupPath,
+    districtLookupPath:       process.env.districtLookupPath,
     schoolDistrictGradeLevel: null,
-    gradeLevelError: false,
+    gradeLevelError:          false,
 
     mapMarkerToggle: {
       parks:       true,
@@ -68,7 +69,7 @@ Vue.mixin({
 
     modals: {
       addressMappedError: false,
-      schoolDistrict: false,
+      schoolDistrict:     false,
     },
   }},
   watch: {
@@ -239,6 +240,7 @@ Vue.mixin({
       }
     },
     searchSubmit(input) {
+      console.dir('searchSubmit()')
       this.locationResDataNew = null;
       this.councilDistrict    = null;
       this.districtRep        = null;
@@ -395,6 +397,7 @@ Vue.mixin({
         if(districtID){
           resolve(districtID)
         } else {
+          this.districtRep = null;
           reject(`Couldn't determine the Council District`)
         }
       })
@@ -403,6 +406,28 @@ Vue.mixin({
       this.councilDistrictRepGeoJson = this.councilDistrictsGeoJson.features.filter((d) => {
           return d.properties.DISTRICT === district;
         })
+    },
+    polygonCenter(coords) {
+      let lat = coords.map(function (p) { return p.lat }),
+          lng = coords.map(function (p) { return p.lng }),
+
+      min_coords = {
+        lat: Math.min.apply(null, lat),
+        lng: Math.min.apply(null, lng)
+      },
+
+      max_coords = {
+        lat: Math.max.apply(null, lat),
+        lng: Math.max.apply(null, lng)
+      },
+
+      centerX = min_coords.lng + ((max_coords.lng - min_coords.lng) / 2),
+      centerY = min_coords.lat + ((max_coords.lat - min_coords.lat) / 2);
+
+      this.districtRepGeoCoordsCenter = {lat: centerY, lng: centerX};
+
+      console.log(this.districtRepGeoCoordsCenter);
+      console.dir(coords)
     },
     districtPaths() {
       let lngLat  = [],
@@ -435,6 +460,9 @@ Vue.mixin({
         });
 
         this.districtRepGeoCoords = projCoordsLatLng;
+
+        console.dir('HERE BELOW')
+        console.dir(this.polygonCenter(this.districtRepGeoCoords))
       } else {
         repJson.forEach((p) => {
           let pair = proj4(this.coordsProjection).inverse(p);
@@ -446,6 +474,8 @@ Vue.mixin({
         });
 
         this.districtRepGeoCoords = geoCoords;
+        console.dir('HERE BELOW')
+        console.dir(this.polygonCenter(this.districtRepGeoCoords))
       }
     },
     nearbyMarkers(data){

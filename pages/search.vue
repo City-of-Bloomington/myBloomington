@@ -384,20 +384,54 @@
               <span>Jump to Section:</span>
               <select @change="anchorHashClick($event)">
                 <option disabled selected>--- Select a Section ---</option>
-                <option value="about">About</option>
-                <option value="sanitation">Sanitation</option>
-                <option value="govt-online">Govt. Online</option>
-                <optgroup label="Elected Officials">
-                  <option value="mayor">Mayor</option>
-                  <option value="districtRep">District Representative</option>
-                  <option value="council">Council At-Large</option>
-                  <option value="clerk">Clerk</option>
+
+                <option
+                  v-if="locationResDataNew.purposes"
+                  value="about">About</option>
+                <option
+                  v-if="locationResDataNew.locations"
+                  value="sanitation">Sanitation</option>
+                <option
+                  v-if="locations"
+                  value="govt-online">Govt. Online</option>
+
+                <optgroup
+                  v-if="folks.officials.mayor || districtRep || folks.council || folks.officials.clerk"
+                  label="Elected Officials">
+                  <option
+                    v-if="folks.officials.mayor"
+                    value="mayor">Mayor</option>
+                  <option
+                    v-if="districtRep"
+                    value="districtRep">District Representative</option>
+                  <option
+                    v-if="folks.council"
+                    value="council">Council At-Large</option>
+                  <option
+                    v-if="folks.officials.clerk"
+                    value="clerk">Clerk</option>
                 </optgroup>
-                <option value="parks">Parks</option>
-                <option value="playgrounds">Playgrounds</option>
-                <option value="safe-places">Safe Places</option>
-                <option value="schools">Schools</option>
-                <option value="coords">Coordinates</option>
+
+                <optgroup
+                  v-if="parksResData || playgroundsResData || safePlaceResData || schoolsResData"
+                  label="Nearby Amenities">
+                  <option
+                    v-if="parksResData"
+                    value="parks">Parks</option>
+                  <option
+                    v-if="playgroundsResData"
+                    value="playgrounds">Playgrounds</option>
+                  <option
+                    v-if="safePlaceResData"
+                    value="safe-places">Safe Places</option>
+                  <option
+                    v-if="schoolsResData"
+                    value="schools">Schools</option>
+                </optgroup>
+
+                <option
+                  v-if="locationResDataNew.address"
+                  value="coords">Coordinates</option>
               </select>
             </div>
 
@@ -405,12 +439,12 @@
             <dataSectionComponent
               v-if="locationResDataNew.purposes"
               id="about"
-              title="About this Address">
+              :title="locationResDataNew.address.streetAddress">
 
               <svg slot="icon" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="map-marked-alt" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="svg-inline--fa fa-map-marked-alt fa-w-18 fa-3x"><path fill="currentColor" d="M288 0c-69.59 0-126 56.41-126 126 0 56.26 82.35 158.8 113.9 196.02 6.39 7.54 17.82 7.54 24.2 0C331.65 284.8 414 182.26 414 126 414 56.41 357.59 0 288 0zm0 168c-23.2 0-42-18.8-42-42s18.8-42 42-42 42 18.8 42 42-18.8 42-42 42zM20.12 215.95A32.006 32.006 0 0 0 0 245.66v250.32c0 11.32 11.43 19.06 21.94 14.86L160 448V214.92c-8.84-15.98-16.07-31.54-21.25-46.42L20.12 215.95zM288 359.67c-14.07 0-27.38-6.18-36.51-16.96-19.66-23.2-40.57-49.62-59.49-76.72v182l192 64V266c-18.92 27.09-39.82 53.52-59.49 76.72-9.13 10.77-22.44 16.95-36.51 16.95zm266.06-198.51L416 224v288l139.88-55.95A31.996 31.996 0 0 0 576 426.34V176.02c0-11.32-11.43-19.06-21.94-14.86z"></path></svg>
 
               <blockquote slot="excerpt">
-                <p>Information about this address: <strong>{{ locationResDataNew.address.streetAddress }}</strong>.</p>
+                <p>Information about this address.</p>
               </blockquote>
 
               <table slot="table">
@@ -506,16 +540,16 @@
                         target="_blank"
                         alt="Monroe Co. Voter Precincts">Monroe Co. Voter Precincts</a>
                     </td>
-                 </tr>
+                  </tr>
                 </tbody>
               </table>
             </dataSectionComponent>
 
             <!-- sanitation -->
             <dataSectionComponent
-              v-if="locationResDataNew.purposes"
-              id="about"
-              title="About this Address">
+              v-if="locationResDataNew.locations"
+              id="sanitation"
+              title="Sanitation Pickup">
 
               <svg slot=icon aria-hidden="true" focusable="false" data-prefix="fas" data-icon="trash" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-trash fa-w-14 fa-3x"><path fill="currentColor" d="M432 32H312l-9.4-18.7A24 24 0 0 0 281.1 0H166.8a23.72 23.72 0 0 0-21.4 13.3L136 32H16A16 16 0 0 0 0 48v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16zM53.2 467a48 48 0 0 0 47.9 45h245.8a48 48 0 0 0 47.9-45L416 128H32z" class=""></path></svg>
 
@@ -659,6 +693,8 @@
                 slot="officials"
                 class="contacts">
                 <div class="row">
+
+                  <!-- Mayor -->
                   <section
                     v-if="folks.officials.mayor"
                     id="mayor">
@@ -693,10 +729,12 @@
                       }" />
                   </section>
 
+                  <!-- District Rep. -->
                   <section
                     v-if="districtRep"
                     ref="districtRep"
                     id="districtRep">
+
                     <personComponent
                       :map="true"
                       :imagePath="districtRep.image"
@@ -723,12 +761,13 @@
                           cityStateZip:  districtRep.cityStateZip,
                         }
                       }">
+
                       <GmapMap
                         slot="map"
                         ref="districtMap"
-                        :center="latLong"
-                        :zoom="14"
                         map-type-id="roadmap"
+                        :center="districtRepGeoCoordsCenter"
+                        :zoom="13"
                         :options="{
                           zoomControl:        10,
                           mapTypeControl:     false,
@@ -757,13 +796,12 @@
                               ]
                             },
                           ]
-
                         }">
+
                         <GmapMarker
                           :position="latLong"
                           :clickable="false"
-                          :draggable="false"
-                        />
+                          :draggable="false"/>
 
                         <GmapPolygon
                           :paths="districtRepGeoCoords"
@@ -773,12 +811,12 @@
                             strokeWeight:   2,
                             fillColor:      'rgb(30, 90, 174)',
                             fillOpacity:    0.35
-                          }"
-                        />
+                          }"/>
                       </GmapMap>
                     </personComponent>
                   </section>
 
+                  <!-- Council -->
                   <section
                     v-if="folks.council"
                     id="council">
@@ -812,6 +850,7 @@
                       }" />
                   </section>
 
+                  <!-- Clerk -->
                   <section
                     v-if="folks.officials.clerk"
                     id="clerk">
@@ -849,400 +888,406 @@
               </div>
             </dataSectionComponent>
 
-            <!-- TABs: requuire modification to anchorHashClick() -->
-            <example-tabs
-              ref="tabs"
-              id="data-tabs">
-              <!-- parks -->
-              <fn1-tab
-                v-if="parksResData"
-                name="Parks"
-                id="parks"
-                :selected="true">
-                <section class="parks">
-                  <header>
-                    <div>
-                      <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="tree" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="svg-inline--fa fa-tree fa-w-12 fa-3x"><path fill="currentColor" d="M378.31 378.49L298.42 288h30.63c9.01 0 16.98-5 20.78-13.06 3.8-8.04 2.55-17.26-3.28-24.05L268.42 160h28.89c9.1 0 17.3-5.35 20.86-13.61 3.52-8.13 1.86-17.59-4.24-24.08L203.66 4.83c-6.03-6.45-17.28-6.45-23.32 0L70.06 122.31c-6.1 6.49-7.75 15.95-4.24 24.08C69.38 154.65 77.59 160 86.69 160h28.89l-78.14 90.91c-5.81 6.78-7.06 15.99-3.27 24.04C37.97 283 45.93 288 54.95 288h30.63L5.69 378.49c-6 6.79-7.36 16.09-3.56 24.26 3.75 8.05 12 13.25 21.01 13.25H160v24.45l-30.29 48.4c-5.32 10.64 2.42 23.16 14.31 23.16h95.96c11.89 0 19.63-12.52 14.31-23.16L224 440.45V416h136.86c9.01 0 17.26-5.2 21.01-13.25 3.8-8.17 2.44-17.47-3.56-24.26z" class=""></path></svg>
+            <!-- TABs: require modification to anchorHashClick() -->
+            <template v-if="parksResData || playgroundsResData || safePlaceResData || schoolsResData">
+              <h2>Nearby Amenities</h2>
 
-                      <blockquote>
-                        <p>The <strong>{{ cityName }}</strong> <a class="external" href="https://bloomington.in.gov/parks" alt="City of Bloomington Parks and Recreation">Parks and Recreation</a> Department provides essential services, facilities and programs necessary for the positive development and well-being of the community through the provision of parks, greenways, trails and recreational facilities while working in cooperation with other service providers in the community in order to maximize all available resources.</p>
+              <example-tabs
+                class="nearby-amenities"
+                ref="tabs"
+                id="data-tabs">
+                
+                <!-- parks -->
+                <fn1-tab
+                  v-if="parksResData"
+                  name="Parks"
+                  id="parks"
+                  :selected="true">
+                  <section class="parks">
+                    <header>
+                      <div>
+                        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="tree" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" class="svg-inline--fa fa-tree fa-w-12 fa-3x"><path fill="currentColor" d="M378.31 378.49L298.42 288h30.63c9.01 0 16.98-5 20.78-13.06 3.8-8.04 2.55-17.26-3.28-24.05L268.42 160h28.89c9.1 0 17.3-5.35 20.86-13.61 3.52-8.13 1.86-17.59-4.24-24.08L203.66 4.83c-6.03-6.45-17.28-6.45-23.32 0L70.06 122.31c-6.1 6.49-7.75 15.95-4.24 24.08C69.38 154.65 77.59 160 86.69 160h28.89l-78.14 90.91c-5.81 6.78-7.06 15.99-3.27 24.04C37.97 283 45.93 288 54.95 288h30.63L5.69 378.49c-6 6.79-7.36 16.09-3.56 24.26 3.75 8.05 12 13.25 21.01 13.25H160v24.45l-30.29 48.4c-5.32 10.64 2.42 23.16 14.31 23.16h95.96c11.89 0 19.63-12.52 14.31-23.16L224 440.45V416h136.86c9.01 0 17.26-5.2 21.01-13.25 3.8-8.17 2.44-17.47-3.56-24.26z" class=""></path></svg>
 
-                        <p class="hide-viewport-small">
-                          <small>* Approximate distance.</small>
-                        </p>
+                        <blockquote>
+                          <p>The <strong>{{ cityName }}</strong> <a class="external" href="https://bloomington.in.gov/parks" alt="City of Bloomington Parks and Recreation">Parks and Recreation</a> Department provides essential services, facilities and programs necessary for the positive development and well-being of the community through the provision of parks, greenways, trails and recreational facilities while working in cooperation with other service providers in the community in order to maximize all available resources.</p>
 
-                        <p>
-                          <strong>Note: </strong>
-                          Click a row for directions.
-                        </p>
-                      </blockquote>
-                    </div>
-                  </header>
+                          <p class="hide-viewport-small">
+                            <small>* Approximate distance.</small>
+                          </p>
 
-                  <table>
-                    <caption class="sr-only">
-                        {{ cityName }} Parks
+                          <p>
+                            <strong>Note: </strong>
+                            Click a row for directions.
+                          </p>
+                        </blockquote>
+                      </div>
+                    </header>
+
+                    <table>
+                      <caption class="sr-only">
+                          {{ cityName }} Parks
+                        </caption>
+                        <thead class="sr-only">
+                          <tr>
+                            <th scope="col">Distance</th>
+                            <th scope="col">Park Name</th>
+                            <th scope="col">Directions Link</th>
+                          </tr>
+                        </thead>
+
+                      <tbody>
+                        <template
+                          v-for="p, i in viaDistance(parksResData.features)"
+                          v-if="i <= 10">
+                          <template v-if="p.lat && p.lon">
+                            <tr
+                              :class="[{'clickable': p.lat && p.lon}]"
+                              @click="goToAddress(p.lat, p.lon)">
+                              <td>
+                                {{ p.dist }} mi *
+                              </td>
+                              <td>
+                                <a
+                                  href="#"
+                                  class="external"
+                                  @click.prevent>
+                                  {{ p.name }}
+                                </a>
+                              </td>
+                              <td >
+                                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="directions" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-directions fa-w-16 fa-3x"><path fill="currentColor" d="M502.61 233.32L278.68 9.39c-12.52-12.52-32.83-12.52-45.36 0L9.39 233.32c-12.52 12.53-12.52 32.83 0 45.36l223.93 223.93c12.52 12.53 32.83 12.53 45.36 0l223.93-223.93c12.52-12.53 12.52-32.83 0-45.36zm-100.98 12.56l-84.21 77.73c-5.12 4.73-13.43 1.1-13.43-5.88V264h-96v64c0 4.42-3.58 8-8 8h-32c-4.42 0-8-3.58-8-8v-80c0-17.67 14.33-32 32-32h112v-53.73c0-6.97 8.3-10.61 13.43-5.88l84.21 77.73c3.43 3.17 3.43 8.59 0 11.76z" class=""></path></svg>directions
+                              </td>
+                            </tr>
+                          </template>
+
+                          <template v-else>
+                            <tr>
+                              <td>{{ p.dist }} mi *</td>
+                              <td>{{ p.name }}</td>
+                              <td>- - -</td>
+                            </tr>
+                          </template>
+                        </template>
+                      </tbody>
+                    </table>
+                  </section>
+                </fn1-tab>
+
+                <!-- playgrounds -->
+                <fn1-tab
+                  id="playgrounds"
+                  v-if="playgroundsResData"
+                  name="Playgrounds">
+                  <section class="playgrounds">
+                    <header>
+                      <div>
+                        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="shapes" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-shapes fa-w-16 fa-3x"><path fill="currentColor" d="M512 320v160c0 17.67-14.33 32-32 32H320c-17.67 0-32-14.33-32-32V320c0-17.67 14.33-32 32-32h160c17.67 0 32 14.33 32 32zm-384-64C57.31 256 0 313.31 0 384s57.31 128 128 128 128-57.31 128-128-57.31-128-128-128zm351.03-32c25.34 0 41.18-26.67 28.51-48L412.51 16c-12.67-21.33-44.35-21.33-57.02 0l-95.03 160c-12.67 21.33 3.17 48 28.51 48h190.06z" class=""></path></svg>
+
+                        <blockquote>
+                          <p><strong>Playgrounds</strong> located nearby.</p>
+
+                          <p class="hide-viewport-small">
+                            <small>* Approximate distance.</small>
+                          </p>
+
+                          <p>
+                            <strong>Note: </strong>
+                            Click a row for directions.
+                          </p>
+                        </blockquote>
+                      </div>
+                    </header>
+
+                    <table>
+                      <caption class="sr-only">
+                          City Playgrounds
+                        </caption>
+                        <thead class="sr-only">
+                          <tr>
+                            <th scope="col">Distance</th>
+                            <th scope="col">Playground Name</th>
+                            <th scope="col">Directions Link</th>
+                          </tr>
+                        </thead>
+
+                      <tbody>
+                        <template
+                          v-for="p, i in viaDistance(playgroundsResData.features)"
+                          v-if="i <= 10">
+                          <template v-if="p.lat && p.lon">
+                            <tr
+                              :class="[{'clickable': p.lat && p.lon}]"
+                              @click="goToAddress(p.lat, p.lon)">
+                              <td>
+                                {{ p.dist }} mi *
+                              </td>
+                              <td >
+                                <a
+                                  href="#"
+                                  class="external"
+                                  @click.prevent>
+                                  {{ p.name }}
+                                </a>
+                              </td>
+                              <td>
+                                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="directions" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-directions fa-w-16 fa-3x"><path fill="currentColor" d="M502.61 233.32L278.68 9.39c-12.52-12.52-32.83-12.52-45.36 0L9.39 233.32c-12.52 12.53-12.52 32.83 0 45.36l223.93 223.93c12.52 12.53 32.83 12.53 45.36 0l223.93-223.93c12.52-12.53 12.52-32.83 0-45.36zm-100.98 12.56l-84.21 77.73c-5.12 4.73-13.43 1.1-13.43-5.88V264h-96v64c0 4.42-3.58 8-8 8h-32c-4.42 0-8-3.58-8-8v-80c0-17.67 14.33-32 32-32h112v-53.73c0-6.97 8.3-10.61 13.43-5.88l84.21 77.73c3.43 3.17 3.43 8.59 0 11.76z" class=""></path></svg>directions
+                              </td>
+                            </tr>
+                          </template>
+
+                          <template v-else>
+                            <tr>
+                              <td>{{ p.dist }} mi *</td>
+                              <td>{{ p.name }}</td>
+                              <td>- - -</td>
+                            </tr>
+                          </template>
+                        </template>
+                      </tbody>
+                    </table>
+                  </section>
+                </fn1-tab>
+
+                <!-- safe places -->
+                <fn1-tab
+                  id="safe-places"
+                  v-if="safePlaceResData"
+                  name="Safe Places">
+                  <section class="safe-places">
+                    <header>
+                      <div>
+                        <svg enable-background="new 0 0 580 580" version="1.1" viewBox="0 0 580 580" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><path d="m563.85 252.15l-236.43-236.45c-20.916-20.912-54.822-20.912-75.738 0l-236.45 236.45c-20.913 20.922-20.913 54.834 0 75.757l236.45 236.44c20.916 20.91 54.822 20.91 75.738 0l236.44-236.44c20.916-20.924 20.91-54.841-0.01258-75.757zm-13.314 63.973l-234.89 234.9c-14.419 14.403-37.779 14.403-52.198 0l-234.9-234.9c-14.389-14.42-14.389-37.767 0-52.187l234.9-234.91c6.9074-6.9452 16.306-10.838 26.102-10.812 9.7933-0.022503 19.189 3.8701 26.097 10.812l234.89 234.91c14.385 14.421 14.385 37.765-3.9e-6 52.187z" fill="currentColor"/><path d="m134.62 286.75h-12.426v25.843h12.426c7.6785 0 12.559-5.6115 12.559-12.923 0-7.3198-4.8808-12.921-12.559-12.921z" fill="currentColor"/><polygon points="260.03 184.45 259.79 184.45 248.2 219.8 271.36 219.8" fill="currentColor"/><path d="m482.2 357.11c1.8473-0.040375 3.3233-1.5501 3.3227-3.3981-0.039734-1.8361-1.5607-3.2929-3.3975-3.2525-1.8361 0.039703-3.2922 1.5607-3.2525 3.3975 0.039062 1.8089 1.5177 3.2545 3.3273 3.2532zm-1.7593-1.296v-4.2427c0-0.16879 0.076111-0.25351 0.27466-0.25351h1.5581c1.1815 0 1.7831 0.35809 1.7831 1.4244 0.068848 0.67645-0.42361 1.2801-1.1001 1.3489-0.035065 0.0039673-0.07016 0.0059509-0.10522 0.0066223l1.0458 1.613c0.062897 0.084717 0.10526 0.18335 0.12247 0.28726 0 0.12906-0.24823 0.22372-0.4415 0.22372-0.19327 0.013245-0.37595-0.090668-0.46265-0.2641l-1.1345-1.8341h-0.76843v1.6905c0 0.26144-0.12842 0.40771-0.38455 0.40771-0.19528 0.019196-0.36935-0.12311-0.38919-0.31836-0.0033265-0.029785-0.0020142-0.05957 0.0019836-0.089356z" fill="currentColor"/><path d="m483.28 352.67c0-0.58047-0.57516-0.64603-1.0848-0.64603h-0.98026v1.4012h0.89883c0.61224 0 1.1662-0.031097 1.1662-0.75519z" fill="currentColor"/><path d="m543.38 308.97c0.0040283-0.0039673 0.0073242-0.0072937 0.011292-0.011261 10.456-10.462 10.452-27.421-0.011292-37.878l-234.89-234.9c-5.0224-5.0164-11.833-7.8334-18.931-7.8308-7.1054-0.0066185-13.921 2.8124-18.946 7.8361l-234.9 234.9c-10.458 10.465-10.458 27.424 0 37.889l234.9 234.9 6.714e-4 6.714e-4c10.46 10.459 27.417 10.459 37.876-6.714e-4l234.89-234.9zm-65.478 44.747c0.0032959-2.3742 1.9307-4.2957 4.3049-4.2923 2.3748 0.0039673 4.2963 1.9314 4.293 4.3056-0.0039978 2.3722-1.9287 4.293-4.301 4.2923-2.3729 0-4.297-1.9234-4.297-4.2963 1e-7 -0.0033263 1e-7 -0.0059509 1e-7 -0.0092773zm-53.396-72.454c0-6.0973 3.0453-10.605 9.5054-10.605h30.24c0.28394-0.018555 0.56921-0.022522 0.85449-0.011932 4.4816 0.1741 7.9744 3.9475 7.8004 8.4291 0.0039673 0.19263 0.0013123 0.38455-0.008606 0.57651-0.22638 4.5492-4.0977 8.0532-8.6462 7.8268h-21.468v17.798h20.004c5.9755 0 8.9037 4.1606 8.9037 8.4139 6.714e-4 0.18268-0.0046387 0.36536-0.015869 0.54807-0.28464 4.6239-4.2639 8.1419-8.8878 7.8572h-20.004v18.547h22.56c0.28925-0.019867 0.5798-0.023834 0.86905-0.012573 4.479 0.17407 7.9685 3.9462 7.7944 8.4252 0.0032959 0.19327 6.714e-4 0.38718-0.0092773 0.58047-0.23364 4.5465-4.1077 8.0426-8.6542 7.8089h-31.445c-5.3719 0-9.3929-3.6324-9.3929-9.1096v-67.072zm-64.122-103.76c0-6.1105 3.0486-10.626 9.508-10.626h30.238c0.28195-0.019196 0.56461-0.023163 0.84723-0.011902 4.4889 0.17076 7.989 3.9482 7.8182 8.4371 0.0039673 0.19856 0.0013123 0.39713-0.0092773 0.5957-0.23563 4.5452-4.111 8.0393-8.6562 7.8036h-21.46v17.813h20c5.9709 0 8.9044 4.1494 8.9044 8.404 6.714e-4 0.18401-0.0046387 0.36801-0.0159 0.55202-0.27997 4.6286-4.2592 8.1538-8.8885 7.8732h-20v18.524h22.565c0.2919-0.019852 0.58511-0.023163 0.87766-0.011246 4.477 0.18268 7.9579 3.9601 7.7752 8.4371 0.0039673 0.18864 0.0013123 0.37727-0.0079346 0.56592-0.22174 4.5531-4.0918 8.0644-8.6449 7.8434h-31.461c-0.24756 0.013229-0.49509 0.01654-0.74265 0.0092621-4.9185-0.1423-8.7899-4.2453-8.6476-9.1638v-67.045zm26.27 91.708c8.8984 0 26.214 2.9149 26.214 13.645 0 4.3996-3.0374 8.1664-7.5548 8.1664-4.9926 0-8.4066-4.2665-18.659-4.2665-15.104 0-22.921 12.798-22.921 27.685 0 14.491 7.9254 26.928 22.921 26.928 10.253 0 14.393-5.1223 19.399-5.1223 5.4818 0 8.0433 5.4883 8.0433 8.302 0 11.698-18.408 14.383-27.443 14.383-24.74 0-41.931-19.63-41.931-44.87 0-25.358 17.065-44.851 41.931-44.851zm-73.964-102.33h31.205c4.4637 0.12444 8.0525 3.7132 8.1776 8.177 0.12973 4.6458-3.5312 8.5178-8.1776 8.6476h-22.437v17.813h18.905c5.8531 0 8.7707 4.1494 8.7707 8.2848 0.0072632 0.24159 0.0039673 0.48318-0.0099487 0.72411-0.25943 4.5789-4.1818 8.0803-8.7607 7.8202h-18.906v26.585c0 6.0781-3.9025 9.4987-9.1387 9.4987-5.2388 0-9.144-3.4206-9.144-9.4987v-68.516c-0.01059-0.25085-0.01123-0.50237-6.409e-4 -0.75322 0.20187-5.0529 4.4624-8.9851 9.516-8.7826zm-90.333 74.992l24.503-66.32c2.077-5.6062 6.8307-10.122 13.047-10.122 6.4647 0 10.977 4.2553 13.048 10.122l23.893 66.32c0.5712 1.4403 0.9028 2.9639 0.98288 4.5108-0.039703 4.4955-3.7158 8.1075-8.2107 8.0684-0.070831-6.561e-4 -0.14166-0.0026398-0.21182-0.0046387-4.1064 0.30382-7.8447-2.3643-8.8918-6.3462l-3.6523-11.468h-33.901l-3.6636 11.343c-0.9637 4.0051-4.6696 6.736-8.7806 6.4713-4.8417 0.14165-8.8819-3.6682-9.0242-8.5099 0-0.013901-6.561e-4 -0.028473-0.0013275-0.042374 0.012573-1.3853 0.30646-2.7534 0.8631-4.0223zm-63.144-48.778c0-17.063 14.021-27.669 30.236-27.669 6.8307 0 23.899 2.5628 23.899 12.199 0 4.7563-3.1777 9.0149-8.167 9.0149-5.0019 0-8.9011-3.649-16.22-3.649-5.2362 0-9.9912 2.8216-9.9912 7.9215 0 12.548 40.719 4.4988 40.719 35.968 0 17.434-14.389 28.284-31.217 28.284-9.3842 0-29.617-2.1935-29.617-13.659 0-4.749 3.1625-8.6555 8.1544-8.6555 5.7366 0 12.567 4.7709 20.487 4.7709 8.0466 0 12.432-4.532 12.432-10.491 0-14.402-40.713-5.7432-40.713-34.034zm-23.493 135.61h-13.522v19.977c0 6.1132-3.9091 9.5259-9.1532 9.5259-5.2388 0-9.1427-3.4127-9.1427-9.5259v-68.499c0-5.7531 3.4067-9.5186 9.5087-9.5186h21.58c17.923 0 31.207 11.698 31.207 29.13 1e-7 17.803-13.773 28.91-30.477 28.91zm79.801 28.747h-30.487c-5.9676 0-9.4954-3.882-9.4954-9.966v-68.047c0-6.0973 3.9058-9.506 9.1367-9.506 5.2415 0 9.1493 3.4087 9.1493 9.506v61.211h21.696c0.35477-0.023163 0.71021-0.022522 1.0656 0 4.5531 0.29651 8.0042 4.2275 7.7083 8.7806-0.26608 4.6107-4.1586 8.169-8.774 8.0214zm72.996 1.1411v-44.583h-28.278v44.583h-19.098c-4.2387-0.0059814-7.6706-3.4465-7.6666-7.6852v-26.389h-1.6587c-2.4523-0.0053101-4.7391-1.2364-6.0933-3.2803-0.038391-0.062897-0.071487-0.12842-0.099945-0.19592-0.22505-0.33493-0.41302-0.69366-0.56062-1.0696-0.054276-0.13766-0.099289-0.27866-0.13568-0.42163-0.11517-0.30447-0.20518-0.61755-0.26807-0.93591-0.06752-0.32101-0.10393-0.64731-0.10722-0.97562-0.0052948-0.14362-0.039062-0.27798-0.039062-0.42825v-0.022492c6.714e-4 -0.47986 0.049652-0.9584 0.14629-1.4283 0.030441-0.1304 0.068832-0.25815 0.11649-0.38324 0.068832-0.33624 0.16812-0.66519 0.29652-0.98291 0.046997-0.10458 0.10062-0.18002 0.15819-0.28329 0.35081-0.7724 0.832-1.4786 1.4217-2.0876l49.977-49.964c0.0046387-0.0046082 0.0092468-0.0092468 0.013886-0.013886 2.8514-2.8435 7.4681-2.8375 10.312 0.013886l49.974 49.964c0.58643 0.61224 1.0676 1.3178 1.4244 2.0876 0.052277 0.10327 0.10721 0.17871 0.14893 0.28329 0.13104 0.33624 0.23761 0.68176 0.31903 1.0339 0.023834 0.12576 0.08075 0.21048 0.10721 0.33228 0.090698 0.47855 0.13901 0.96368 0.14365 1.4508 0 0.092682-0.023163 0.15027-0.023163 0.24558-0.0066223 0.39713-0.045013 0.79294-0.11517 1.1841-0.073486 0.27469-0.16217 0.56461-0.25879 0.84589-0.044373 0.16879-0.098633 0.33493-0.16217 0.49774-0.15027 0.35278-0.32831 0.69299-0.53348 1.0173-0.044342 0.068817-0.07016 0.16415-0.12509 0.2363-1.3536 2.0452-3.6411 3.277-6.094 3.2803h-1.6514v26.389c6.714e-4 4.2407-3.4345 7.6805-7.6752 7.6852h-33.916z" fill="currentColor"/></svg>
+
+                        <blockquote>
+                          <p><strong>Safe Places</strong> are identified by the bright yellow Safe Place sign. A youth can enter a Safe Place at any time and ask for help. Within a few minutes a trained volunteer arrives to meet the youth and assist in defusing the crisis.</p>
+
+                          <p><strong>Please Note:</strong> If you are seeking <strong>Safe Place Services</strong>, or are a <strong>youth in crisis</strong>, please contact the <strong>Binkley House Youth Shelter</strong> directly at <strong>812-349-2507</strong>.</p>
+
+                          <p class="hide-viewport-small">
+                            <small>* Approximate distance.</small>
+                          </p>
+
+                          <p>
+                            <strong>Note: </strong>
+                            Click a row for directions.
+                          </p>
+                        </blockquote>
+                      </div>
+                    </header>
+
+                    <table>
+                      <caption class="sr-only">
+                        Safe Places
                       </caption>
                       <thead class="sr-only">
                         <tr>
                           <th scope="col">Distance</th>
-                          <th scope="col">Park Name</th>
+                          <th scope="col">Name</th>
                           <th scope="col">Directions Link</th>
                         </tr>
                       </thead>
 
-                    <tbody>
-                      <template
-                        v-for="p, i in viaDistance(parksResData.features)"
-                        v-if="i <= 10">
-                        <template v-if="p.lat && p.lon">
-                          <tr
-                            :class="[{'clickable': p.lat && p.lon}]"
-                             @click="goToAddress(p.lat, p.lon)">
-                            <td>
-                              {{ p.dist }} mi *
-                            </td>
-                            <td>
-                              <a
-                                href="#"
-                                class="external"
-                                @click.prevent>
-                                {{ p.name }}
-                              </a>
-                            </td>
-                            <td >
-                              <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="directions" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-directions fa-w-16 fa-3x"><path fill="currentColor" d="M502.61 233.32L278.68 9.39c-12.52-12.52-32.83-12.52-45.36 0L9.39 233.32c-12.52 12.53-12.52 32.83 0 45.36l223.93 223.93c12.52 12.53 32.83 12.53 45.36 0l223.93-223.93c12.52-12.53 12.52-32.83 0-45.36zm-100.98 12.56l-84.21 77.73c-5.12 4.73-13.43 1.1-13.43-5.88V264h-96v64c0 4.42-3.58 8-8 8h-32c-4.42 0-8-3.58-8-8v-80c0-17.67 14.33-32 32-32h112v-53.73c0-6.97 8.3-10.61 13.43-5.88l84.21 77.73c3.43 3.17 3.43 8.59 0 11.76z" class=""></path></svg>directions
-                            </td>
-                          </tr>
-                        </template>
+                      <tbody>
+                        <template
+                          v-for="p, i in viaDistance(safePlaceResData.feed.entry)"
+                          v-if="i <= 10">
+                          <template v-if="p.gsx$lat.$t && p.gsx$lon.$t">
+                            <tr
+                              :class="[{'clickable': p}]"
+                              @click="goToAddress(p.gsx$lat.$t, p.gsx$lon.$t)">
+                              <td>
+                                {{ p.dist }} mi *
+                              </td>
+                              <td>
+                                <a
+                                  href="#"
+                                  class="external"
+                                  @click.prevent>
+                                  {{ p.gsx$name.$t }}
+                                </a>
+                              </td>
+                              <td>
+                                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="directions" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-directions fa-w-16 fa-3x"><path fill="currentColor" d="M502.61 233.32L278.68 9.39c-12.52-12.52-32.83-12.52-45.36 0L9.39 233.32c-12.52 12.53-12.52 32.83 0 45.36l223.93 223.93c12.52 12.53 32.83 12.53 45.36 0l223.93-223.93c12.52-12.53 12.52-32.83 0-45.36zm-100.98 12.56l-84.21 77.73c-5.12 4.73-13.43 1.1-13.43-5.88V264h-96v64c0 4.42-3.58 8-8 8h-32c-4.42 0-8-3.58-8-8v-80c0-17.67 14.33-32 32-32h112v-53.73c0-6.97 8.3-10.61 13.43-5.88l84.21 77.73c3.43 3.17 3.43 8.59 0 11.76z" class=""></path></svg>directions
+                              </td>
+                            </tr>
+                          </template>
 
-                        <template v-else>
+                          <template v-else>
+                            <tr>
+                              <td>{{ p.dist }} mi *</td>
+                              <td>{{ p.gsx$name.$t }}</td>
+                              <td>- - -</td>
+                            </tr>
+                          </template>
+                        </template>
+                      </tbody>
+                    </table>
+                  </section>
+                </fn1-tab>
+
+                <!-- schools -->
+                <fn1-tab
+                  id="schools"
+                  v-if="schoolsResData"
+                  name="Schools">
+                  <section class="schools">
+                    <header>
+                      <div>
+                        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="graduation-cap" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="svg-inline--fa fa-graduation-cap fa-w-20 fa-3x"><path fill="currentColor" d="M622.34 153.2L343.4 67.5c-15.2-4.67-31.6-4.67-46.79 0L17.66 153.2c-23.54 7.23-23.54 38.36 0 45.59l48.63 14.94c-10.67 13.19-17.23 29.28-17.88 46.9C38.78 266.15 32 276.11 32 288c0 10.78 5.68 19.85 13.86 25.65L20.33 428.53C18.11 438.52 25.71 448 35.94 448h56.11c10.24 0 17.84-9.48 15.62-19.47L82.14 313.65C90.32 307.85 96 298.78 96 288c0-11.57-6.47-21.25-15.66-26.87.76-15.02 8.44-28.3 20.69-36.72L296.6 284.5c9.06 2.78 26.44 6.25 46.79 0l278.95-85.7c23.55-7.24 23.55-38.36 0-45.6zM352.79 315.09c-28.53 8.76-52.84 3.92-65.59 0l-145.02-44.55L128 384c0 35.35 85.96 64 192 64s192-28.65 192-64l-14.18-113.47-145.03 44.56z" class=""></path></svg>
+
+                        <blockquote>
+                          <p>Local <strong>Schools</strong> nearby the requested Address.</p>
+
+                          <p><strong>Please Note:</strong> This <strong>does not</strong> indicate the appropriate <a class="external" :href="districtLookupPath" target="_blank" alt="Bloomington School Districts">School District</a></strong> nor any <strong>Higher Educational</strong> institutions.</p>
+
+                          <p class="hide-viewport-small">
+                            <small>* Approximate distance.</small>
+                          </p>
+
+                          <p>
+                            <strong>Note: </strong>
+                            Click a row for directions.
+                          </p>
+                        </blockquote>
+                      </div>
+                    </header>
+
+                    <fn1-button-group>
+                      <fn1-button
+                        @click.native="changeSchoolType('elm')"
+                        :class="[{'active': schoolType == 'elm'}]">
+                        Elementary
+                      </fn1-button>
+
+                      <fn1-button
+                        @click.native="changeSchoolType('middle')"
+                        :class="[{'active': schoolType == 'middle'}]">
+                        Middle
+                      </fn1-button>
+
+                      <fn1-button
+                        @click.native="changeSchoolType('high')"
+                        :class="[{'active': schoolType == 'high'}]">
+                        High
+                      </fn1-button>
+
+                      <fn1-button
+                        @click.native="changeSchoolType('all')"
+                        :class="[{'active': schoolType == 'all'}]">
+                        All
+                      </fn1-button>
+                    </fn1-button-group>
+
+                    <table>
+                      <caption class="sr-only">
+                          Local Schools
+                        </caption>
+                        <thead class="sr-only">
                           <tr>
-                            <td>{{ p.dist }} mi *</td>
-                            <td>{{ p.name }}</td>
-                            <td>- - -</td>
+                            <th scope="col">Distance</th>
+                            <th scope="col">School Name</th>
+                            <th scope="col">Directions Link</th>
                           </tr>
+                        </thead>
+
+                      <tbody>
+                        <template
+                          v-for="p, i in viaDistance(schoolsResData.features)"
+                          v-if="i <= 10 && schoolTypeToggle.includes(p.type)">
+                          <template v-if="p.lat && p.lon">
+                            <tr
+                              :class="[{'clickable': p.lat && p.lon}]"
+                              @click="goToAddress(p.lat, p.lon)">
+                              <td>
+                                {{ p.dist }} mi *
+                              </td>
+                              <td>
+                                <a
+                                  href="#"
+                                  class="external"
+                                  @click.prevent>
+                                  {{ p.name }}
+                                </a>
+                              </td>
+                              <td>
+                                <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="directions" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-directions fa-w-16 fa-3x"><path fill="currentColor" d="M502.61 233.32L278.68 9.39c-12.52-12.52-32.83-12.52-45.36 0L9.39 233.32c-12.52 12.53-12.52 32.83 0 45.36l223.93 223.93c12.52 12.53 32.83 12.53 45.36 0l223.93-223.93c12.52-12.53 12.52-32.83 0-45.36zm-100.98 12.56l-84.21 77.73c-5.12 4.73-13.43 1.1-13.43-5.88V264h-96v64c0 4.42-3.58 8-8 8h-32c-4.42 0-8-3.58-8-8v-80c0-17.67 14.33-32 32-32h112v-53.73c0-6.97 8.3-10.61 13.43-5.88l84.21 77.73c3.43 3.17 3.43 8.59 0 11.76z" class=""></path></svg>directions
+                              </td>
+                            </tr>
+                          </template>
+
+                          <template v-else>
+                            <tr>
+                              <td>{{ p.dist }} mi *</td>
+                              <td>{{ p.name }}</td>
+                              <td>- - -</td>
+                            </tr>
+                          </template>
                         </template>
-                      </template>
-                    </tbody>
-                  </table>
-                </section>
-              </fn1-tab>
+                      </tbody>
+                    </table>
 
-              <!-- playgrounds -->
-              <fn1-tab
-                id="playgrounds"
-                v-if="playgroundsResData"
-                name="Playgrounds">
-                <section class="playgrounds">
-                  <header>
-                    <div>
-                      <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="shapes" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-shapes fa-w-16 fa-3x"><path fill="currentColor" d="M512 320v160c0 17.67-14.33 32-32 32H320c-17.67 0-32-14.33-32-32V320c0-17.67 14.33-32 32-32h160c17.67 0 32 14.33 32 32zm-384-64C57.31 256 0 313.31 0 384s57.31 128 128 128 128-57.31 128-128-57.31-128-128-128zm351.03-32c25.34 0 41.18-26.67 28.51-48L412.51 16c-12.67-21.33-44.35-21.33-57.02 0l-95.03 160c-12.67 21.33 3.17 48 28.51 48h190.06z" class=""></path></svg>
+                    <!-- NOTE: we need to set Data on this
+                        if we plan to use the feature. -->
+                    <exampleModal
+                      ref="schoolDistrictModal"
+                      title="School District Information">
 
-                      <blockquote>
-                        <p><strong>Playgrounds</strong> located nearby.</p>
+                      <fn1-alert
+                        slot="body"
+                        v-if="gradeLevelError"
+                        variant="warning">
+                        <p>Select a <strong>Grade Level</strong> to continue.</p>
+                      </fn1-alert>
 
-                        <p class="hide-viewport-small">
-                          <small>* Approximate distance.</small>
-                        </p>
+                      <p slot="body">Please select a Grade Level.</p>
 
-                        <p>
-                          <strong>Note: </strong>
-                          Click a row for directions.
-                        </p>
-                      </blockquote>
-                    </div>
-                  </header>
+                      <div slot="body" class="field-group">
+                        <label for="schoolDistrictGradeLevel">
+                          Grade Level:
+                        </label>
 
-                  <table>
-                    <caption class="sr-only">
-                        City Playgrounds
-                      </caption>
-                      <thead class="sr-only">
-                        <tr>
-                          <th scope="col">Distance</th>
-                          <th scope="col">Playground Name</th>
-                          <th scope="col">Directions Link</th>
-                        </tr>
-                      </thead>
+                        <select name="schoolDistrictGradeLevel"
+                                id="schoolDistrictGradeLevel"
+                                type="select"
+                                v-model="schoolDistrictGradeLevel">
+                          <option :value="{val: 3, lvl: 'PA'}">PA</option>
+                          <option :value="{val: 1, lvl: 'PP'}">PP</option>
+                          <option :value="{val: 2, lvl: 'PK'}">PK</option>
+                          <option :value="{val: 6, lvl: 'K'}">K</option>
+                          <option :value="{val: 7, lvl: '01'}">01</option>
+                          <option :value="{val: 8, lvl: '02'}">02</option>
+                          <option :value="{val: 9, lvl: '03'}">03</option>
+                          <option :value="{val: 10, lvl: '04'}">04</option>
+                          <option :value="{val: 11, lvl: '05'}">05</option>
+                          <option :value="{val: 12, lvl: '06'}">06</option>
+                          <option :value="{val: 13, lvl: '07'}">07</option>
+                          <option :value="{val: 14, lvl: '08'}">08</option>
+                          <option :value="{val: 15, lvl: '09'}">09</option>
+                          <option :value="{val: 16, lvl: '10'}">10</option>
+                          <option :value="{val: 17, lvl: '11'}">11</option>
+                          <option :value="{val: 18, lvl: '12'}">12</option>
+                          <option :value="{val: 20, lvl: '13'}">13</option>
+                          <option :value="{val: 19, lvl: '99'}">99</option>
+                          <option :value="{val: 23, lvl: 'PW'}">PW</option>
+                        </select>
+                      </div>
 
-                    <tbody>
-                      <template
-                        v-for="p, i in viaDistance(playgroundsResData.features)"
-                        v-if="i <= 10">
-                        <template v-if="p.lat && p.lon">
-                          <tr
-                            :class="[{'clickable': p.lat && p.lon}]"
-                            @click="goToAddress(p.lat, p.lon)">
-                            <td>
-                              {{ p.dist }} mi *
-                            </td>
-                            <td >
-                              <a
-                                href="#"
-                                class="external"
-                                @click.prevent>
-                                {{ p.name }}
-                              </a>
-                            </td>
-                            <td>
-                              <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="directions" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-directions fa-w-16 fa-3x"><path fill="currentColor" d="M502.61 233.32L278.68 9.39c-12.52-12.52-32.83-12.52-45.36 0L9.39 233.32c-12.52 12.53-12.52 32.83 0 45.36l223.93 223.93c12.52 12.53 32.83 12.53 45.36 0l223.93-223.93c12.52-12.53 12.52-32.83 0-45.36zm-100.98 12.56l-84.21 77.73c-5.12 4.73-13.43 1.1-13.43-5.88V264h-96v64c0 4.42-3.58 8-8 8h-32c-4.42 0-8-3.58-8-8v-80c0-17.67 14.33-32 32-32h112v-53.73c0-6.97 8.3-10.61 13.43-5.88l84.21 77.73c3.43 3.17 3.43 8.59 0 11.76z" class=""></path></svg>directions
-                            </td>
-                          </tr>
-                        </template>
+                      <fn1-button slot="footer"
+                                  title="Confirm - Remove Service"
+                                  @click.native="confirmModal('schoolDistrictModal')">
+                        Confirm
+                      </fn1-button>
 
-                        <template v-else>
-                          <tr>
-                            <td>{{ p.dist }} mi *</td>
-                            <td>{{ p.name }}</td>
-                            <td>- - -</td>
-                          </tr>
-                        </template>
-                      </template>
-                    </tbody>
-                  </table>
-                </section>
-              </fn1-tab>
-
-              <!-- safe places -->
-              <fn1-tab
-                id="safe-places"
-                v-if="safePlaceResData"
-                name="Safe Places">
-                <section class="safe-places">
-                  <header>
-                    <div>
-                      <svg enable-background="new 0 0 580 580" version="1.1" viewBox="0 0 580 580" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><path d="m563.85 252.15l-236.43-236.45c-20.916-20.912-54.822-20.912-75.738 0l-236.45 236.45c-20.913 20.922-20.913 54.834 0 75.757l236.45 236.44c20.916 20.91 54.822 20.91 75.738 0l236.44-236.44c20.916-20.924 20.91-54.841-0.01258-75.757zm-13.314 63.973l-234.89 234.9c-14.419 14.403-37.779 14.403-52.198 0l-234.9-234.9c-14.389-14.42-14.389-37.767 0-52.187l234.9-234.91c6.9074-6.9452 16.306-10.838 26.102-10.812 9.7933-0.022503 19.189 3.8701 26.097 10.812l234.89 234.91c14.385 14.421 14.385 37.765-3.9e-6 52.187z" fill="currentColor"/><path d="m134.62 286.75h-12.426v25.843h12.426c7.6785 0 12.559-5.6115 12.559-12.923 0-7.3198-4.8808-12.921-12.559-12.921z" fill="currentColor"/><polygon points="260.03 184.45 259.79 184.45 248.2 219.8 271.36 219.8" fill="currentColor"/><path d="m482.2 357.11c1.8473-0.040375 3.3233-1.5501 3.3227-3.3981-0.039734-1.8361-1.5607-3.2929-3.3975-3.2525-1.8361 0.039703-3.2922 1.5607-3.2525 3.3975 0.039062 1.8089 1.5177 3.2545 3.3273 3.2532zm-1.7593-1.296v-4.2427c0-0.16879 0.076111-0.25351 0.27466-0.25351h1.5581c1.1815 0 1.7831 0.35809 1.7831 1.4244 0.068848 0.67645-0.42361 1.2801-1.1001 1.3489-0.035065 0.0039673-0.07016 0.0059509-0.10522 0.0066223l1.0458 1.613c0.062897 0.084717 0.10526 0.18335 0.12247 0.28726 0 0.12906-0.24823 0.22372-0.4415 0.22372-0.19327 0.013245-0.37595-0.090668-0.46265-0.2641l-1.1345-1.8341h-0.76843v1.6905c0 0.26144-0.12842 0.40771-0.38455 0.40771-0.19528 0.019196-0.36935-0.12311-0.38919-0.31836-0.0033265-0.029785-0.0020142-0.05957 0.0019836-0.089356z" fill="currentColor"/><path d="m483.28 352.67c0-0.58047-0.57516-0.64603-1.0848-0.64603h-0.98026v1.4012h0.89883c0.61224 0 1.1662-0.031097 1.1662-0.75519z" fill="currentColor"/><path d="m543.38 308.97c0.0040283-0.0039673 0.0073242-0.0072937 0.011292-0.011261 10.456-10.462 10.452-27.421-0.011292-37.878l-234.89-234.9c-5.0224-5.0164-11.833-7.8334-18.931-7.8308-7.1054-0.0066185-13.921 2.8124-18.946 7.8361l-234.9 234.9c-10.458 10.465-10.458 27.424 0 37.889l234.9 234.9 6.714e-4 6.714e-4c10.46 10.459 27.417 10.459 37.876-6.714e-4l234.89-234.9zm-65.478 44.747c0.0032959-2.3742 1.9307-4.2957 4.3049-4.2923 2.3748 0.0039673 4.2963 1.9314 4.293 4.3056-0.0039978 2.3722-1.9287 4.293-4.301 4.2923-2.3729 0-4.297-1.9234-4.297-4.2963 1e-7 -0.0033263 1e-7 -0.0059509 1e-7 -0.0092773zm-53.396-72.454c0-6.0973 3.0453-10.605 9.5054-10.605h30.24c0.28394-0.018555 0.56921-0.022522 0.85449-0.011932 4.4816 0.1741 7.9744 3.9475 7.8004 8.4291 0.0039673 0.19263 0.0013123 0.38455-0.008606 0.57651-0.22638 4.5492-4.0977 8.0532-8.6462 7.8268h-21.468v17.798h20.004c5.9755 0 8.9037 4.1606 8.9037 8.4139 6.714e-4 0.18268-0.0046387 0.36536-0.015869 0.54807-0.28464 4.6239-4.2639 8.1419-8.8878 7.8572h-20.004v18.547h22.56c0.28925-0.019867 0.5798-0.023834 0.86905-0.012573 4.479 0.17407 7.9685 3.9462 7.7944 8.4252 0.0032959 0.19327 6.714e-4 0.38718-0.0092773 0.58047-0.23364 4.5465-4.1077 8.0426-8.6542 7.8089h-31.445c-5.3719 0-9.3929-3.6324-9.3929-9.1096v-67.072zm-64.122-103.76c0-6.1105 3.0486-10.626 9.508-10.626h30.238c0.28195-0.019196 0.56461-0.023163 0.84723-0.011902 4.4889 0.17076 7.989 3.9482 7.8182 8.4371 0.0039673 0.19856 0.0013123 0.39713-0.0092773 0.5957-0.23563 4.5452-4.111 8.0393-8.6562 7.8036h-21.46v17.813h20c5.9709 0 8.9044 4.1494 8.9044 8.404 6.714e-4 0.18401-0.0046387 0.36801-0.0159 0.55202-0.27997 4.6286-4.2592 8.1538-8.8885 7.8732h-20v18.524h22.565c0.2919-0.019852 0.58511-0.023163 0.87766-0.011246 4.477 0.18268 7.9579 3.9601 7.7752 8.4371 0.0039673 0.18864 0.0013123 0.37727-0.0079346 0.56592-0.22174 4.5531-4.0918 8.0644-8.6449 7.8434h-31.461c-0.24756 0.013229-0.49509 0.01654-0.74265 0.0092621-4.9185-0.1423-8.7899-4.2453-8.6476-9.1638v-67.045zm26.27 91.708c8.8984 0 26.214 2.9149 26.214 13.645 0 4.3996-3.0374 8.1664-7.5548 8.1664-4.9926 0-8.4066-4.2665-18.659-4.2665-15.104 0-22.921 12.798-22.921 27.685 0 14.491 7.9254 26.928 22.921 26.928 10.253 0 14.393-5.1223 19.399-5.1223 5.4818 0 8.0433 5.4883 8.0433 8.302 0 11.698-18.408 14.383-27.443 14.383-24.74 0-41.931-19.63-41.931-44.87 0-25.358 17.065-44.851 41.931-44.851zm-73.964-102.33h31.205c4.4637 0.12444 8.0525 3.7132 8.1776 8.177 0.12973 4.6458-3.5312 8.5178-8.1776 8.6476h-22.437v17.813h18.905c5.8531 0 8.7707 4.1494 8.7707 8.2848 0.0072632 0.24159 0.0039673 0.48318-0.0099487 0.72411-0.25943 4.5789-4.1818 8.0803-8.7607 7.8202h-18.906v26.585c0 6.0781-3.9025 9.4987-9.1387 9.4987-5.2388 0-9.144-3.4206-9.144-9.4987v-68.516c-0.01059-0.25085-0.01123-0.50237-6.409e-4 -0.75322 0.20187-5.0529 4.4624-8.9851 9.516-8.7826zm-90.333 74.992l24.503-66.32c2.077-5.6062 6.8307-10.122 13.047-10.122 6.4647 0 10.977 4.2553 13.048 10.122l23.893 66.32c0.5712 1.4403 0.9028 2.9639 0.98288 4.5108-0.039703 4.4955-3.7158 8.1075-8.2107 8.0684-0.070831-6.561e-4 -0.14166-0.0026398-0.21182-0.0046387-4.1064 0.30382-7.8447-2.3643-8.8918-6.3462l-3.6523-11.468h-33.901l-3.6636 11.343c-0.9637 4.0051-4.6696 6.736-8.7806 6.4713-4.8417 0.14165-8.8819-3.6682-9.0242-8.5099 0-0.013901-6.561e-4 -0.028473-0.0013275-0.042374 0.012573-1.3853 0.30646-2.7534 0.8631-4.0223zm-63.144-48.778c0-17.063 14.021-27.669 30.236-27.669 6.8307 0 23.899 2.5628 23.899 12.199 0 4.7563-3.1777 9.0149-8.167 9.0149-5.0019 0-8.9011-3.649-16.22-3.649-5.2362 0-9.9912 2.8216-9.9912 7.9215 0 12.548 40.719 4.4988 40.719 35.968 0 17.434-14.389 28.284-31.217 28.284-9.3842 0-29.617-2.1935-29.617-13.659 0-4.749 3.1625-8.6555 8.1544-8.6555 5.7366 0 12.567 4.7709 20.487 4.7709 8.0466 0 12.432-4.532 12.432-10.491 0-14.402-40.713-5.7432-40.713-34.034zm-23.493 135.61h-13.522v19.977c0 6.1132-3.9091 9.5259-9.1532 9.5259-5.2388 0-9.1427-3.4127-9.1427-9.5259v-68.499c0-5.7531 3.4067-9.5186 9.5087-9.5186h21.58c17.923 0 31.207 11.698 31.207 29.13 1e-7 17.803-13.773 28.91-30.477 28.91zm79.801 28.747h-30.487c-5.9676 0-9.4954-3.882-9.4954-9.966v-68.047c0-6.0973 3.9058-9.506 9.1367-9.506 5.2415 0 9.1493 3.4087 9.1493 9.506v61.211h21.696c0.35477-0.023163 0.71021-0.022522 1.0656 0 4.5531 0.29651 8.0042 4.2275 7.7083 8.7806-0.26608 4.6107-4.1586 8.169-8.774 8.0214zm72.996 1.1411v-44.583h-28.278v44.583h-19.098c-4.2387-0.0059814-7.6706-3.4465-7.6666-7.6852v-26.389h-1.6587c-2.4523-0.0053101-4.7391-1.2364-6.0933-3.2803-0.038391-0.062897-0.071487-0.12842-0.099945-0.19592-0.22505-0.33493-0.41302-0.69366-0.56062-1.0696-0.054276-0.13766-0.099289-0.27866-0.13568-0.42163-0.11517-0.30447-0.20518-0.61755-0.26807-0.93591-0.06752-0.32101-0.10393-0.64731-0.10722-0.97562-0.0052948-0.14362-0.039062-0.27798-0.039062-0.42825v-0.022492c6.714e-4 -0.47986 0.049652-0.9584 0.14629-1.4283 0.030441-0.1304 0.068832-0.25815 0.11649-0.38324 0.068832-0.33624 0.16812-0.66519 0.29652-0.98291 0.046997-0.10458 0.10062-0.18002 0.15819-0.28329 0.35081-0.7724 0.832-1.4786 1.4217-2.0876l49.977-49.964c0.0046387-0.0046082 0.0092468-0.0092468 0.013886-0.013886 2.8514-2.8435 7.4681-2.8375 10.312 0.013886l49.974 49.964c0.58643 0.61224 1.0676 1.3178 1.4244 2.0876 0.052277 0.10327 0.10721 0.17871 0.14893 0.28329 0.13104 0.33624 0.23761 0.68176 0.31903 1.0339 0.023834 0.12576 0.08075 0.21048 0.10721 0.33228 0.090698 0.47855 0.13901 0.96368 0.14365 1.4508 0 0.092682-0.023163 0.15027-0.023163 0.24558-0.0066223 0.39713-0.045013 0.79294-0.11517 1.1841-0.073486 0.27469-0.16217 0.56461-0.25879 0.84589-0.044373 0.16879-0.098633 0.33493-0.16217 0.49774-0.15027 0.35278-0.32831 0.69299-0.53348 1.0173-0.044342 0.068817-0.07016 0.16415-0.12509 0.2363-1.3536 2.0452-3.6411 3.277-6.094 3.2803h-1.6514v26.389c6.714e-4 4.2407-3.4345 7.6805-7.6752 7.6852h-33.916z" fill="currentColor"/></svg>
-
-                      <blockquote>
-                        <p><strong>Safe Places</strong> are identified by the bright yellow Safe Place sign. A youth can enter a Safe Place at any time and ask for help. Within a few minutes a trained volunteer arrives to meet the youth and assist in defusing the crisis.</p>
-
-                        <p><strong>Please Note:</strong> If you are seeking <strong>Safe Place Services</strong>, or are a <strong>youth in crisis</strong>, please contact the <strong>Binkley House Youth Shelter</strong> directly at <strong>812-349-2507</strong>.</p>
-
-                        <p class="hide-viewport-small">
-                          <small>* Approximate distance.</small>
-                        </p>
-
-                        <p>
-                          <strong>Note: </strong>
-                          Click a row for directions.
-                        </p>
-                      </blockquote>
-                    </div>
-                  </header>
-
-                  <table>
-                    <caption class="sr-only">
-                      Safe Places
-                    </caption>
-                    <thead class="sr-only">
-                      <tr>
-                        <th scope="col">Distance</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Directions Link</th>
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      <template
-                        v-for="p, i in viaDistance(safePlaceResData.feed.entry)"
-                        v-if="i <= 10">
-                        <template v-if="p.gsx$lat.$t && p.gsx$lon.$t">
-                          <tr
-                            :class="[{'clickable': p}]"
-                            @click="goToAddress(p.gsx$lat.$t, p.gsx$lon.$t)">
-                            <td>
-                              {{ p.dist }} mi *
-                            </td>
-                            <td>
-                              <a
-                                href="#"
-                                class="external"
-                                @click.prevent>
-                                {{ p.gsx$name.$t }}
-                              </a>
-                            </td>
-                            <td>
-                              <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="directions" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-directions fa-w-16 fa-3x"><path fill="currentColor" d="M502.61 233.32L278.68 9.39c-12.52-12.52-32.83-12.52-45.36 0L9.39 233.32c-12.52 12.53-12.52 32.83 0 45.36l223.93 223.93c12.52 12.53 32.83 12.53 45.36 0l223.93-223.93c12.52-12.53 12.52-32.83 0-45.36zm-100.98 12.56l-84.21 77.73c-5.12 4.73-13.43 1.1-13.43-5.88V264h-96v64c0 4.42-3.58 8-8 8h-32c-4.42 0-8-3.58-8-8v-80c0-17.67 14.33-32 32-32h112v-53.73c0-6.97 8.3-10.61 13.43-5.88l84.21 77.73c3.43 3.17 3.43 8.59 0 11.76z" class=""></path></svg>directions
-                            </td>
-                          </tr>
-                        </template>
-
-                        <template v-else>
-                          <tr>
-                            <td>{{ p.dist }} mi *</td>
-                            <td>{{ p.gsx$name.$t }}</td>
-                            <td>- - -</td>
-                          </tr>
-                        </template>
-                      </template>
-                    </tbody>
-                  </table>
-                </section>
-              </fn1-tab>
-
-              <!-- schools -->
-              <fn1-tab
-                id="schools"
-                v-if="schoolsResData"
-                name="Schools">
-                <section class="schools">
-                  <header>
-                    <div>
-                      <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="graduation-cap" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="svg-inline--fa fa-graduation-cap fa-w-20 fa-3x"><path fill="currentColor" d="M622.34 153.2L343.4 67.5c-15.2-4.67-31.6-4.67-46.79 0L17.66 153.2c-23.54 7.23-23.54 38.36 0 45.59l48.63 14.94c-10.67 13.19-17.23 29.28-17.88 46.9C38.78 266.15 32 276.11 32 288c0 10.78 5.68 19.85 13.86 25.65L20.33 428.53C18.11 438.52 25.71 448 35.94 448h56.11c10.24 0 17.84-9.48 15.62-19.47L82.14 313.65C90.32 307.85 96 298.78 96 288c0-11.57-6.47-21.25-15.66-26.87.76-15.02 8.44-28.3 20.69-36.72L296.6 284.5c9.06 2.78 26.44 6.25 46.79 0l278.95-85.7c23.55-7.24 23.55-38.36 0-45.6zM352.79 315.09c-28.53 8.76-52.84 3.92-65.59 0l-145.02-44.55L128 384c0 35.35 85.96 64 192 64s192-28.65 192-64l-14.18-113.47-145.03 44.56z" class=""></path></svg>
-
-                      <blockquote>
-                        <p>Local <strong>Schools</strong> nearby the requested Address.</p>
-
-                        <p><strong>Please Note:</strong> This <strong>does not</strong> indicate the appropriate <a class="external" :href="districtLookupPath" target="_blank" alt="Bloomington School Districts">School District</a></strong> nor any <strong>Higher Educational</strong> institutions.</p>
-
-                        <p class="hide-viewport-small">
-                          <small>* Approximate distance.</small>
-                        </p>
-
-                        <p>
-                          <strong>Note: </strong>
-                          Click a row for directions.
-                        </p>
-                      </blockquote>
-                    </div>
-                  </header>
-
-                  <fn1-button-group>
-                    <fn1-button
-                      @click.native="changeSchoolType('elm')"
-                      :class="[{'active': schoolType == 'elm'}]">
-                      Elementary
-                    </fn1-button>
-
-                    <fn1-button
-                      @click.native="changeSchoolType('middle')"
-                      :class="[{'active': schoolType == 'middle'}]">
-                      Middle
-                    </fn1-button>
-
-                    <fn1-button
-                      @click.native="changeSchoolType('high')"
-                      :class="[{'active': schoolType == 'high'}]">
-                      High
-                    </fn1-button>
-
-                    <fn1-button
-                      @click.native="changeSchoolType('all')"
-                      :class="[{'active': schoolType == 'all'}]">
-                      All
-                    </fn1-button>
-                  </fn1-button-group>
-
-                  <table>
-                    <caption class="sr-only">
-                        Local Schools
-                      </caption>
-                      <thead class="sr-only">
-                        <tr>
-                          <th scope="col">Distance</th>
-                          <th scope="col">School Name</th>
-                          <th scope="col">Directions Link</th>
-                        </tr>
-                      </thead>
-
-                    <tbody>
-                      <template
-                        v-for="p, i in viaDistance(schoolsResData.features)"
-                        v-if="i <= 10 && schoolTypeToggle.includes(p.type)">
-                        <template v-if="p.lat && p.lon">
-                          <tr
-                            :class="[{'clickable': p.lat && p.lon}]"
-                             @click="goToAddress(p.lat, p.lon)">
-                            <td>
-                              {{ p.dist }} mi *
-                            </td>
-                            <td>
-                              <a
-                                href="#"
-                                class="external"
-                                @click.prevent>
-                                {{ p.name }}
-                              </a>
-                            </td>
-                            <td>
-                              <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="directions" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-directions fa-w-16 fa-3x"><path fill="currentColor" d="M502.61 233.32L278.68 9.39c-12.52-12.52-32.83-12.52-45.36 0L9.39 233.32c-12.52 12.53-12.52 32.83 0 45.36l223.93 223.93c12.52 12.53 32.83 12.53 45.36 0l223.93-223.93c12.52-12.53 12.52-32.83 0-45.36zm-100.98 12.56l-84.21 77.73c-5.12 4.73-13.43 1.1-13.43-5.88V264h-96v64c0 4.42-3.58 8-8 8h-32c-4.42 0-8-3.58-8-8v-80c0-17.67 14.33-32 32-32h112v-53.73c0-6.97 8.3-10.61 13.43-5.88l84.21 77.73c3.43 3.17 3.43 8.59 0 11.76z" class=""></path></svg>directions
-                            </td>
-                          </tr>
-                        </template>
-
-                        <template v-else>
-                          <tr>
-                            <td>{{ p.dist }} mi *</td>
-                            <td>{{ p.name }}</td>
-                            <td>- - -</td>
-                          </tr>
-                        </template>
-                      </template>
-                    </tbody>
-                  </table>
-
-                  <!-- NOTE: we need to set Data on this
-                       if we plan to use the feature. -->
-                  <exampleModal
-                    ref="schoolDistrictModal"
-                    title="School District Information">
-
-                    <fn1-alert
-                      slot="body"
-                      v-if="gradeLevelError"
-                      variant="warning">
-                      <p>Select a <strong>Grade Level</strong> to continue.</p>
-                    </fn1-alert>
-
-                    <p slot="body">Please select a Grade Level.</p>
-
-                    <div slot="body" class="field-group">
-                      <label for="schoolDistrictGradeLevel">
-                        Grade Level:
-                      </label>
-
-                      <select name="schoolDistrictGradeLevel"
-                              id="schoolDistrictGradeLevel"
-                              type="select"
-                              v-model="schoolDistrictGradeLevel">
-                        <option :value="{val: 3, lvl: 'PA'}">PA</option>
-                        <option :value="{val: 1, lvl: 'PP'}">PP</option>
-                        <option :value="{val: 2, lvl: 'PK'}">PK</option>
-                        <option :value="{val: 6, lvl: 'K'}">K</option>
-                        <option :value="{val: 7, lvl: '01'}">01</option>
-                        <option :value="{val: 8, lvl: '02'}">02</option>
-                        <option :value="{val: 9, lvl: '03'}">03</option>
-                        <option :value="{val: 10, lvl: '04'}">04</option>
-                        <option :value="{val: 11, lvl: '05'}">05</option>
-                        <option :value="{val: 12, lvl: '06'}">06</option>
-                        <option :value="{val: 13, lvl: '07'}">07</option>
-                        <option :value="{val: 14, lvl: '08'}">08</option>
-                        <option :value="{val: 15, lvl: '09'}">09</option>
-                        <option :value="{val: 16, lvl: '10'}">10</option>
-                        <option :value="{val: 17, lvl: '11'}">11</option>
-                        <option :value="{val: 18, lvl: '12'}">12</option>
-                        <option :value="{val: 20, lvl: '13'}">13</option>
-                        <option :value="{val: 19, lvl: '99'}">99</option>
-                        <option :value="{val: 23, lvl: 'PW'}">PW</option>
-                      </select>
-                    </div>
-
-                    <fn1-button slot="footer"
-                                title="Confirm - Remove Service"
-                                @click.native="confirmModal('schoolDistrictModal')">
-                      Confirm
-                    </fn1-button>
-
-                    <fn1-button slot="footer"
-                                title="Cancel - Remove Service"
-                                @click.native="closeModal('schoolDistrictModal')">
-                      Cancel
-                    </fn1-button>
-                  </exampleModal>
-                </section>
-              </fn1-tab>
-            </example-tabs>
+                      <fn1-button slot="footer"
+                                  title="Cancel - Remove Service"
+                                  @click.native="closeModal('schoolDistrictModal')">
+                        Cancel
+                      </fn1-button>
+                    </exampleModal>
+                  </section>
+                </fn1-tab>
+              </example-tabs>
+            </template>
 
             <!-- coords -->
             <dataSectionComponent
@@ -1650,6 +1695,24 @@ export default {
     .badge {
       background-color: $color-silver;
       margin: 10px 10px 0 0;
+    }
+  }
+
+  .nearby-amenities {
+    ::v-deep .tabs {
+      ul {
+        li {
+          font-size: 24px;
+
+          &.active,
+          &:hover,
+          &:focus {
+            &:after {
+              background-color: $color-blue;
+            }
+          }
+        }
+      }
     }
   }
 

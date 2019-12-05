@@ -10,11 +10,11 @@
       </div>
 
       <div>
-        <p>The <strong>City of Bloomington</strong> staff strives to keep complete and accurate information and regrets any errors or omissions.</p>
+        <p>The <strong>City of Bloomington</strong> strives to keep complete and accurate information and regrets any errors or omissions.</p> 
+        
+        <p>The information provided comes from the <strong>City of Bloomington’s Master Address Database, Geographic Information System (GIS)</strong> and other related databases unless otherwise noted.</p>
 
-        <p>The information reported comes from the <strong>City of Bloomington Geographic Information Systems (GIS)</strong> and other related databases.</p>
-
-        <p>To report missing <strong>City of Bloomington</strong> addresses or other errors, please contact the <strong>City of Bloomington GIS Staff</strong> at <a class="external" target="_blank" href="mailto: gis@bloomington.in.gov">gis@bloomington.in.gov</a>.</p>
+        <p>If you encounter a problem with an address within the City limits or another issues, please let us know by reporting your issue though <a href="https://bloomington.in.gov/ureport/miscellaneous/53" target="_blank">uReport</a>.</p>
       </div>
     </div>
   </footer>
