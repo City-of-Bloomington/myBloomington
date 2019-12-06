@@ -342,6 +342,7 @@ a {
   }
 
   ul {
+    z-index: 1000;
     position: absolute;
     top: 38px;
     border: 1px solid $color-grey-dark;
@@ -391,6 +392,10 @@ a {
 
       &:hover {
         background-color: rgba($color-cloud, 0.75);
+      }
+
+      &:first-child {
+        border-top: 1px solid $color-grey-dark;
       }
 
       &:nth-child(even) {
