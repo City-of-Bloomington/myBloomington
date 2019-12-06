@@ -766,7 +766,7 @@
                         slot="map"
                         ref="districtMap"
                         map-type-id="roadmap"
-                        :center="districtRepGeoCoordsCenter"
+                        :center="districtRepGeoCoordsCenter || latLong"
                         :zoom="13"
                         :options="{
                           zoomControl:        10,

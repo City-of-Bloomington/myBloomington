@@ -408,6 +408,9 @@ Vue.mixin({
         })
     },
     polygonCenter(coords) {
+      if (this.districtRepGeoCoordsCenter != null)
+        this.districtRepGeoCoordsCenter = null;
+
       let lat = coords.map(function (p) { return p.lat }),
           lng = coords.map(function (p) { return p.lng }),
 
@@ -426,8 +429,8 @@ Vue.mixin({
 
       this.districtRepGeoCoordsCenter = {lat: centerY, lng: centerX};
 
-      console.log(this.districtRepGeoCoordsCenter);
-      console.dir(coords)
+      // console.log(this.districtRepGeoCoordsCenter);
+      console.dir('ok Ran')
     },
     districtPaths() {
       let lngLat  = [],
@@ -460,9 +463,7 @@ Vue.mixin({
         });
 
         this.districtRepGeoCoords = projCoordsLatLng;
-
-        console.dir('HERE BELOW')
-        console.dir(this.polygonCenter(this.districtRepGeoCoords))
+        this.districtRepGeoCoordsCenter = this.latLong;
       } else {
         repJson.forEach((p) => {
           let pair = proj4(this.coordsProjection).inverse(p);
@@ -474,8 +475,7 @@ Vue.mixin({
         });
 
         this.districtRepGeoCoords = geoCoords;
-        console.dir('HERE BELOW')
-        console.dir(this.polygonCenter(this.districtRepGeoCoords))
+        this.polygonCenter(this.districtRepGeoCoords)
       }
     },
     nearbyMarkers(data){
