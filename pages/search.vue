@@ -58,6 +58,17 @@
           }"
         />
 
+        <GmapPolygon
+          v-if="exampleData"
+          :paths="exampleData"
+          :options="{
+            strokeColor:    'rgb(244, 151, 138)',
+            strokeOpacity:  0.8,
+            strokeWeight:   2,
+            fillColor:      'rgb(244, 151, 138)',
+            fillOpacity:    0.35
+          }"/>
+
         <GmapMarker
           :position="latLong"
           :clickable="false"
@@ -1430,6 +1441,17 @@ export default {
   data() {
     // data shared via: universal-methods.js
     return {
+      todaysDate:            null,
+      tomorrowsDate:         null,
+      inRoadsData:           null,
+      exampleData:           [
+        { lat: 39.165548056389866,     lng: -86.53491772485351 },
+        { lat: 39.16558132969499,      lng: -86.535003555542 },
+        { lat: 39.165115501990925,     lng: -86.53491772485351 },
+        // { lat: 39.163886970604324,  lng: -86.53359003139113 },
+        // { lat: 39.16388281134189,   lng: -86.5330106742439  },
+        // { lat: 39.1628721032713,    lng: -86.53301603866194 }
+      ],
       titleAddress:          null,
       expandedMap:           false,
       showScrollToTopArrow:  false,
@@ -1442,6 +1464,21 @@ export default {
     this.loading = true;
   },
   created: function() {
+    this.todaysDate     = moment().format('YYYY-MM-DD');
+    this.tomorrowsDate  = moment().add(1, 'days').format('YYYY-MM-DD');
+
+    this.getInRoadsData(this.todaysDate, this.tomorrowsDate)
+    .then((res) => {
+      this.inRoadsData = res;
+      console.log(`%c getInRoadsData 🔌 `,
+                  this.consoleLog.success);
+    })
+    .catch((e)  => {
+      console.log(`getInRoadsData Failed 🛑`,
+                  `\n\n ${e} \n\n`);
+    })
+
+
     this.$nextTick(() => {
       this.loading = false;
       if (process.client) {
@@ -1450,7 +1487,7 @@ export default {
         window.addEventListener("scroll", this.scrolledFromTop);
       }
     });
-
+    
     if(!this.cityBoundary) {
       this.getCityBoundaryGeoJson()
       .then((res) => {
@@ -1562,7 +1599,6 @@ export default {
         this.expandedMap = false;
         this.$refs.defaultMap.$el.style.height = '450px'
       }
-
     },
     scrolledFromTop() {
       this.scrolledFromTopAmount = window.scrollY || window.scrollTop || document.getElementsByTagName("html")[0].scrollTop;

@@ -38,8 +38,6 @@ module.exports = {
     ]
   },
 
-
-
   env: {
     repo:                     pkg.repository.url,
     appName:                  process.env.APP_NAME,
@@ -58,6 +56,7 @@ module.exports = {
     MAAddressesPath:          process.env.MASTER_ADDRESS_ADDRESS_PATH,
     directoryUsernamePath:    process.env.DIRECTORY_USERNAME_PATH,
     onBoardCityCouncilPath:   process.env.ONBOARD_CITY_COUNCIL_PATH,
+    inRoadsPath:              process.env.INROADS_URL,
     cityBoundaryGeoJson:      process.env.CITY_BOUNDARY_PATH,
     googleApiKey:             process.env.GOOGLE_API_KEY,
     weatherApiKey:            process.env.WEATHER_API_KEY,

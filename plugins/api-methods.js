@@ -8,6 +8,21 @@ Vue.mixin({
   computed: {},
   methods: {
     /**
+     *  A promise returning inRoad road information.
+     * 
+     * @promise   getInRoadsData
+     * @resolve   { Object }
+     * @reject    { Error }
+     * @return    { Promise <Object> }
+     */
+    getInRoadsData(dateFrom, dateTo) {
+      return new Promise((resolve, reject) => {
+        axios.get(`${process.env.inRoadsPath}start=${dateFrom}&end=${dateTo}&eventTypes%5B%5D=roadClosed&eventTypes%5B%5D=localOnly&eventTypes%5B%5D=laneRestriction&eventTypes%5B%5D=reservedMeter&eventTypes%5B%5D=noisePermit&eventTypes%5B%5D=sidewalk`)
+        .then((res) => resolve(res.data))
+        .catch((e) => reject(e))
+      })
+    },
+    /**
      * A promise returning Monroe Co. Safe Places.
      *
      * @promise     getSafePlaces
@@ -108,7 +123,7 @@ Vue.mixin({
             } else if(res.data.length == 0) {
               reject(`No results for ${address}.`)
             } else if (res.data.length == 2) {
-              reject(`Please select!!!!`)
+              reject(`Select option`)
             } else if(res.data.length <= 20) {
               resolve(res.data)
               console.dir(`getAddress() Search Result Count: ${res.data.length}`);
