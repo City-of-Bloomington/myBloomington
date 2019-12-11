@@ -57,23 +57,66 @@
             fillOpacity:    0.15
           }"
         />
+        
+        <template v-if="inRoadsDataNew.length">
+          <template v-for="c, i in inRoadsDataNew">
+            <GmapPolyline
+              :path="c.coords"
+              :options="{
+                strokeColor:    'rgb(244, 151, 138)',
+                strokeOpacity:  0.8,
+                strokeWeight:   4,
+                fillColor:      'rgb(30, 90, 174)',
+                fillOpacity:    0.15
+              }"/>
+            
+            <GmapMarker
+              @click="inRoadsClick(true)"
+              :position="c.coords[0]"
+              :clickable="true"
+              :draggable="false"
+            />
 
-        <GmapPolygon
-          v-if="exampleData"
-          :paths="exampleData"
-          :options="{
-            strokeColor:    'rgb(244, 151, 138)',
-            strokeOpacity:  0.8,
-            strokeWeight:   2,
-            fillColor:      'rgb(244, 151, 138)',
-            fillOpacity:    0.35
-          }"/>
+            <GmapInfoWindow 
+              v-if="infoWindowVisible"
+              :position="latLong">
+
+              <ul>
+                <li>
+                  <strong>Title:</strong>
+                  {{ c.title }}
+                </li>
+                
+                <li>
+                  <strong>Type:</strong>
+                  {{ c.type }}
+                </li>
+                
+                <li>
+                  <strong>Geography Description:</strong>
+                  {{ c.geography_description }}
+                </li>
+
+                <li>
+                  <strong>Description</strong>
+                  {{ c.description }}
+                </li>
+              </ul>
+              
+              <pre>{{ c }}</pre>
+            
+            </GmapInfoWindow>
+          </template>
+          
+        </template>
 
         <GmapMarker
           :position="latLong"
           :clickable="false"
           :draggable="false"
         />
+
+        
 
         <GmapCluster
           v-if="!isMobile"
@@ -1444,6 +1487,8 @@ export default {
       todaysDate:            null,
       tomorrowsDate:         null,
       inRoadsData:           null,
+      inRoadsDataNew:        [],
+      infoWindowVisible:     false,
       exampleData:           [
         { lat: 39.165548056389866,     lng: -86.53491772485351 },
         { lat: 39.16558132969499,      lng: -86.535003555542 },
@@ -1470,6 +1515,68 @@ export default {
     this.getInRoadsData(this.todaysDate, this.tomorrowsDate)
     .then((res) => {
       this.inRoadsData = res;
+
+      if(res) {
+        let betweenParentheses  = /\(([^)]+)\)/g,
+            geoCollectionTest   = /^[^\(]*/g,
+            startParantheses    = /\(([^)]+)/g,
+            geoCollection       = "GEOMETRYCOLLECTION",
+            lineType            = "LINESTRING",
+            pointType           = "POINT",
+            closeParan          = ")",
+            newData             = [],
+            newTest             = [];
+
+        res.map((e, i) => {
+          let isGeoCollection   = e.geography.startsWith(geoCollection);
+
+          if(isGeoCollection) {
+            let rmGeoCollection = e.geography.split(geoCollection).pop().slice(0, -1),
+                newNew          = rmGeoCollection.split("','");
+
+            let newArray = newNew.map(function (v, i, a) {
+              return v.split(",");
+            });
+
+            newArray = newArray[0];
+
+            let coords = newArray.map((e, i) => {
+              let isLineType  = e.includes(lineType),
+                  isPointType = e.includes(pointType),
+                  commaEnd    = e.endsWith(closeParan),
+                  p           = e.replace(/\(|\)/g, '');
+
+              if (isLineType) {
+                p = p.replace(lineType, '')
+              } else if (isPointType) {
+                p = p.replace(pointType, '')
+              } else if (commaEnd) {
+                p = p.replace(commaEnd, '')
+              } else {
+                p = p
+              }
+
+              p = p.replace(/ /g, ',').split(',');
+              return { lat: parseFloat(p[1]), lng: parseFloat(p[0]) };
+            });
+
+            this.inRoadsDataNew.push({ ...e, coords })
+          } else {
+            let coordString = e.geography.match(/\((.*?)\)/)[1];
+                coordString = coordString.split(",");
+
+            let coords = coordString.map((e, i) => {
+              e = e.replace(/ /g, ',').split(',');
+              return { lat: parseFloat(e[1]), lng: parseFloat(e[0]) };
+            });
+            
+            this.inRoadsDataNew.push({ ...e, coords})
+          }
+        })
+      }
+
+
+
       console.log(`%c getInRoadsData 🔌 `,
                   this.consoleLog.success);
     })
@@ -1588,6 +1695,13 @@ export default {
   },
   methods: {
     // methods shared via: universal-methods.js
+    inRoadsClick() {
+      if(this.infoWindowVisible == true) {
+        this.infoWindowVisible = false;
+      } else {
+        this.infoWindowVisible = true;
+      }
+    },
     expandMap() {
       let headerHeight    = 90,
           expandRowHeight = 45,
