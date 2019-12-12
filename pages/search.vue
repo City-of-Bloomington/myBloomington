@@ -58,7 +58,7 @@
           }"
         />
         
-        <template v-if="inRoadsDataNew.length && mapMarkerToggle.inRoads">
+        <template v-if="inRoadsDataNew.length && mapMarkerToggle.inRoads && !isMobile">
           <template v-for="c, i in inRoadsDataNew">
             <GmapPolyline
               :path="c.coords"
@@ -69,7 +69,7 @@
               }"/>
             
             <GmapMarker
-              @click="inRoadsClick(c.id)"
+              @click="markerToWindowClick('inRoads', c.id)"
               :animation="2"
               :icon="{url: 'marker-roads.svg', labelOrigin: {x: 28, y: 85}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
               :position="c.center"
@@ -78,15 +78,15 @@
             />
             
             <GmapInfoWindow
-              v-if="infoWindowVisible.id == c.id"
-              :opened="infoWindowVisible.opened"
-              @closeclick="infoWindowVisible.opened=false"
+              v-if="infoWindowVisible.inRoads.id == c.id"
+              :opened="infoWindowVisible.inRoads.opened"
+              @closeclick="infoWindowVisible.inRoads.opened=false"
               :position="c.center"
               :options="{
                 borderColor: '#f02f02',
               }">
 
-              <div class="type-tag">
+              <div class="type-tag roads">
                 <span>{{ c.type }}</span>
               </div>
               
@@ -121,8 +121,6 @@
                   </li>
                 </ul>
               </div>
-              
-              <!-- <pre>{{ c }}</pre> -->
             </GmapInfoWindow>
           </template>
         </template>
@@ -138,57 +136,182 @@
         <GmapCluster
           v-if="!isMobile"
           class="map-cluster"
-          :minimumClusterSize="2">
+          :minimumClusterSize="4">
           <template
             v-for="p, i in nearbyParkMarkers()"
             v-if="mapMarkerToggle.parks">
             <GmapMarker
+              @click="markerToWindowClick('parks', p.id)"
               :animation="2"
               :label="{text: `${p.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: 'white', fontWeight: '600'}"
               :icon="{url: 'marker-park-alt.svg', labelOrigin: {x: 28, y: 65}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
               :position="{lat: Number(p.lat), lng: Number(p.lon)}"
-              :clickable="false"
+              :clickable="true"
               :draggable="false"
             />
+
+            <GmapInfoWindow
+              v-if="infoWindowVisible.parks.id == p.id"
+              :opened="infoWindowVisible.parks.opened"
+              @closeclick="infoWindowVisible.parks.opened=false"
+              :position="{lat: Number(p.lat), lng: Number(p.lon)}"
+              :options="{
+                borderColor: '#f02f02',
+              }">
+
+              <div class="type-tag parks">
+                <span>Park</span>
+              </div>
+              
+              <div class="info-window">
+                <h1>{{ p.name }}</h1>
+                <ul>
+                  <li v-if="p.address != ''">
+                    <strong>Address:</strong>&nbsp;
+                    {{ p.address }}
+                  </li>
+
+                  <li v-if="p.location != ''">
+                    <strong>Location:</strong>&nbsp;
+                    {{ p.location }}
+                  </li>
+
+                  <li v-if="p.size != '' && p.size != '0 Acres'">
+                    <strong>Park Size:</strong>&nbsp;
+                    {{ p.size }}
+                  </li>
+                </ul>
+              </div>
+            </GmapInfoWindow>
           </template>
 
           <template
             v-for="s, i in nearbySchoolMarkers()"
             v-if="mapMarkerToggle.schools">
             <GmapMarker
+              @click="markerToWindowClick('schools', s.id)"
               :animation="2"
               :label="{text: `${s.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: 'white', fontWeight: '600'}"
-              :icon="{url: 'marker-school-alt.svg', labelOrigin: {x: 28, y: 85}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
+              :icon="{url: 'marker-school-alt.svg', labelOrigin: {x: 28, y: 65}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
               :position="{lat: Number(s.lat), lng: Number(s.lon)}"
-              :clickable="false"
+              :clickable="true"
               :draggable="false"
             />
+
+            <GmapInfoWindow
+              v-if="infoWindowVisible.schools.id == s.id"
+              :opened="infoWindowVisible.schools.opened"
+              @closeclick="infoWindowVisible.schools.opened=false"
+              :position="{lat: Number(s.lat), lng: Number(s.lon)}"
+              :options="{
+                borderColor: '#f02f02',
+              }">
+
+              <div class="type-tag schools">
+                <span>School</span>
+              </div>
+              
+              <div class="info-window">
+                <h1>{{ s.name }}</h1>
+                <ul>
+                  <li v-if="s.type != ''">
+                    <strong>Type:</strong>&nbsp;
+                    {{ s.type }}
+                  </li>
+
+                  <li v-if="s.address != ''">
+                    <strong>Address:</strong>&nbsp;
+                    {{ s.address }}
+                  </li>
+
+                  <li v-if="s.pubcorp != ''">
+                    <strong>Corporation:</strong>&nbsp;
+                    {{ s.pubcorp }}
+                  </li>
+                </ul>
+              </div>
+            </GmapInfoWindow>
           </template>
 
           <template
             v-for="p, i in nearbyPlaygroundMarkers()"
             v-if="mapMarkerToggle.playgrounds">
             <GmapMarker
+              @click="markerToWindowClick('playgrounds', p.id)"
               :animation="2"
               :label="{text: `${p.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: 'white', fontWeight: '600'}"
-              :icon="{url: 'marker-playground-alt.svg', labelOrigin: {x: 28, y: 85}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
+              :icon="{url: 'marker-playground-alt.svg', labelOrigin: {x: 28, y: 65}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
               :position="{lat: Number(p.lat), lng: Number(p.lon)}"
-              :clickable="false"
+              :clickable="true"
               :draggable="false"
             />
+
+            <GmapInfoWindow
+              v-if="infoWindowVisible.playgrounds.id == p.id"
+              :opened="infoWindowVisible.playgrounds.opened"
+              @closeclick="infoWindowVisible.playgrounds.opened=false"
+              :position="{lat: Number(p.lat), lng: Number(p.lon)}"
+              :options="{
+                borderColor: '#f02f02',
+              }">
+
+              <div class="type-tag playgrounds">
+                <span>Playgrounds</span>
+              </div>
+              
+              <div class="info-window">
+                <h1>{{ p.name }}</h1>
+                <ul>
+                  <li v-if="p.type != ''">
+                    <strong>Type:</strong>&nbsp;
+                    {{ p.type }}
+                  </li>
+
+                  <li v-if="p.address != ''">
+                    <strong>Address:</strong>&nbsp;
+                    {{ p.address }}
+                  </li>
+                </ul>
+              </div>
+            </GmapInfoWindow>
           </template>
 
           <template
             v-for="s, i in nearbySafePlaceMarkers()"
             v-if="mapMarkerToggle.safePlaces">
             <GmapMarker
+              @click="markerToWindowClick('safeplaces', s.id)"
               :animation="2"
               :label="{text: `${s.gsx$name.$t}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: 'white', fontWeight: '600'}"
-              :icon="{url: 'marker-safe-place-alt.svg', labelOrigin: {x: 28, y: 85}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
+              :icon="{url: 'marker-safe-place-alt.svg', labelOrigin: {x: 28, y: 65}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
               :position="{lat: Number(s.gsx$lat.$t), lng: Number(s.gsx$lon.$t)}"
-              :clickable="false"
+              :clickable="true"
               :draggable="false"
             />
+
+            <GmapInfoWindow
+              v-if="infoWindowVisible.safeplaces.id == s.id"
+              :opened="infoWindowVisible.safeplaces.opened"
+              @closeclick="infoWindowVisible.safeplaces.opened=false"
+              :position="{lat: Number(s.gsx$lat.$t), lng: Number(s.gsx$lon.$t)}"
+              :options="{
+                borderColor: '#f02f02',
+              }">
+
+              <div class="type-tag safeplaces">
+                <span>Safeplaces</span>
+              </div>
+              
+              <div class="info-window">
+                <h1>{{ s.gsx$name.$t }}</h1>
+                <ul>
+                  <li v-if="s.gsx$address.$t != ''">
+                    <strong>Address:</strong>&nbsp;
+                    {{ s.gsx$address.$t }}
+                  </li>
+                </ul>
+              </div>
+            </GmapInfoWindow>
           </template>
         </GmapCluster>
       </GmapMap>
@@ -1515,8 +1638,26 @@ export default {
       inRoadsData:           null,
       inRoadsDataNew:        [],
       infoWindowVisible:     {
-        id:                  null,
-        opened:              false,
+        inRoads: {
+          id:                  null,
+          opened:              false,
+        },
+        parks: {
+          id:                  null,
+          opened:              false,
+        },
+        schools: {
+          id:                  null,
+          opened:              false,
+        },
+        playgrounds: {
+          id:                  null,
+          opened:              false,
+        },
+        safeplaces: {
+          id:                  null,
+          opened:              false,
+        }
       },
       titleAddress:          null,
       expandedMap:           false,
@@ -1717,15 +1858,57 @@ export default {
   },
   methods: {
     // methods shared via: universal-methods.js
-    inRoadsClick(id) {
-      this.infoWindowVisible.id = null;
-      this.infoWindowVisible.id = id;
+    markerToWindowClick(type, id) {
+      console.log(type);
 
-      if(this.infoWindowVisible.opened == false) {
-        this.infoWindowVisible.opened = true;
-      } else {
-        this.infoWindowVisible.opened = false;
+      if(type == 'inRoads') {
+        this.infoWindowVisible.inRoads.id = null;
+        this.infoWindowVisible.inRoads.id = id;
+
+        if(this.infoWindowVisible.inRoads.opened == false) {
+          this.infoWindowVisible.inRoads.opened = true;
+        } else {
+          this.infoWindowVisible.inRoads.opened = false;
+        }
+      } else if(type == 'parks') {
+        this.infoWindowVisible.parks.id = null;
+        this.infoWindowVisible.parks.id = id;
+
+        if(this.infoWindowVisible.parks.opened == false) {
+          this.infoWindowVisible.parks.opened = true;
+        } else {
+          this.infoWindowVisible.parks.opened = false;
+        }
+      } else if(type == 'schools') {
+        this.infoWindowVisible.schools.id = null;
+        this.infoWindowVisible.schools.id = id;
+
+        if(this.infoWindowVisible.schools.opened == false) {
+          this.infoWindowVisible.schools.opened = true;
+        } else {
+          this.infoWindowVisible.schools.opened = false;
+        }
+      } else if(type == 'playgrounds') {
+        this.infoWindowVisible.playgrounds.id = null;
+        this.infoWindowVisible.playgrounds.id = id;
+
+        if(this.infoWindowVisible.playgrounds.opened == false) {
+          this.infoWindowVisible.playgrounds.opened = true;
+        } else {
+          this.infoWindowVisible.playgrounds.opened = false;
+        }
+      } else if(type == 'safeplaces') {
+        this.infoWindowVisible.safeplaces.id = null;
+        this.infoWindowVisible.safeplaces.id = id;
+
+        if(this.infoWindowVisible.safeplaces.opened == false) {
+          this.infoWindowVisible.safeplaces.opened = true;
+        } else {
+          this.infoWindowVisible.safeplaces.opened = false;
+        }
       }
+
+      
     },
     dateDifference(end) {
       let startDate = moment(this.todaysDate),
@@ -2404,8 +2587,37 @@ export default {
     color: $text-color;
     font-weight: $weight-semi-bold;
 
+    &.parks {
+      span {
+        border-left: 4px solid #2D6326;
+      }
+    }
+
+    &.playgrounds {
+      span {
+        border-left: 4px solid #1947A0;
+      }
+    }
+
+    &.schools {
+      span {
+        border-left: 4px solid #800080;
+      }
+    }
+
+    &.safeplaces {
+      span {
+        border-left: 4px solid #FCC324;
+      }
+    }
+
+    &.roads {
+      span {
+        border-left: 4px solid $color-vermilion-light;
+      }
+    }
+
     span {
-      border-left: 4px solid $color-vermilion-light;
       padding: 0 0 0 10px;
     }
   }
