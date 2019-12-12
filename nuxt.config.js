@@ -98,6 +98,10 @@ module.exports = {
 
   modules: ['@nuxtjs/style-resources'],
 
+  buildModules: [
+    '@nuxtjs/moment'
+  ],
+
   babel: {
     plugins: ['@babel/plugin-transform-modules-commonjs'],
   },

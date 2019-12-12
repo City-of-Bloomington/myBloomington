@@ -58,66 +58,83 @@
           }"
         />
         
-        <template v-if="inRoadsDataNew.length">
+        <template v-if="inRoadsDataNew.length && mapMarkerToggle.inRoads">
           <template v-for="c, i in inRoadsDataNew">
             <GmapPolyline
               :path="c.coords"
               :options="{
-                strokeColor:    'rgb(244, 151, 138)',
+                strokeColor:    'rgb(239, 101, 82)',
                 strokeOpacity:  0.8,
-                strokeWeight:   4,
-                fillColor:      'rgb(30, 90, 174)',
-                fillOpacity:    0.15
+                strokeWeight:   4
               }"/>
             
             <GmapMarker
-              @click="inRoadsClick(true)"
-              :position="c.coords[0]"
+              @click="inRoadsClick(c.id)"
+              :animation="2"
+              :icon="{url: 'marker-roads.svg', labelOrigin: {x: 28, y: 85}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
+              :position="c.center"
               :clickable="true"
               :draggable="false"
             />
-
-            <GmapInfoWindow 
-              v-if="infoWindowVisible"
-              :position="latLong">
-
-              <ul>
-                <li>
-                  <strong>Title:</strong>
-                  {{ c.title }}
-                </li>
-                
-                <li>
-                  <strong>Type:</strong>
-                  {{ c.type }}
-                </li>
-                
-                <li>
-                  <strong>Geography Description:</strong>
-                  {{ c.geography_description }}
-                </li>
-
-                <li>
-                  <strong>Description</strong>
-                  {{ c.description }}
-                </li>
-              </ul>
-              
-              <pre>{{ c }}</pre>
             
+            <GmapInfoWindow
+              v-if="infoWindowVisible.id == c.id"
+              :opened="infoWindowVisible.opened"
+              @closeclick="infoWindowVisible.opened=false"
+              :position="c.center"
+              :options="{
+                borderColor: '#f02f02',
+              }">
+
+              <div class="type-tag">
+                <span>{{ c.type }}</span>
+              </div>
+              
+              <div class="info-window">
+                <h1>{{ c.title }}</h1>
+
+                <ul>
+                  <li>
+                    <strong>Days Remaining:</strong>&nbsp;
+                    <template v-if="dateDifference(c.end) != 0">
+                      {{ dateDifference(c.end) }}
+                    </template>
+
+                    <template v-else>
+                      Last Day Today
+                    </template>
+                  </li>
+
+                  <li>
+                    <strong>Start / End:</strong>&nbsp;
+                    {{ $moment(c.start).format('MM/DD/YYYY')}} - {{ $moment(c.end).format('MM/DD/YYYY')}}
+                  </li>
+
+                  <li>
+                    <strong>Geography Description:</strong>&nbsp;
+                    {{ c.geography_description }}
+                  </li>
+
+                  <li>
+                    <strong>Description:</strong>&nbsp;
+                    {{ c.description }}
+                  </li>
+                </ul>
+              </div>
+              
+              <!-- <pre>{{ c }}</pre> -->
             </GmapInfoWindow>
           </template>
-          
         </template>
 
         <GmapMarker
           :position="latLong"
+          :animation="2"
           :clickable="false"
           :draggable="false"
+          :icon="{url: 'marker-search.svg', labelOrigin: {x: 18, y: 85}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
         />
-
         
-
         <GmapCluster
           v-if="!isMobile"
           class="map-cluster"
@@ -128,7 +145,7 @@
             <GmapMarker
               :animation="2"
               :label="{text: `${p.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: 'white', fontWeight: '600'}"
-              :icon="{url: 'marker-park-alt.svg', labelOrigin: {x: 28, y: 85}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
+              :icon="{url: 'marker-park-alt.svg', labelOrigin: {x: 28, y: 65}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
               :position="{lat: Number(p.lat), lng: Number(p.lon)}"
               :clickable="false"
               :draggable="false"
@@ -217,6 +234,15 @@
                          name="schools">
 
                   <label for="schools">Schools</label>
+                </div>
+
+                <div class="inner-wrapper">
+                  <input v-model="mapMarkerToggle.inRoads"
+                         value="inroads"
+                         type="checkbox"
+                         name="inroads">
+
+                  <label for="inroads">Road Work</label>
                 </div>
               </fieldset>
             </div>
@@ -1488,15 +1514,10 @@ export default {
       tomorrowsDate:         null,
       inRoadsData:           null,
       inRoadsDataNew:        [],
-      infoWindowVisible:     false,
-      exampleData:           [
-        { lat: 39.165548056389866,     lng: -86.53491772485351 },
-        { lat: 39.16558132969499,      lng: -86.535003555542 },
-        { lat: 39.165115501990925,     lng: -86.53491772485351 },
-        // { lat: 39.163886970604324,  lng: -86.53359003139113 },
-        // { lat: 39.16388281134189,   lng: -86.5330106742439  },
-        // { lat: 39.1628721032713,    lng: -86.53301603866194 }
-      ],
+      infoWindowVisible:     {
+        id:                  null,
+        opened:              false,
+      },
       titleAddress:          null,
       expandedMap:           false,
       showScrollToTopArrow:  false,
@@ -1560,7 +1581,9 @@ export default {
               return { lat: parseFloat(p[1]), lng: parseFloat(p[0]) };
             });
 
-            this.inRoadsDataNew.push({ ...e, coords })
+            let center = this.polygonCenter(coords);
+
+            this.inRoadsDataNew.push({ ...e, coords, center })
           } else {
             let coordString = e.geography.match(/\((.*?)\)/)[1];
                 coordString = coordString.split(",");
@@ -1569,14 +1592,13 @@ export default {
               e = e.replace(/ /g, ',').split(',');
               return { lat: parseFloat(e[1]), lng: parseFloat(e[0]) };
             });
+
+            let center = this.polygonCenter(coords);
             
-            this.inRoadsDataNew.push({ ...e, coords})
+            this.inRoadsDataNew.push({ ...e, coords, center})
           }
         })
       }
-
-
-
       console.log(`%c getInRoadsData 🔌 `,
                   this.consoleLog.success);
     })
@@ -1695,12 +1717,20 @@ export default {
   },
   methods: {
     // methods shared via: universal-methods.js
-    inRoadsClick() {
-      if(this.infoWindowVisible == true) {
-        this.infoWindowVisible = false;
+    inRoadsClick(id) {
+      this.infoWindowVisible.id = null;
+      this.infoWindowVisible.id = id;
+
+      if(this.infoWindowVisible.opened == false) {
+        this.infoWindowVisible.opened = true;
       } else {
-        this.infoWindowVisible = true;
+        this.infoWindowVisible.opened = false;
       }
+    },
+    dateDifference(end) {
+      let startDate = moment(this.todaysDate),
+            endDate = moment(end);
+      return endDate.diff(startDate, 'days')
     },
     expandMap() {
       let headerHeight    = 90,
@@ -2168,7 +2198,8 @@ export default {
       &[for="parks"],
       &[for="playgrounds"],
       &[for="schools"],
-      &[for="safePlaces"] {
+      &[for="safePlaces"],
+      &[for="inroads"] {
         letter-spacing: .5px;
         padding: 2px 5px;
         border-radius: $radius-default;
@@ -2186,13 +2217,18 @@ export default {
       }
 
       &[for="schools"] {
-        background-color: #821001;
+        background-color: #800080;
         color: white;
       }
 
       &[for="safePlaces"] {
         background-color: #FCC324;
-        color: darken(#FCC324, 35%);
+        color: darken(#FCC324, 45%);
+      }
+
+      &[for="inroads"] {
+        background-color: $color-vermilion-light;
+        color: darken($color-vermilion, 45%);
       }
     }
 
@@ -2345,6 +2381,91 @@ export default {
 
       img {
         width: 50px;
+      }
+    }
+  }
+
+  .type-tag {
+    position: absolute;
+    top: -30px;
+    left: 0;
+    padding: 15px 20px 10px 20px;
+    background-color: white;
+    -webkit-border-top-left-radius: $radius-default + 5px;
+    -webkit-border-top-right-radius: $radius-default + 5px;
+    -moz-border-radius-topleft: $radius-default + 5px;
+    -moz-border-radius-topright: $radius-default + 5px;
+    border-top-left-radius: $radius-default + 5px;
+    border-top-right-radius: $radius-default + 5px;
+    overflow: inherit;
+    font-family: $font-text;
+    font-size: 16px;
+    letter-spacing: .25px;
+    color: $text-color;
+    font-weight: $weight-semi-bold;
+
+    span {
+      border-left: 4px solid $color-vermilion-light;
+      padding: 0 0 0 10px;
+    }
+  }
+
+  .info-window {
+    h1 {
+      font-size: $size-m + 4px;
+      line-height: $size-m + 4px;
+      font-weight: $weight-semi-bold;
+      letter-spacing: .25px;
+      margin: 0 0 10px 0;
+      padding: 0 0 8px 0;
+      border-bottom: 1px solid $color-grey;
+    }
+
+    ul {
+      li {
+        color: $text-color;
+        font-size: 16px;
+        font-weight: $weight-normal;
+
+        // &:nth-child(1) {
+        //   margin: 0 20px 0 0;
+        // }
+
+        // &:nth-child(-n+2){
+        //   display: inline-flex;
+        //   background-color: red;
+        // }
+
+        &:last-child {
+          margin: 0;
+        }
+      }
+    }
+  }
+  
+  ::v-deep .gm-style-iw-a {}
+
+  ::v-deep .gm-style-iw {
+    &.gm-style-iw-c {
+      padding: 20px 20px 10px 20px!important;
+      overflow: inherit;
+
+      button,
+      button.gm-ui-hover-effect {
+        top: 5px !important;
+        right: 5px !important;
+        height: 25px !important;
+        width: 25px !important;
+
+        &:hover {
+          opacity: 1 !important;
+        }
+
+        img {
+          margin: 0 !important;
+          height: 100% !important;
+          width: 100% !important;
+        }
       }
     }
   }
