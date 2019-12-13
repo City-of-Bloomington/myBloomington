@@ -2325,10 +2325,13 @@ export default {
     }
 
     .contacts {
-      table tbody tr th {
-        width: 225px;
+      table tbody tr {
+        word-break: break-all;
+        
+        th {
+          width: 225px;
+        }
       }
-
       .row {
         display: flex;
         flex-wrap: wrap;
