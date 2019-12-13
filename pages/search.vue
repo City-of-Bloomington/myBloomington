@@ -94,7 +94,6 @@
                 <h1>{{ c.title }}</h1>
 
                 <ul>
-
                   <li v-if="c.type != ''">
                     <strong>Type:</strong>&nbsp;
                     {{ c.type }}
@@ -130,7 +129,7 @@
             </GmapInfoWindow>
           </template>
         </template>
-
+        
         <GmapMarker
           :position="latLong"
           :animation="2"
@@ -1763,9 +1762,8 @@ export default {
     .catch((e)  => {
       console.log(`getInRoadsData Failed 🛑`,
                   `\n\n ${e} \n\n`);
-    })
-
-
+    });
+    
     this.$nextTick(() => {
       this.loading = false;
       if (process.client) {
