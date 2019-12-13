@@ -80,10 +80,7 @@ module.exports = {
     { src:          '~/plugins/google-map', ssr: false},
     { src:          '~/plugins/click-outside'},
     { src:          '~/plugins/mq', ssr: false},
-    /*
-    ** Note: Change domain & enable for launch.
-    */
-    // { src:          '~/plugins/google-analytics.js', ssr: false }
+    { src:          '~/plugins/google-analytics.js', ssr: false }
   ],
 
   loading: { color: '#fff' },
@@ -97,6 +94,10 @@ module.exports = {
   },
 
   modules: ['@nuxtjs/style-resources'],
+
+  buildModules: [
+    '@nuxtjs/moment'
+  ],
 
   babel: {
     plugins: ['@babel/plugin-transform-modules-commonjs'],

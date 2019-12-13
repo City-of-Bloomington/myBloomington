@@ -13,9 +13,9 @@
           zoomControl:        true,
           mapTypeControl:     true,
           scaleControl:       true,
-          streetViewControl:  false,
-          rotateControl:      false,
-          fullscreenControl:  false,
+          streetViewControl:  true,
+          rotateControl:      true,
+          fullscreenControl:  true,
           disableDefaultUi:   true,
           draggable:          true,
           styles: [
@@ -57,67 +57,266 @@
             fillOpacity:    0.15
           }"
         />
+        
+        <template v-if="inRoadsDataNew.length && mapMarkerToggle.inRoads && !isMobile">
+          <template v-for="c, i in inRoadsDataNew">
+            <GmapPolyline
+              :path="c.coords"
+              :options="{
+                strokeColor:    'rgb(239, 101, 82)',
+                strokeOpacity:  0.8,
+                strokeWeight:   4
+              }"/>
+            
+            <GmapMarker
+              @click="markerToWindowClick('inRoads', c.id)"
+              :animation="2"
+              :icon="{url: 'marker-roads.svg', labelOrigin: {x: 28, y: 85}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
+              :position="c.center"
+              :clickable="true"
+              :draggable="false"
+            />
+            
+            <GmapInfoWindow
+              v-if="infoWindowVisible.inRoads.id == c.id"
+              :opened="infoWindowVisible.inRoads.opened"
+              @closeclick="infoWindowVisible.inRoads.opened=false"
+              :position="c.center"
+              :options="{
+                borderColor: '#f02f02',
+              }">
 
+              <div class="type-tag roads">
+                <span>Road Work</span>
+              </div>
+              
+              <div class="info-window">
+                <h1>{{ c.title }}</h1>
+
+                <ul>
+                  <li v-if="c.type != ''">
+                    <strong>Type:</strong>&nbsp;
+                    {{ c.type }}
+                  </li>
+
+                  <li v-if="c.end != ''">
+                    <strong>Days Remaining:</strong>&nbsp;
+                    <template v-if="dateDifference(c.end) != 0">
+                      {{ dateDifference(c.end) }}
+                    </template>
+
+                    <template v-else>
+                      Last Day Today
+                    </template>
+                  </li>
+
+                  <li v-if="c.start != '' && c.end != ''">
+                    <strong>Start / End:</strong>&nbsp;
+                    {{ $moment(c.start).format('MM/DD/YYYY')}} - {{ $moment(c.end).format('MM/DD/YYYY')}}
+                  </li>
+
+                  <li v-if="c.geography_description != ''">
+                    <strong>Geography Description:</strong>&nbsp;
+                    {{ c.geography_description }}
+                  </li>
+
+                  <li v-if="c.description != ''">
+                    <strong>Description:</strong>&nbsp;
+                    {{ c.description }}
+                  </li>
+                </ul>
+              </div>
+            </GmapInfoWindow>
+          </template>
+        </template>
+        
         <GmapMarker
           :position="latLong"
+          :animation="2"
           :clickable="false"
           :draggable="false"
+          :icon="{url: 'map-crosshair.svg', labelOrigin: {x: 18, y: 85}, size: {width: 60, height: 60, f: 'px', b: 'px'}, scaledSize: {width: 60, height: 60, f: 'px', b: 'px'}}"
         />
-
+        
         <GmapCluster
           v-if="!isMobile"
           class="map-cluster"
-          :minimumClusterSize="2">
+          :minimumClusterSize="4">
           <template
             v-for="p, i in nearbyParkMarkers()"
             v-if="mapMarkerToggle.parks">
             <GmapMarker
+              @click="markerToWindowClick('parks', p.id)"
               :animation="2"
               :label="{text: `${p.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: 'white', fontWeight: '600'}"
-              :icon="{url: 'marker-park-alt.svg', labelOrigin: {x: 28, y: 85}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
+              :icon="{url: 'marker-park-alt.svg', labelOrigin: {x: 28, y: 65}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
               :position="{lat: Number(p.lat), lng: Number(p.lon)}"
-              :clickable="false"
+              :clickable="true"
               :draggable="false"
             />
+
+            <GmapInfoWindow
+              v-if="infoWindowVisible.parks.id == p.id"
+              :opened="infoWindowVisible.parks.opened"
+              @closeclick="infoWindowVisible.parks.opened=false"
+              :position="{lat: Number(p.lat), lng: Number(p.lon)}"
+              :options="{
+                borderColor: '#f02f02',
+              }">
+
+              <div class="type-tag parks">
+                <span>Park</span>
+              </div>
+              
+              <div class="info-window">
+                <h1>{{ p.name }}</h1>
+                <ul>
+                  <li v-if="p.address != ''">
+                    <strong>Address:</strong>&nbsp;
+                    {{ p.address }}
+                  </li>
+
+                  <li v-if="p.location != ''">
+                    <strong>Location:</strong>&nbsp;
+                    {{ p.location }}
+                  </li>
+
+                  <li v-if="p.size != '' && p.size != '0 Acres'">
+                    <strong>Park Size:</strong>&nbsp;
+                    {{ p.size }}
+                  </li>
+                </ul>
+              </div>
+            </GmapInfoWindow>
           </template>
 
           <template
             v-for="s, i in nearbySchoolMarkers()"
             v-if="mapMarkerToggle.schools">
             <GmapMarker
+              @click="markerToWindowClick('schools', s.id)"
               :animation="2"
               :label="{text: `${s.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: 'white', fontWeight: '600'}"
-              :icon="{url: 'marker-school-alt.svg', labelOrigin: {x: 28, y: 85}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
+              :icon="{url: 'marker-school-alt.svg', labelOrigin: {x: 28, y: 65}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
               :position="{lat: Number(s.lat), lng: Number(s.lon)}"
-              :clickable="false"
+              :clickable="true"
               :draggable="false"
             />
+
+            <GmapInfoWindow
+              v-if="infoWindowVisible.schools.id == s.id"
+              :opened="infoWindowVisible.schools.opened"
+              @closeclick="infoWindowVisible.schools.opened=false"
+              :position="{lat: Number(s.lat), lng: Number(s.lon)}"
+              :options="{
+                borderColor: '#f02f02',
+              }">
+
+              <div class="type-tag schools">
+                <span>School</span>
+              </div>
+              
+              <div class="info-window">
+                <h1>{{ s.name }}</h1>
+                <ul>
+                  <li v-if="s.type != ''">
+                    <strong>Type:</strong>&nbsp;
+                    {{ s.type }}
+                  </li>
+
+                  <li v-if="s.address != ''">
+                    <strong>Address:</strong>&nbsp;
+                    {{ s.address }}
+                  </li>
+
+                  <li v-if="s.pubcorp != ''">
+                    <strong>Corporation:</strong>&nbsp;
+                    {{ s.pubcorp }}
+                  </li>
+                </ul>
+              </div>
+            </GmapInfoWindow>
           </template>
 
           <template
             v-for="p, i in nearbyPlaygroundMarkers()"
             v-if="mapMarkerToggle.playgrounds">
             <GmapMarker
+              @click="markerToWindowClick('playgrounds', p.id)"
               :animation="2"
               :label="{text: `${p.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: 'white', fontWeight: '600'}"
-              :icon="{url: 'marker-playground-alt.svg', labelOrigin: {x: 28, y: 85}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
+              :icon="{url: 'marker-playground-alt.svg', labelOrigin: {x: 28, y: 65}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
               :position="{lat: Number(p.lat), lng: Number(p.lon)}"
-              :clickable="false"
+              :clickable="true"
               :draggable="false"
             />
+
+            <GmapInfoWindow
+              v-if="infoWindowVisible.playgrounds.id == p.id"
+              :opened="infoWindowVisible.playgrounds.opened"
+              @closeclick="infoWindowVisible.playgrounds.opened=false"
+              :position="{lat: Number(p.lat), lng: Number(p.lon)}"
+              :options="{
+                borderColor: '#f02f02',
+              }">
+
+              <div class="type-tag playgrounds">
+                <span>Playground</span>
+              </div>
+              
+              <div class="info-window">
+                <h1>{{ p.name }}</h1>
+                <ul>
+                  <li v-if="p.type != ''">
+                    <strong>Type:</strong>&nbsp;
+                    {{ p.type }}
+                  </li>
+
+                  <li v-if="p.address != ''">
+                    <strong>Address:</strong>&nbsp;
+                    {{ p.address }}
+                  </li>
+                </ul>
+              </div>
+            </GmapInfoWindow>
           </template>
 
           <template
             v-for="s, i in nearbySafePlaceMarkers()"
             v-if="mapMarkerToggle.safePlaces">
             <GmapMarker
+              @click="markerToWindowClick('safeplaces', s.id)"
               :animation="2"
               :label="{text: `${s.gsx$name.$t}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: 'white', fontWeight: '600'}"
-              :icon="{url: 'marker-safe-place-alt.svg', labelOrigin: {x: 28, y: 85}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
+              :icon="{url: 'marker-safe-place-alt.svg', labelOrigin: {x: 28, y: 65}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
               :position="{lat: Number(s.gsx$lat.$t), lng: Number(s.gsx$lon.$t)}"
-              :clickable="false"
+              :clickable="true"
               :draggable="false"
             />
+
+            <GmapInfoWindow
+              v-if="infoWindowVisible.safeplaces.id == s.id"
+              :opened="infoWindowVisible.safeplaces.opened"
+              @closeclick="infoWindowVisible.safeplaces.opened=false"
+              :position="{lat: Number(s.gsx$lat.$t), lng: Number(s.gsx$lon.$t)}"
+              :options="{
+                borderColor: '#f02f02',
+              }">
+
+              <div class="type-tag safeplaces">
+                <span>Safeplace</span>
+              </div>
+              
+              <div class="info-window">
+                <h1>{{ s.gsx$name.$t }}</h1>
+                <ul>
+                  <li v-if="s.gsx$address.$t != ''">
+                    <strong>Address:</strong>&nbsp;
+                    {{ s.gsx$address.$t }}
+                  </li>
+                </ul>
+              </div>
+            </GmapInfoWindow>
           </template>
         </GmapCluster>
       </GmapMap>
@@ -129,7 +328,9 @@
               <fieldset>
                 <span>Toggle Map Markers:</span>
                 <legend class="sr-only">Toggle Map Markers:</legend>
-                <div class="inner-wrapper">
+                <div
+                  class="inner-wrapper"
+                  @click="mapMarkerToggle.parks = !mapMarkerToggle.parks">
                   <input v-model="mapMarkerToggle.parks"
                          value="parks"
                          type="checkbox"
@@ -138,7 +339,9 @@
                   <label for="parks">Parks</label>
                 </div>
 
-                <div class="inner-wrapper">
+                <div
+                  class="inner-wrapper"
+                  @click="mapMarkerToggle.playgrounds = !mapMarkerToggle.playgrounds">
                   <input v-model="mapMarkerToggle.playgrounds"
                          value="playgrounds"
                          type="checkbox"
@@ -147,7 +350,9 @@
                   <label for="playgrounds">Playgrounds</label>
                 </div>
 
-                <div class="inner-wrapper">
+                <div
+                  class="inner-wrapper"
+                  @click="mapMarkerToggle.safePlaces = !mapMarkerToggle.safePlaces">
                   <input v-model="mapMarkerToggle.safePlaces"
                          value="safePlaces"
                          type="checkbox"
@@ -156,13 +361,26 @@
                   <label for="safePlaces">Safe Places</label>
                 </div>
 
-                <div class="inner-wrapper">
+                <div
+                  class="inner-wrapper"
+                  @click="mapMarkerToggle.schools = !mapMarkerToggle.schools">
                   <input v-model="mapMarkerToggle.schools"
                          value="schools"
                          type="checkbox"
                          name="schools">
 
                   <label for="schools">Schools</label>
+                </div>
+
+                <div 
+                  lass="inner-wrapper"
+                  @click="mapMarkerToggle.inRoads = !mapMarkerToggle.inRoads">
+                  <input v-model="mapMarkerToggle.inRoads"
+                         value="inroads"
+                         type="checkbox"
+                         name="inroads">
+
+                  <label for="inroads">Road Work</label>
                 </div>
               </fieldset>
             </div>
@@ -1430,6 +1648,33 @@ export default {
   data() {
     // data shared via: universal-methods.js
     return {
+      todaysDate:            null,
+      tomorrowsDate:         null,
+      mapRef:                this.$vm0,
+      inRoadsData:           null,
+      inRoadsDataNew:        [],
+      infoWindowVisible:     {
+        inRoads: {
+          id:                  null,
+          opened:              false,
+        },
+        parks: {
+          id:                  null,
+          opened:              false,
+        },
+        schools: {
+          id:                  null,
+          opened:              false,
+        },
+        playgrounds: {
+          id:                  null,
+          opened:              false,
+        },
+        safeplaces: {
+          id:                  null,
+          opened:              false,
+        }
+      },
       titleAddress:          null,
       expandedMap:           false,
       showScrollToTopArrow:  false,
@@ -1442,6 +1687,83 @@ export default {
     this.loading = true;
   },
   created: function() {
+    this.todaysDate     = moment().format('YYYY-MM-DD');
+    this.tomorrowsDate  = moment().add(1, 'days').format('YYYY-MM-DD');
+
+    this.getInRoadsData(this.todaysDate, this.tomorrowsDate)
+    .then((res) => {
+      this.inRoadsData = res;
+
+      if(res) {
+        let betweenParentheses  = /\(([^)]+)\)/g,
+            geoCollectionTest   = /^[^\(]*/g,
+            startParantheses    = /\(([^)]+)/g,
+            geoCollection       = "GEOMETRYCOLLECTION",
+            lineType            = "LINESTRING",
+            pointType           = "POINT",
+            closeParan          = ")",
+            newData             = [],
+            newTest             = [];
+
+        res.map((e, i) => {
+          let isGeoCollection   = e.geography.startsWith(geoCollection);
+
+          if(isGeoCollection) {
+            let rmGeoCollection = e.geography.split(geoCollection).pop().slice(0, -1),
+                newNew          = rmGeoCollection.split("','");
+
+            let newArray = newNew.map(function (v, i, a) {
+              return v.split(",");
+            });
+
+            newArray = newArray[0];
+
+            let coords = newArray.map((e, i) => {
+              let isLineType  = e.includes(lineType),
+                  isPointType = e.includes(pointType),
+                  commaEnd    = e.endsWith(closeParan),
+                  p           = e.replace(/\(|\)/g, '');
+
+              if (isLineType) {
+                p = p.replace(lineType, '')
+              } else if (isPointType) {
+                p = p.replace(pointType, '')
+              } else if (commaEnd) {
+                p = p.replace(commaEnd, '')
+              } else {
+                p = p
+              }
+
+              p = p.replace(/ /g, ',').split(',');
+              return { lat: parseFloat(p[1]), lng: parseFloat(p[0]) };
+            });
+
+            let center = this.polygonCenter(coords);
+
+            this.inRoadsDataNew.push({ ...e, coords, center })
+          } else {
+            let coordString = e.geography.match(/\((.*?)\)/)[1];
+                coordString = coordString.split(",");
+
+            let coords = coordString.map((e, i) => {
+              e = e.replace(/ /g, ',').split(',');
+              return { lat: parseFloat(e[1]), lng: parseFloat(e[0]) };
+            });
+
+            let center = this.polygonCenter(coords);
+            
+            this.inRoadsDataNew.push({ ...e, coords, center})
+          }
+        })
+      }
+      console.log(`%c getInRoadsData 🔌 `,
+                  this.consoleLog.success);
+    })
+    .catch((e)  => {
+      console.log(`getInRoadsData Failed 🛑`,
+                  `\n\n ${e} \n\n`);
+    });
+    
     this.$nextTick(() => {
       this.loading = false;
       if (process.client) {
@@ -1540,7 +1862,16 @@ export default {
     window.removeEventListener("resize", this.calcViewingHeight);
     window.removeEventListener("scroll", this.scrolledFromTop);
   },
-  watch: {},
+  // watch: {
+  //   defaultMap: {
+  //     immediate: true,
+  //     deep: true,
+  //     handler(newValue, oldValue) {
+  //       console.log(newValue);
+  //       console.log(oldValue);
+  //     }
+  //   }
+  // },
   computed: {
     // computed shared via: universal-computed.js
     showToTopArrow() {
@@ -1551,6 +1882,63 @@ export default {
   },
   methods: {
     // methods shared via: universal-methods.js
+    markerToWindowClick(type, id) {
+      console.log(type);
+
+      if(type == 'inRoads') {
+        this.infoWindowVisible.inRoads.id = null;
+        this.infoWindowVisible.inRoads.id = id;
+
+        if(this.infoWindowVisible.inRoads.opened == false) {
+          this.infoWindowVisible.inRoads.opened = true;
+        } else {
+          this.infoWindowVisible.inRoads.opened = false;
+        }
+      } else if(type == 'parks') {
+        this.infoWindowVisible.parks.id = null;
+        this.infoWindowVisible.parks.id = id;
+
+        if(this.infoWindowVisible.parks.opened == false) {
+          this.infoWindowVisible.parks.opened = true;
+        } else {
+          this.infoWindowVisible.parks.opened = false;
+        }
+      } else if(type == 'schools') {
+        this.infoWindowVisible.schools.id = null;
+        this.infoWindowVisible.schools.id = id;
+
+        if(this.infoWindowVisible.schools.opened == false) {
+          this.infoWindowVisible.schools.opened = true;
+        } else {
+          this.infoWindowVisible.schools.opened = false;
+        }
+      } else if(type == 'playgrounds') {
+        this.infoWindowVisible.playgrounds.id = null;
+        this.infoWindowVisible.playgrounds.id = id;
+
+        if(this.infoWindowVisible.playgrounds.opened == false) {
+          this.infoWindowVisible.playgrounds.opened = true;
+        } else {
+          this.infoWindowVisible.playgrounds.opened = false;
+        }
+      } else if(type == 'safeplaces') {
+        this.infoWindowVisible.safeplaces.id = null;
+        this.infoWindowVisible.safeplaces.id = id;
+
+        if(this.infoWindowVisible.safeplaces.opened == false) {
+          this.infoWindowVisible.safeplaces.opened = true;
+        } else {
+          this.infoWindowVisible.safeplaces.opened = false;
+        }
+      }
+
+      
+    },
+    dateDifference(end) {
+      let startDate = moment(this.todaysDate),
+            endDate = moment(end);
+      return endDate.diff(startDate, 'days')
+    },
     expandMap() {
       let headerHeight    = 90,
           expandRowHeight = 45,
@@ -1951,10 +2339,11 @@ export default {
     }
 
     .contacts {
-      table tbody tr th {
-        width: 225px;
+      table tbody tr {
+        th {
+          width: 225px;
+        }
       }
-
       .row {
         display: flex;
         flex-wrap: wrap;
@@ -2017,9 +2406,11 @@ export default {
       &[for="parks"],
       &[for="playgrounds"],
       &[for="schools"],
-      &[for="safePlaces"] {
+      &[for="safePlaces"],
+      &[for="inroads"] {
+        font-size: $size-m;
         letter-spacing: .5px;
-        padding: 2px 5px;
+        padding: 4px 10px;
         border-radius: $radius-default;
         font-weight: $weight-semi-bold;
       }
@@ -2035,13 +2426,18 @@ export default {
       }
 
       &[for="schools"] {
-        background-color: #821001;
+        background-color: #800080;
         color: white;
       }
 
       &[for="safePlaces"] {
         background-color: #FCC324;
-        color: darken(#FCC324, 35%);
+        color: darken(#FCC324, 45%);
+      }
+
+      &[for="inroads"] {
+        background-color: $color-vermilion-light;
+        color: darken($color-vermilion, 45%);
       }
     }
 
@@ -2194,6 +2590,120 @@ export default {
 
       img {
         width: 50px;
+      }
+    }
+  }
+
+  .type-tag {
+    position: absolute;
+    top: -30px;
+    left: 0;
+    padding: 15px 20px 10px 20px;
+    background-color: white;
+    -webkit-border-top-left-radius: $radius-default + 5px;
+    -webkit-border-top-right-radius: $radius-default + 5px;
+    -moz-border-radius-topleft: $radius-default + 5px;
+    -moz-border-radius-topright: $radius-default + 5px;
+    border-top-left-radius: $radius-default + 5px;
+    border-top-right-radius: $radius-default + 5px;
+    overflow: inherit;
+    font-family: $font-text;
+    font-size: 16px;
+    letter-spacing: .25px;
+    color: $text-color;
+    font-weight: $weight-semi-bold;
+
+    &.parks {
+      span {
+        border-left: 4px solid #2D6326;
+      }
+    }
+
+    &.playgrounds {
+      span {
+        border-left: 4px solid #1947A0;
+      }
+    }
+
+    &.schools {
+      span {
+        border-left: 4px solid #800080;
+      }
+    }
+
+    &.safeplaces {
+      span {
+        border-left: 4px solid #FCC324;
+      }
+    }
+
+    &.roads {
+      span {
+        border-left: 4px solid $color-vermilion-light;
+      }
+    }
+
+    span {
+      padding: 0 0 0 10px;
+    }
+  }
+
+  .info-window {
+    h1 {
+      font-size: $size-m + 4px;
+      line-height: $size-m + 4px;
+      font-weight: $weight-semi-bold;
+      letter-spacing: .25px;
+      margin: 0 0 10px 0;
+      padding: 0 0 8px 0;
+      border-bottom: 1px solid $color-grey;
+    }
+
+    ul {
+      li {
+        color: $text-color;
+        font-size: 16px;
+        font-weight: $weight-normal;
+
+        // &:nth-child(1) {
+        //   margin: 0 20px 0 0;
+        // }
+
+        // &:nth-child(-n+2){
+        //   display: inline-flex;
+        //   background-color: red;
+        // }
+
+        &:last-child {
+          margin: 0;
+        }
+      }
+    }
+  }
+  
+  ::v-deep .gm-style-iw-a {}
+
+  ::v-deep .gm-style-iw {
+    &.gm-style-iw-c {
+      padding: 20px 20px 10px 20px!important;
+      overflow: inherit;
+
+      button,
+      button.gm-ui-hover-effect {
+        top: 5px !important;
+        right: 5px !important;
+        height: 25px !important;
+        width: 25px !important;
+
+        &:hover {
+          opacity: 1 !important;
+        }
+
+        img {
+          margin: 0 !important;
+          height: 100% !important;
+          width: 100% !important;
+        }
       }
     }
   }

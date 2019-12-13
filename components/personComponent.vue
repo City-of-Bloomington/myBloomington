@@ -262,6 +262,7 @@ export default {
           width: 100%;
 
           tr {
+            word-break: break-all;
             display: flex;
             flex-wrap: wrap;
             width: 100%;

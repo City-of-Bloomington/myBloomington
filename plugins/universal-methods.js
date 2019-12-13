@@ -59,6 +59,7 @@ Vue.mixin({
       playgrounds: true,
       schools:     true,
       safePlaces:  true,
+      inRoads:     true,
     },
 
     errors: {
