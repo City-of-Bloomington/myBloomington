@@ -323,7 +323,9 @@
               <fieldset>
                 <span>Toggle Map Markers:</span>
                 <legend class="sr-only">Toggle Map Markers:</legend>
-                <div class="inner-wrapper">
+                <div
+                  class="inner-wrapper"
+                  @click="mapMarkerToggle.parks = !mapMarkerToggle.parks">
                   <input v-model="mapMarkerToggle.parks"
                          value="parks"
                          type="checkbox"
@@ -332,7 +334,9 @@
                   <label for="parks">Parks</label>
                 </div>
 
-                <div class="inner-wrapper">
+                <div
+                  class="inner-wrapper"
+                  @click="mapMarkerToggle.playgrounds = !mapMarkerToggle.playgrounds">
                   <input v-model="mapMarkerToggle.playgrounds"
                          value="playgrounds"
                          type="checkbox"
@@ -341,7 +345,9 @@
                   <label for="playgrounds">Playgrounds</label>
                 </div>
 
-                <div class="inner-wrapper">
+                <div
+                  class="inner-wrapper"
+                  @click="mapMarkerToggle.safePlaces = !mapMarkerToggle.safePlaces">
                   <input v-model="mapMarkerToggle.safePlaces"
                          value="safePlaces"
                          type="checkbox"
@@ -350,7 +356,9 @@
                   <label for="safePlaces">Safe Places</label>
                 </div>
 
-                <div class="inner-wrapper">
+                <div
+                  class="inner-wrapper"
+                  @click="mapMarkerToggle.schools = !mapMarkerToggle.schools">
                   <input v-model="mapMarkerToggle.schools"
                          value="schools"
                          type="checkbox"
@@ -359,7 +367,9 @@
                   <label for="schools">Schools</label>
                 </div>
 
-                <div class="inner-wrapper">
+                <div 
+                  lass="inner-wrapper"
+                  @click="mapMarkerToggle.inRoads = !mapMarkerToggle.inRoads">
                   <input v-model="mapMarkerToggle.inRoads"
                          value="inroads"
                          type="checkbox"
@@ -2383,8 +2393,9 @@ export default {
       &[for="schools"],
       &[for="safePlaces"],
       &[for="inroads"] {
+        font-size: $size-m;
         letter-spacing: .5px;
-        padding: 2px 5px;
+        padding: 4px 10px;
         border-radius: $radius-default;
         font-weight: $weight-semi-bold;
       }
