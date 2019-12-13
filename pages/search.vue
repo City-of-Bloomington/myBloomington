@@ -13,9 +13,9 @@
           zoomControl:        true,
           mapTypeControl:     true,
           scaleControl:       true,
-          streetViewControl:  false,
-          rotateControl:      false,
-          fullscreenControl:  false,
+          streetViewControl:  true,
+          rotateControl:      true,
+          fullscreenControl:  true,
           disableDefaultUi:   true,
           draggable:          true,
           styles: [
@@ -87,14 +87,20 @@
               }">
 
               <div class="type-tag roads">
-                <span>{{ c.type }}</span>
+                <span>Road Work</span>
               </div>
               
               <div class="info-window">
                 <h1>{{ c.title }}</h1>
 
                 <ul>
-                  <li>
+
+                  <li v-if="c.type != ''">
+                    <strong>Type:</strong>&nbsp;
+                    {{ c.type }}
+                  </li>
+
+                  <li v-if="c.end != ''">
                     <strong>Days Remaining:</strong>&nbsp;
                     <template v-if="dateDifference(c.end) != 0">
                       {{ dateDifference(c.end) }}
@@ -105,17 +111,17 @@
                     </template>
                   </li>
 
-                  <li>
+                  <li v-if="c.start != '' && c.end != ''">
                     <strong>Start / End:</strong>&nbsp;
                     {{ $moment(c.start).format('MM/DD/YYYY')}} - {{ $moment(c.end).format('MM/DD/YYYY')}}
                   </li>
 
-                  <li>
+                  <li v-if="c.geography_description != ''">
                     <strong>Geography Description:</strong>&nbsp;
                     {{ c.geography_description }}
                   </li>
 
-                  <li>
+                  <li v-if="c.description != ''">
                     <strong>Description:</strong>&nbsp;
                     {{ c.description }}
                   </li>
@@ -130,7 +136,7 @@
           :animation="2"
           :clickable="false"
           :draggable="false"
-          :icon="{url: 'marker-search.svg', labelOrigin: {x: 18, y: 85}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
+          :icon="{url: 'map-crosshair.svg', labelOrigin: {x: 18, y: 85}, size: {width: 60, height: 60, f: 'px', b: 'px'}, scaledSize: {width: 60, height: 60, f: 'px', b: 'px'}}"
         />
         
         <GmapCluster
@@ -256,7 +262,7 @@
               }">
 
               <div class="type-tag playgrounds">
-                <span>Playgrounds</span>
+                <span>Playground</span>
               </div>
               
               <div class="info-window">
@@ -299,7 +305,7 @@
               }">
 
               <div class="type-tag safeplaces">
-                <span>Safeplaces</span>
+                <span>Safeplace</span>
               </div>
               
               <div class="info-window">
@@ -1645,6 +1651,7 @@ export default {
     return {
       todaysDate:            null,
       tomorrowsDate:         null,
+      mapRef:                this.$vm0,
       inRoadsData:           null,
       inRoadsDataNew:        [],
       infoWindowVisible:     {
@@ -1857,7 +1864,16 @@ export default {
     window.removeEventListener("resize", this.calcViewingHeight);
     window.removeEventListener("scroll", this.scrolledFromTop);
   },
-  watch: {},
+  // watch: {
+  //   defaultMap: {
+  //     immediate: true,
+  //     deep: true,
+  //     handler(newValue, oldValue) {
+  //       console.log(newValue);
+  //       console.log(oldValue);
+  //     }
+  //   }
+  // },
   computed: {
     // computed shared via: universal-computed.js
     showToTopArrow() {
@@ -2326,8 +2342,6 @@ export default {
 
     .contacts {
       table tbody tr {
-        word-break: break-all;
-        
         th {
           width: 225px;
         }
