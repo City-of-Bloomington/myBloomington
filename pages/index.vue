@@ -174,164 +174,74 @@
         <div class="folks">
           <div class="row">
             <h4>Mayor &amp; Clerk</h4>
-            <a :href="folks.officials.mayor.url"
-               :alt="`Mayor - ${folks.officials.mayor.name}`"
-               :title="`Mayor - ${folks.officials.mayor.name}`"
-               target="_blank">
+            <homepageHeadshot 
+              :title="folks.officials.mayor.title"
+              :name="folks.officials.mayor.name"
+              :href="folks.officials.mayor.url"
+              :image="folks.officials.mayor.image" />
 
-              <span class="sr-only">
-                {{`Mayor - ${folks.officials.mayor.name}`}}
-              </span>
-
-              <div
-                class="headshot"
-                :style="`background-image: url(${folks.officials.mayor.image});`"></div>
-            </a>
-
-            <a :href="folks.officials.clerk.url"
-               :alt="`Clerk - ${folks.officials.clerk.name}`"
-               :title="`Clerk - ${folks.officials.clerk.name}`"
-               target="_blank">
-
-              <span class="sr-only">
-                {{`Mayor - ${folks.officials.clerk.name}`}}
-              </span>
-
-              <div
-                class="headshot"
-                :style="`background-image: url(${folks.officials.clerk.image});`"></div>
-            </a>
+            <homepageHeadshot 
+              :title="folks.officials.clerk.title"
+              :name="folks.officials.clerk.name"
+              :href="folks.officials.clerk.url"
+              :image="folks.officials.clerk.image" />
           </div>
 
           <div class="row">
             <h4>City Council</h4>
+            <homepageHeadshot 
+              :title="folks.district[4].title"
+              :name="folks.district[4].name"
+              :href="folks.district[4].url"
+              :image="folks.district[4].image" />
+            
+            <homepageHeadshot 
+              :title="folks.district[2].title"
+              :name="folks.district[2].name"
+              :href="folks.district[2].url"
+              :image="folks.district[2].image" />
+            
+            <homepageHeadshot 
+              :title="folks.district[6].title"
+              :name="folks.district[6].name"
+              :href="folks.district[6].url"
+              :image="folks.district[6].image" />
 
-            <a :href="folks.district[4].url"
-               :alt="`Council Member - ${folks.district[4].name}`"
-               :title="`Council Member - ${folks.district[4].name}`"
-               target="_blank">
+            <homepageHeadshot 
+              :title="folks.council[2].title"
+              :name="folks.council[2].name"
+              :href="folks.council[2].url"
+              :image="folks.council[2].image" />
 
-              <span class="sr-only">
-                {{`Council Member - ${folks.district[4].name}`}}
-              </span>
+            <homepageHeadshot 
+              :title="folks.council[1].title"
+              :name="folks.council[1].name"
+              :href="folks.council[1].url"
+              :image="folks.council[1].image" />
 
-              <div
-                class="headshot"
-                :style="`background-image: url(${folks.district[4].image});`"></div>
-            </a>
+            <homepageHeadshot 
+              :title="folks.council[3].title"
+              :name="folks.council[3].name"
+              :href="folks.council[3].url"
+              :image="folks.council[3].image" />
 
-            <a :href="folks.district[2].url"
-               :alt="`Council Member - ${folks.district[2].name}`"
-               :title="`Council Member - ${folks.district[2].name}`"
-               target="_blank">
+            <homepageHeadshot 
+              :title="folks.district[1].title"
+              :name="folks.district[1].name"
+              :href="folks.district[1].url"
+              :image="folks.district[1].image" />
 
-              <span class="sr-only">
-                {{`Council Member - ${folks.district[2].name}`}}
-              </span>
-
-              <div
-                class="headshot"
-                :style="`background-image: url(${folks.district[2].image});`"></div>
-            </a>
-
-
-            <a :href="folks.district[6].url"
-               :alt="`Council Member - ${folks.district[6].name}`"
-               :title="`Council Member - ${folks.district[6].name}`"
-               target="_blank">
-
-              <span class="sr-only">
-                {{`Council Member - ${folks.district[6].name}`}}
-              </span>
-
-              <div
-                class="headshot"
-                :style="`background-image: url(${folks.district[6].image});`"></div>
-            </a>
-
-            <a :href="folks.council[2].url"
-               :alt="`Council Member - ${folks.council[2].name}`"
-               :title="`Council Member - ${folks.council[2].name}`"
-               target="_blank">
-
-              <span class="sr-only">
-                {{`Council Member - ${folks.council[2].name}`}}
-              </span>
-
-              <div
-                class="headshot"
-                :style="`background-image: url(${folks.council[2].image});`"></div>
-            </a>
-
-            <a :href="folks.council[1].url"
-               :alt="`Council Member - ${folks.council[1].name}`"
-               :title="`Council Member - ${folks.council[1].name}`"
-               target="_blank">
-
-              <span class="sr-only">
-                {{`Council Member - ${folks.council[1].name}`}}
-              </span>
-
-              <div
-                class="headshot"
-                :style="`background-image: url(${folks.council[1].image});`"></div>
-            </a>
-
-            <a :href="folks.council[3].url"
-               :alt="`Council Member - ${folks.council[3].name}`"
-               :title="`Council Member - ${folks.council[3].name}`"
-               target="_blank">
-
-              <span class="sr-only">
-                {{`Council Member - ${folks.council[3].name}`}}
-              </span>
-
-              <div
-                class="headshot"
-                :style="`background-image: url(${folks.council[3].image});`"></div>
-            </a>
-
-            <a :href="folks.district[1].url"
-               :alt="`Council Member - ${folks.district[1].name}`"
-               :title="`Council Member - ${folks.district[1].name}`"
-               target="_blank">
-
-              <span class="sr-only">
-                {{`Council Member - ${folks.district[1].name}`}}
-              </span>
-
-              <div
-                class="headshot"
-                :style="`background-image: url(${folks.district[1].image});`"></div>
-            </a>
-
-            <a :href="folks.district[3].url"
-               :alt="`Council Member - ${folks.district[3].name}`"
-               :title="`Council Member - ${folks.district[3].name}`"
-               target="_blank">
-
-              <span class="sr-only">
-                {{`Council Member - ${folks.district[3].name}`}}
-              </span>
-
-              <div
-                class="headshot"
-                :style="`background-image: url(${folks.district[3].image});`"></div>
-            </a>
-
-            <a :href="folks.district[5].url"
-               :alt="`Council Member - ${folks.district[5].name}`"
-               :title="`Council Member - ${folks.district[5].name}`"
-               target="_blank">
-
-              <span class="sr-only">
-                {{`Council Member - ${folks.district[5].name}`}}
-              </span>
-
-              <div
-                class="headshot"
-                :style="`background-image: url(${folks.district[5].image});`"></div>
-            </a>
+            <homepageHeadshot 
+              :title="folks.district[3].title"
+              :name="folks.district[3].name"
+              :href="folks.district[3].url"
+              :image="folks.district[3].image" />
+            
+            <homepageHeadshot 
+              :title="folks.district[5].title"
+              :name="folks.district[5].name"
+              :href="folks.district[5].url"
+              :image="folks.district[5].image" />
           </div>
         </div>
         <p>&#9426; {{ currentYear }} - {{ cityName }}</p>
@@ -450,11 +360,13 @@ import proj4           from 'proj4'
 import debounce        from 'lodash.debounce'
 import exampleSearch   from '~/components/exampleSearch'
 import exampleModal    from '~/components/exampleModal'
+import homepageHeadshot     from '~/components/homepageHeadshot'
 
 export default {
   components: {
     exampleSearch,
     exampleModal,
+    homepageHeadshot
   },
   beforeRouteEnter (to, from, next) {
     next(vm => {
@@ -607,72 +519,21 @@ export default {
 
         &:nth-of-type(1) {
           margin: 0 0 20px 0;
-
-          .headshot {
-            width: 65px;
-            height: 65px;
-
-            &:after {
-              width: 65px;
-              height: 65px;
-            }
-          }
         }
 
         &:nth-of-type(2) {
           margin: 0 0 40px 0;
           max-width: 700px;
+        }
 
-          .headshot {
-            width: 50px;
-            height: 50px;
-
-            &:after {
-              width: 50px;
-              height: 50px;
+        ::v-deep span {
+          &:last-child {
+            a {
+              margin: 0 0 0 0;
             }
           }
         }
-      }
-
-      a {
-        border-radius: 50%;
-        margin: 0 10px 0 0;
-        border: 3px dashed transparent;
-
-        &:focus,
-        &:hover {
-          outline: none;
-          // box-shadow: -1px 3px 1px 2px white;
-          border: 3px dashed white;
-        }
-
-        &:last-of-type {
-          margin: 0;
-        }
-      }
-
-      .headshot {
-        position: relative;
-        display: block;
-        margin: 0;
-        border-radius: 50%;
-        border: 1px solid $color-blue-darker;
-        background-position: top center;
-        background-repeat: no-repeat;
-        background-size: cover;
-
-        &:after {
-          z-index: -1;
-          position: absolute;
-          content: '';
-          left: -2px;
-          bottom: -5px;
-          display: block;
-          border-radius: 50%;
-          background-color: darken($color-blue-darker, 5%);
-        }
-      }
+      } 
     }
 
     .map-container-wrapper {
@@ -699,22 +560,8 @@ export default {
 
         #path-stroke {
           fill: none;
-          // stroke: $color-blue-darker;
           stroke: white;
           stroke-width: 10px;
-          // stroke-dasharray: 50;
-          // stroke-dashoffset: 150;
-          // animation-fill-mode: forwards;
-          // animation: move 1s infinite;
-
-          // @keyframes move {
-          //   0% {
-          //     stroke-dashoffset: 0;
-          //   }
-          //   100% {
-          //     stroke-dashoffset: 150;
-          //   }
-          // }
         }
       }
     }

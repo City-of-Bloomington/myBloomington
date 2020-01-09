@@ -7,7 +7,7 @@
       class="img"
       :style="`background-image: url(${imagePath});`"></div>
 
-      <div class="about">
+      <div :class="[{'full-width': !imagePath}, 'about']">
         <h2
           v-if="name"
           v-html="name"></h2>
@@ -41,7 +41,7 @@
           </thead>
 
           <tbody>
-            <tr v-if="tableInfo.website">
+            <tr v-if="tableInfo.website.ahref != ''">
               <th scope="row">Web:</th>
               <td>
                 <a
@@ -53,7 +53,7 @@
               </td>
             </tr>
 
-            <tr v-if="tableInfo.email">
+            <tr v-if="tableInfo.email != ''">
               <th scope="row">Email:</th>
               <td>{{ tableInfo.email.ahref }}</td>
             </tr>
@@ -66,7 +66,7 @@
               </td>
             </tr>
 
-            <tr v-if="tableInfo.address">
+            <tr v-if="tableInfo.address.streetAddress != ''">
               <th scope="row">Address:</th>
               <td>
                 <template v-if="tableInfo.address.addressTitle">
@@ -196,6 +196,10 @@ export default {
     .about {
       width: calc(100% - 335px);
       margin-left: auto;
+
+      &.full-width {
+        width: 100%;
+      }
 
       h2 {
         font-size: 24px;
