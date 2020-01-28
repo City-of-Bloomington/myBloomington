@@ -3,7 +3,7 @@
   "prettyName": "My Bloomington",
   "company": "City of Bloomington, Indiana - ITS",
   "version": "1.0.0",
-  "description": "Nuxtjs (Vue) application for displaying city related resources and information about a given address.",
+  "description": "myBloomington provides information related to a given street address.",
   "author": "adabutch",
   "repository": {
     "type": "git",
