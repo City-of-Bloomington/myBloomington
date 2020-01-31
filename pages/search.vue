@@ -1622,6 +1622,8 @@ import dataSectionComponent from '~/components/dataSectionComponent'
 import footerComponent      from '~/components/footerComponent'
 import loader               from '~/components/loader'
 
+import parksResData         from '~/static/data/cob-parks.json'
+
 export default {
   layout: 'result',
   components: {
@@ -1682,6 +1684,9 @@ export default {
       scrolledFromTopAmount: null,
       viewingHeight:         null,
     }
+  },
+  asyncData ({ params }) {
+    return { parksResData }
   },
   beforeCreate: function() {
     this.loading = true;
@@ -1832,15 +1837,18 @@ export default {
                   `\n\n ${e} \n\n`);
     });
 
-    this.getCityOfBloomingtonParks()
-    .then((res) => {
-      this.parksResData = res;
-      console.log(`getCityOfBloomingtonParks 🔌`);
-    })
-    .catch((e) => {
-      console.log(`getCityOfBloomingtonParks 🛑`,
-                  `\n\n ${e} \n\n`);
-    });
+    // We are waiting for GIS to update, so ref
+    // this data statically.
+    //
+    // this.getCityOfBloomingtonParks()
+    // .then((res) => {
+    //   this.parksResData = res;
+    //   console.log(`getCityOfBloomingtonParks 🔌`);
+    // })
+    // .catch((e) => {
+    //   console.log(`getCityOfBloomingtonParks 🛑`,
+    //               `\n\n ${e} \n\n`);
+    // });
 
     this.getCouncilDistrictsGeoJson()
     .then((res) => {
