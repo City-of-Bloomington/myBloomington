@@ -509,10 +509,16 @@ Vue.mixin({
 
         let locationMapped = places.map((p) => {
           if(p.properties) {
-            var addDist = {dist: self.nearbyDistance(p.properties.lat,p.properties.lon)};
+
+            if(p.properties.lat) {
+              var addDist = { dist: self.nearbyDistance(p.properties.lat,p.properties.lon)}
+            } else if (p.properties.latitude) {
+              var addDist = { dist: self.nearbyDistance(p.properties.latitude, p.properties.longitude)}
+            }
+            
             newArray.push({...p.properties, ...addDist})
           } else if(p.gsx$lat.$t && p.gsx$lon.$t) {
-            var addDist = {dist: self.nearbyDistance(p.gsx$lat.$t,p.gsx$lon.$t)};
+            var addDist = { dist: self.nearbyDistance(p.gsx$lat.$t,p.gsx$lon.$t)}
             newArray.push({...p, ...addDist})
           } else {
             console.log(`%c viaDistance 🛑 `,

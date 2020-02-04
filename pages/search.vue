@@ -146,44 +146,56 @@
             v-for="p, i in nearbyParkMarkers()"
             v-if="mapMarkerToggle.parks">
             <GmapMarker
-              @click="markerToWindowClick('parks', p.id)"
+              @click="markerToWindowClick('parks', p.parkid)"
               :animation="2"
-              :label="{text: `${p.name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: 'white', fontWeight: '600'}"
+              :label="{text: `${p.parkname}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: 'white', fontWeight: '600'}"
               :icon="{url: 'marker-park-alt.svg', labelOrigin: {x: 28, y: 65}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
-              :position="{lat: Number(p.lat), lng: Number(p.lon)}"
+              :position="{lat: Number(p.latitude), lng: Number(p.longitude)}"
               :clickable="true"
               :draggable="false"
             />
 
             <GmapInfoWindow
-              v-if="infoWindowVisible.parks.id == p.id"
+              v-if="infoWindowVisible.parks.id == p.parkid"
               :opened="infoWindowVisible.parks.opened"
               @closeclick="infoWindowVisible.parks.opened=false"
-              :position="{lat: Number(p.lat), lng: Number(p.lon)}"
+              :position="{lat: Number(p.latitude), lng: Number(p.longitude)}"
               :options="{
                 borderColor: '#f02f02',
               }">
 
               <div class="type-tag parks">
-                <span>Park</span>
+                <span>Park 
+                  <template v-if="p.parktype">
+                    - {{ p.parktype }}
+                  </template>
+                </span>
               </div>
               
               <div class="info-window">
-                <h1>{{ p.name }}</h1>
+                <h1>{{ p.parkname }}</h1>
                 <ul>
-                  <li v-if="p.address != ''">
+                  <li v-if="p.location != ''">
                     <strong>Address:</strong>&nbsp;
-                    {{ p.address }}
+                    {{ p.location }}
                   </li>
 
-                  <li v-if="p.location != ''">
+                  <li v-if="p.accessdesc != ''">
                     <strong>Location:</strong>&nbsp;
-                    {{ p.location }}
+                    {{ p.accessdesc }}
                   </li>
 
                   <li v-if="p.size != '' && p.size != '0 Acres'">
                     <strong>Park Size:</strong>&nbsp;
-                    {{ p.size }}
+                    {{ p.size }} {{p.units}}
+                  </li>
+
+                  <li v-if="p.url">
+                    <strong>URL:</strong>&nbsp;
+                    <a class="external font-sm"
+                       target="_blank"
+                       :href="p.url"
+                       :title="p.parkname">{{ p.url }}</a>
                   </li>
                 </ul>
               </div>
@@ -1157,10 +1169,10 @@
                         <template
                           v-for="p, i in viaDistance(parksResData.features)"
                           v-if="i <= 10">
-                          <template v-if="p.lat && p.lon">
+                          <template v-if="p.latitude && p.longitude">
                             <tr
-                              :class="[{'clickable': p.lat && p.lon}]"
-                              @click="goToAddress(p.lat, p.lon)">
+                              :class="[{'clickable': p.latitude && p.longitude}]"
+                              @click="goToAddress(p.latitude, p.longitude)">
                               <td>
                                 {{ p.dist }} mi *
                               </td>
@@ -1169,7 +1181,7 @@
                                   href="#"
                                   class="external"
                                   @click.prevent>
-                                  {{ p.name }}
+                                  {{ p.parkname }}
                                 </a>
                               </td>
                               <td >
@@ -1181,7 +1193,7 @@
                           <template v-else>
                             <tr>
                               <td>{{ p.dist }} mi *</td>
-                              <td>{{ p.name }}</td>
+                              <td>{{ p.parkname }}</td>
                               <td>- - -</td>
                             </tr>
                           </template>
@@ -1622,7 +1634,7 @@ import dataSectionComponent from '~/components/dataSectionComponent'
 import footerComponent      from '~/components/footerComponent'
 import loader               from '~/components/loader'
 
-import parksResData         from '~/static/data/cob-parks.json'
+// import parksResData         from '~/static/data/cob-parks.json'
 
 export default {
   layout: 'result',
@@ -1685,9 +1697,9 @@ export default {
       viewingHeight:         null,
     }
   },
-  asyncData ({ params }) {
-    return { parksResData }
-  },
+  // asyncData ({ params }) {
+  //   return { parksResData }
+  // },
   beforeCreate: function() {
     this.loading = true;
   },
@@ -1840,15 +1852,15 @@ export default {
     // We are waiting for GIS to update, so ref
     // this data statically.
     //
-    // this.getCityOfBloomingtonParks()
-    // .then((res) => {
-    //   this.parksResData = res;
-    //   console.log(`getCityOfBloomingtonParks 🔌`);
-    // })
-    // .catch((e) => {
-    //   console.log(`getCityOfBloomingtonParks 🛑`,
-    //               `\n\n ${e} \n\n`);
-    // });
+    this.getCityOfBloomingtonParks()
+    .then((res) => {
+      this.parksResData = res;
+      console.log(`getCityOfBloomingtonParks 🔌`);
+    })
+    .catch((e) => {
+      console.log(`getCityOfBloomingtonParks 🛑`,
+                  `\n\n ${e} \n\n`);
+    });
 
     this.getCouncilDistrictsGeoJson()
     .then((res) => {
