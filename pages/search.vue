@@ -1634,8 +1634,6 @@ import dataSectionComponent from '~/components/dataSectionComponent'
 import footerComponent      from '~/components/footerComponent'
 import loader               from '~/components/loader'
 
-// import parksResData         from '~/static/data/cob-parks.json'
-
 export default {
   layout: 'result',
   components: {
@@ -1697,9 +1695,6 @@ export default {
       viewingHeight:         null,
     }
   },
-  // asyncData ({ params }) {
-  //   return { parksResData }
-  // },
   beforeCreate: function() {
     this.loading = true;
   },
