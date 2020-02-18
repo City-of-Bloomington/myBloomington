@@ -64,6 +64,7 @@ export default {
 
 <style lang="scss">
   .data-section {
+
     header {
       display: flex;
       flex-wrap: wrap;
@@ -85,6 +86,8 @@ export default {
         margin: 0 40px 0 0;
       }
 
+      
+
       blockquote {
         width: calc(100% - 90px);
         margin: 0;
@@ -101,6 +104,13 @@ export default {
           }
         }
       }
+    }
+
+    p {
+      font-size: 18px;
+      color: red;
+      // color: lighten($text-color, 5%);
+      margin: 0 0 10px 0;
     }
   }
 </style>

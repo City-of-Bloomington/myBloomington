@@ -915,6 +915,17 @@
 
             <!-- officials -->
             <dataSectionComponent
+              v-if="!cityLimitsCheck"
+              id="officials"
+              title="Elected Officials">
+
+              <div slot="officials">
+                <p>This address is outside the jurisdiction of the City and is not represented by Bloomington elected officials.</p>
+              </div>
+            </dataSectionComponent>
+
+            <!-- officials -->
+            <dataSectionComponent
               v-if="folks && cityLimitsCheck"
               id="officials"
               title="Elected City Officials">
