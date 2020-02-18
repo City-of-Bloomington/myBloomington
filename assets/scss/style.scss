@@ -371,7 +371,7 @@ a {
       color: $text-color;
 
       &:focus {
-        border: 3px solid red;
+        border: 3px dashed $color-blue;;
       }
 
       a {
@@ -382,6 +382,7 @@ a {
         padding: 15px 20px;
         display: flex;
         align-items: center;
+        border-radius: 0;
         border: 3px solid transparent;
 
         &:focus {
