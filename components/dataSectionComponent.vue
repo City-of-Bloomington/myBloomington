@@ -108,9 +108,6 @@ export default {
 
     p {
       font-size: 18px;
-      color: red;
-      // color: lighten($text-color, 5%);
-      margin: 0 0 10px 0;
     }
   }
 </style>
