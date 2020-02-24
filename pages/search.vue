@@ -761,7 +761,7 @@
                     </template>
                   </template>
 
-                  <tr v-if="neighborhoodAssocCheck">
+                  <tr v-if="neighborhoodPurposesDataCheck">
                     <th scope="row">
                       Neighborhood Association:
                     </th>
@@ -1916,18 +1916,18 @@ export default {
         
       return false;
     },
-    purposesDataCheck() {
-      if(this.locationResDataNew.purposes.length != 0)
-        return true
-      
-      return false
+    neighborhoodPurposesDataCheck() {
+      if(this.cityLimitsCheck) {
+        if(this.locationResDataNew.purposes.length != 0) {
+          let hasNeighborhoodPurpose = this.locationResDataNew.purposes.find(e => e.purpose_type === 'NEIGHBORHOOD ASSOCIATION');
+          if(hasNeighborhoodPurpose == undefined) {
+            return true
+          } else {
+            return false
+          }
+        }
+      }
     },
-    neighborhoodAssocCheck() {
-      if(this.purposesDataCheck && this.cityLimitsCheck)
-        return true
-      
-      return false
-    }
   },
   methods: {
     // methods shared via: universal-methods.js
