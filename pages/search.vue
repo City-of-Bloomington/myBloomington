@@ -761,6 +761,20 @@
                     </template>
                   </template>
 
+                  <tr v-if="!neighborhoodAssocCheck">
+                    <th scope="row">
+                      Neighborhood Association:
+                    </th>
+
+                    <td>
+                      <a
+                        href="https://bloomington.in.gov/neighborhoods/associations"
+                        class="external"
+                        target="_blank"
+                        alt="Learn how to form a neighborhood association">Click to learn how to form a neighborhood association</a>
+                    </td>
+                  </tr>
+
                   <tr>
                     <th scope="row">Voter Registration:</th>
                     <td>
@@ -1889,16 +1903,6 @@ export default {
     window.removeEventListener("resize", this.calcViewingHeight);
     window.removeEventListener("scroll", this.scrolledFromTop);
   },
-  // watch: {
-  //   defaultMap: {
-  //     immediate: true,
-  //     deep: true,
-  //     handler(newValue, oldValue) {
-  //       console.log(newValue);
-  //       console.log(oldValue);
-  //     }
-  //   }
-  // },
   computed: {
     // computed shared via: universal-computed.js
     showToTopArrow() {
@@ -1907,11 +1911,23 @@ export default {
       }
     },
     cityLimitsCheck(){
-      if(this.locationResDataNew.address.jurisdiction_name == 'Bloomington') {
+      if(this.locationResDataNew.address.jurisdiction_name == 'Bloomington')
         return true;
-      }
+        
       return false;
     },
+    purposesDataCheck() {
+      if(this.locationResDataNew.purposes.length != 0)
+        return true
+      
+      return false
+    },
+    neighborhoodAssocCheck() {
+      if(this.purposesDataCheck && this.cityLimitsCheck)
+        return true
+      
+      return false
+    }
   },
   methods: {
     // methods shared via: universal-methods.js
