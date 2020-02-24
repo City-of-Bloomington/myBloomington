@@ -761,7 +761,7 @@
                     </template>
                   </template>
 
-                  <tr v-if="!neighborhoodAssocCheck">
+                  <tr v-if="neighborhoodAssocCheck">
                     <th scope="row">
                       Neighborhood Association:
                     </th>
@@ -859,7 +859,7 @@
             <!-- govt online -->
             <dataSectionComponent
               v-if="locations"
-              id="locations"
+              id="govt-online"
               title="Government Online">
 
               <div
