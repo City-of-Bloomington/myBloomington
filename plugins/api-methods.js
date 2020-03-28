@@ -7,6 +7,30 @@ Vue.mixin({
   data() { return {} },
   computed: {},
   methods: {
+    // https://bloomington.in.gov/geoserver/publicgis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=publicgis:HistoricSitesandStructuresSurvey2018&cql_filter=AddLocID=21347&outputFormat=application%2Fjson
+
+    /**
+     *  A promise returning Historic Sites and Structures Survey
+     *  information from 2018. via COB HANDxGIS
+     * 
+     * @promise   getHANDSHARDData
+     * @param     { String } locationID 
+     * @resolve   { Object }
+     * @reject    { Error }
+     * @return    { Promise <Object> }
+     */
+    getHANDSHARDData(locationID) {
+      return new Promise((resolve, reject) => {
+        axios.get(`${process.env.baseUrl}/geoserver/publicgis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=publicgis:HistoricSitesandStructuresSurvey2018&cql_filter=AddLocID%20like%20%27%25${locationID}%25%27%20&outputFormat=application%2Fjson`)
+        .then((res) => {
+          if(res.data.totalFeatures >= 1)
+            resolve(this.$store.dispatch('setHANDSHARDData', res.data));
+
+          else reject(this.$store.dispatch('setHANDSHARDData', null))
+        })
+        .catch((e) => reject(e))
+      })
+    },
     /**
      *  A promise returning inRoad road information.
      * 

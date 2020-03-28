@@ -7,6 +7,7 @@ export const strict = false;
 
 export const defaultState = () => ({
   locationResDataNew: {},
+  HANDSHARDData : null,
   weather:            null,
   folks:              process.env.folks,
   sanitation:         process.env.sanitation,
@@ -55,6 +56,9 @@ export const mutations = {
   SET_WEATHER_RESPONSE_DATA(state, payload) {
     state.weather = payload;
   },
+  SET_HAND_SHARD_DATA(state, payload) {
+    state.HANDSHARDData = payload;
+  },
 }
 
 export const actions = {
@@ -69,6 +73,9 @@ export const actions = {
   },
   setWeatherData(context, payload) {
     context.commit("SET_WEATHER_RESPONSE_DATA", payload)
+  },
+  setHANDSHARDData(context, payload) {
+    context.commit("SET_HAND_SHARD_DATA", payload)
   },
   /**
    * Note: we can only use this via SSR

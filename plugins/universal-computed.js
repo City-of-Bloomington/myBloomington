@@ -7,6 +7,7 @@ Vue.mixin({
   computed: {
     ...mapFields([
       'locationResDataNew',
+      'HANDSHARDData',
       'consoleLog',
       'folks',
       'cityBoundary',

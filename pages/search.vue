@@ -694,9 +694,17 @@
                     <td>{{ locationResDataNew.address.township_name | capitalizeFirst }}</td>
                   </tr>
 
+                  <template v-if="HANDSHARDData">
+                    <tr>
+                      <th scope="row">Bloomington Historic Sites<br>&amp; Structures Survey:</th>
+                      <td>{{ HANDSHARDData.features[0].properties.Rating}}</td>
+                    </tr>
+                  </template>
+
                   <template
                     v-if="locationPurposes"
                     v-for="p, i in locationPurposes">
+
                     <template v-if="p.length > 1">
                       <tr>
                         <th scope="row">

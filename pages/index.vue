@@ -411,6 +411,10 @@ export default {
                   this.consoleLog.error
                   `\n\n ${e} \n\n`);
     });
+
+    // this.getHANDSHARDData(17215)
+    // .then((res) => { console.log('getHANDSHARDData', res)})
+    // .catch((e) => { console.log('getHANDSHARDData', e) })
   },
   mounted: function() {
     this.$nextTick(() => {

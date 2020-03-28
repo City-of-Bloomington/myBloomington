@@ -295,6 +295,7 @@ Vue.mixin({
       if(lookupID) {
         this.getLocation(lookupID)
         .then((res) => {
+          
           this.addressMapped      = true;
           this.addressResChoices = null;
           this.districtRepGeoCoords = null;
@@ -307,6 +308,12 @@ Vue.mixin({
           let addressUrlEncoded = encodeURIComponent(this.locationResDataNew.address.streetAddress).replace(/%20/g, "+");
 
           console.dir(addressUrlEncoded);
+
+          this.getHANDSHARDData(res.address.location_id)
+          .then((res) => { console.log('getHANDSHARDData', res) })
+          .catch((e) => { console.log('getHANDSHARDData', e) })
+
+          console.log('HIIIIIIII', res.address.location_id)
 
           this.$router.replace({
             path: '/search',
@@ -340,6 +347,8 @@ Vue.mixin({
                         this.consoleLog.error,
                         `\n\n ${e} \n\n`);
           });
+
+          
         })
         .catch((e) => {
           this.$router.replace('index');
