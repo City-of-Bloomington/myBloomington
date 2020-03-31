@@ -303,17 +303,11 @@ Vue.mixin({
           this.locationResDataNew   = res;
           this.$store.dispatch('setLocationData', res);
 
-          // console.dir(encodeURIComponent(this.locationResDataNew.address.streetAddress).replace(/%20/g, "+"));
-
           let addressUrlEncoded = encodeURIComponent(this.locationResDataNew.address.streetAddress).replace(/%20/g, "+");
 
-          console.dir(addressUrlEncoded);
-
           this.getHANDSHARDData(res.address.location_id)
-          .then((res) => { console.log('getHANDSHARDData', res) })
-          .catch((e) => { console.log('getHANDSHARDData', e) })
-
-          console.log('HIIIIIIII', res.address.location_id)
+          .then((res) => { console.log('getHANDSHARDData Data') })
+          .catch((e) => { console.log('getHANDSHARDData Error', e) })
 
           this.$router.replace({
             path: '/search',

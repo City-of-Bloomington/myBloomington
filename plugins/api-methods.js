@@ -21,7 +21,7 @@ Vue.mixin({
      */
     getHANDSHARDData(locationID) {
       return new Promise((resolve, reject) => {
-        axios.get(`${process.env.baseUrl}/geoserver/publicgis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=publicgis:HistoricSitesandStructuresSurvey2018&cql_filter=AddLocID%20like%20%27%25${locationID}%25%27%20&outputFormat=application%2Fjson`)
+        axios.get(`${process.env.baseUrl}geoserver/publicgis/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=publicgis:HistoricSitesandStructuresSurvey2018&cql_filter=isLike(%22AddLocID%22,%27.*%5Cb${locationID}%5Cb.*%27)=true&outputFormat=application%2Fjson`)
         .then((res) => {
           if(res.data.totalFeatures >= 1)
             resolve(this.$store.dispatch('setHANDSHARDData', res.data));

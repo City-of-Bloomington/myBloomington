@@ -694,6 +694,20 @@
                     <td>{{ locationResDataNew.address.township_name | capitalizeFirst }}</td>
                   </tr>
 
+                  <template v-if="locationPurposes['HISTORIC DISTRICT']">
+                    <tr>
+                      <th scope="row">Historic District</th>
+                      <td>{{ locationPurposes["HISTORIC DISTRICT"][0].name }}</td>
+                    </tr>
+                  </template>
+
+                  <template v-if="locationPurposes['OTHER HISTORIC DISTRICT']">
+                    <tr>
+                      <th scope="row">Other Historic District</th>
+                      <td>{{ locationPurposes["OTHER HISTORIC DISTRICT"][0].name }}</td>
+                    </tr>
+                  </template>
+
                   <template v-if="HANDSHARDData">
                     <tr>
                       <th scope="row">Bloomington Historic Sites<br>&amp; Structures Survey:</th>
@@ -705,67 +719,69 @@
                     v-if="locationPurposes"
                     v-for="p, i in locationPurposes">
 
-                    <template v-if="p.length > 1">
-                      <tr>
-                        <th scope="row">
-                          {{p[0].purpose_type | capitalizeFirst}}:
-                        </th>
+                    <template v-if="p[0].purpose_type != 'HISTORIC DISTRICT' && p[0].purpose_type != 'OTHER HISTORIC DISTRICT'">
+                      <template v-if="p.length > 1">
+                        <tr>
+                          <th scope="row">
+                            {{p[0].purpose_type | capitalizeFirst}}:
+                          </th>
 
-                        <td>
-                          <ul>
-                            <li v-for="e, i in p">
-                              {{ e.name | capitalizeFirst }}
-                            </li>
-                          </ul>
-                        </td>
-                      </tr>
-                    </template>
+                          <td>
+                            <ul>
+                              <li v-for="e, i in p">
+                                {{ e.name | capitalizeFirst }}
+                              </li>
+                            </ul>
+                          </td>
+                        </tr>
+                      </template>
 
-                    <template v-else>
-                      <tr v-for="e, i in p">
-                        <th scope="row">
-                          <!-- {{e}} -->
-                          {{e.purpose_type | capitalizeFirst}}:
-                        </th>
+                      <template v-else>
+                        <tr v-for="e, i in p">
+                          <th scope="row">
+                            {{e.purpose_type | capitalizeFirst}}:
+                          </th>
 
-                        <td>
-                          <template
-                            v-if="e.purpose_type === 'NEIGHBORHOOD ASSOCIATION'">
-                             <a
-                              class="external"
-                              target="_blank"
-                              :href="`${baseUrl}neighborhoods/associations`"
-                              :alt="e.name | capitalizeFirst">{{e.name | capitalizeFirst}}</a>
-                          </template>
+                          <td>
+                            <template
+                              v-if="e.purpose_type === 'RESIDENTIAL PARKING ZONE'">
+                              <a
+                                :href="`${baseUrl}transportation/parking/neighborhood-parking`"
+                                target="_blank"
+                                class="external"
+                                :alt="e.name | capitalizeFirst">
+                                {{e.name | capitalizeFirst}}
+                              </a><br>
+                              <small>
+                                - Permit required Monday – Friday, 8:00am – 5:00pm
+                              </small>
+                            </template>
 
-                          <template
-                            v-else-if="e.purpose_type === 'CITY COUNCIL DISTRICT'">
-                            <a
-                              href="#"
-                              :alt="e.name | capitalizeFirst"
-                              data-jump="districtRep"
-                              @click.prevent="anchorHashClick($event)">{{e.name | capitalizeFirst}}</a>
-                          </template>
+                            <template
+                              v-else-if="e.purpose_type === 'NEIGHBORHOOD ASSOCIATION'">
+                                <a
+                                class="external"
+                                target="_blank"
+                                :href="`${baseUrl}neighborhoods/associations`"
+                                :alt="e.name | capitalizeFirst">{{e.name | capitalizeFirst}}</a>
+                            </template>
 
-                          <template
-                            v-else-if="e.purpose_type === 'RESIDENTIAL PARKING ZONE'">
-                            <a
-                              :href="`${baseUrl}transportation/parking/neighborhood-parking`"
-                              target="_blank"
-                              class="external"
-                              :alt="e.name | capitalizeFirst">
+                            <template
+                              v-else-if="e.purpose_type === 'CITY COUNCIL DISTRICT'">
+                              <a
+                                href="#"
+                                :alt="e.name | capitalizeFirst"
+                                data-jump="districtRep"
+                                @click.prevent="anchorHashClick($event)">{{e.name | capitalizeFirst}}</a>
+                            </template>
+
+                            <template v-else>
                               {{e.name | capitalizeFirst}}
-                            </a><br>
-                            <small>
-                              - Permit required Monday – Friday, 8:00am – 5:00pm
-                            </small>
-                          </template>
+                            </template>
+                          </td>
+                        </tr>
+                      </template>
 
-                          <template v-else>
-                            {{e.name | capitalizeFirst}}
-                          </template>
-                        </td>
-                      </tr>
                     </template>
                   </template>
 
