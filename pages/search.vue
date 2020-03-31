@@ -710,8 +710,12 @@
 
                   <template v-if="HANDSHARDData">
                     <tr>
-                      <th scope="row">Bloomington Historic Sites<br>&amp; Structures Survey:</th>
-                      <td>{{ HANDSHARDData.features[0].properties.Rating}}</td>
+                      <th scope="row">Bloomington Historic Sites<br>&amp; Structures Survey Rating:</th>
+                      <td>
+                        <a class="external" href="https://bloomington.in.gov/historic-bloomington/demolition-delay">
+                          {{ HANDSHARDData.features[0].properties.Rating}}
+                        </a>
+                      </td>
                     </tr>
                   </template>
 
