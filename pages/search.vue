@@ -697,7 +697,7 @@
                   <template v-if="locationPurposes['HISTORIC DISTRICT']">
                     <tr>
                       <th scope="row">Historic District</th>
-                      <td>{{ locationPurposes["HISTORIC DISTRICT"][0].name }}</td>
+                      <td><a href="https://bloomington.in.gov/historic-bloomington/districts" class="external">{{ locationPurposes["HISTORIC DISTRICT"][0].name }}</a></td>
                     </tr>
                   </template>
 
