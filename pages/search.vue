@@ -697,14 +697,30 @@
                   <template v-if="locationPurposes['HISTORIC DISTRICT']">
                     <tr>
                       <th scope="row">Historic District</th>
-                      <td><a href="https://bloomington.in.gov/historic-bloomington/districts" class="external">{{ locationPurposes["HISTORIC DISTRICT"][0].name }}</a></td>
+                      <td>
+                        <template v-if="locationPurposes['HISTORIC DISTRICT'][0].url">
+                          <a :href="locationPurposes['HISTORIC DISTRICT'][0].url" target="_blank" class="external">{{ locationPurposes["HISTORIC DISTRICT"][0].name }}</a>
+                        </template>
+
+                        <template v-else>
+                          <a href="https://bloomington.in.gov/historic-bloomington/districts" target="_blank" class="external">{{ locationPurposes["HISTORIC DISTRICT"][0].name }}</a>
+                        </template>
+                      </td>
                     </tr>
                   </template>
 
                   <template v-if="locationPurposes['OTHER HISTORIC DISTRICT']">
                     <tr>
                       <th scope="row">Other Historic District</th>
-                      <td>{{ locationPurposes["OTHER HISTORIC DISTRICT"][0].name }}</td>
+                      <td>
+                        <template v-if="locationPurposes['OTHER HISTORIC DISTRICT'][0].url">
+                          <a :href="locationPurposes['OTHER HISTORIC DISTRICT'][0].url" target="_blank" class="external">{{ locationPurposes["OTHER HISTORIC DISTRICT"][0].name }}</a>
+                        </template>
+
+                        <template v-else>
+                          {{ locationPurposes["OTHER HISTORIC DISTRICT"][0].name }}
+                        </template>
+                      </td>
                     </tr>
                   </template>
 
@@ -712,7 +728,7 @@
                     <tr>
                       <th scope="row">Bloomington Historic Sites<br>&amp; Structures Survey Rating:</th>
                       <td>
-                        <a class="external" href="https://bloomington.in.gov/historic-bloomington/demolition-delay">
+                        <a class="external" target="_blank" href="https://bloomington.in.gov/historic-bloomington/demolition-delay">
                           {{ HANDSHARDData.features[0].properties.Rating}}
                         </a>
                       </td>

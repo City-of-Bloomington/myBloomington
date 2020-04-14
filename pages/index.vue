@@ -311,13 +311,7 @@
           />
         </GmapMap>
       </div>
-
-
     </div>
-
-    <!-- <div v-else>
-      <h1>Loading</h1>
-    </div> -->
 
     <exampleModal
       v-show="modals.addressMappedError"
