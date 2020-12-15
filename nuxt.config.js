@@ -2,7 +2,7 @@ const pkg = require('./package')
 require('dotenv').config()
 
 module.exports = {
-  mode:             'universal',
+  telemetry:        false,
   dev:              (process.env.NODE_ENV !== 'production'),
   router: {
     base:           `/${process.env.FE_BASE}`,
@@ -37,6 +37,8 @@ module.exports = {
       }
     ]
   },
+
+
 
   env: {
     repo:                     pkg.repository.url,

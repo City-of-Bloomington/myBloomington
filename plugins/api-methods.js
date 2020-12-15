@@ -150,10 +150,8 @@ Vue.mixin({
               reject(`Select option`)
             } else if(res.data.length <= 20) {
               resolve(res.data)
-              console.dir(`getAddress() Search Result Count: ${res.data.length}`);
             } else {
               reject(`We didn't find an Address for '${address}'.`)
-              console.dir(`getAddress() Search Result Count: ${res.data.length}`);
             }
           })
           .catch((e)  => reject(e))

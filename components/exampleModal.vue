@@ -3,7 +3,7 @@
     <transition name="modal">
       <div class="modal-mask"
            v-show="showModal"
-           @click.native.self="outside">
+           @click="outside">
         <div class="modal-wrapper"
              v-show="showModal">
           <div class="modal-container">

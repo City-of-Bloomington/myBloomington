@@ -1705,6 +1705,19 @@ import footerComponent      from '~/components/footerComponent'
 import loader               from '~/components/loader'
 
 export default {
+  // watchQuery: true,
+  watchQuery(newQuery, oldQuery) {
+    if(newQuery.address != oldQuery.address) {
+      let addressQueryParam = newQuery.address;
+
+      if(addressQueryParam){
+        this.addressSearchAuto = addressQueryParam;
+        this.searchSubmit(addressQueryParam);
+      } else {
+        this.$router.push('index')
+      }
+    }
+  },
   layout: 'result',
   components: {
     loader,
@@ -1723,56 +1736,26 @@ export default {
         vm.addressSearchAuto = addressQueryParam;
         vm.searchSubmit(addressQueryParam);
       } else {
-        vm.$router.replace('index')
+        vm.$router.push('index')
       }
     });
   },
-  data() {
-    // data shared via: universal-methods.js
-    return {
-      todaysDate:            null,
-      tomorrowsDate:         null,
-      mapRef:                this.$vm0,
-      inRoadsData:           null,
-      inRoadsDataNew:        [],
-      infoWindowVisible:     {
-        inRoads: {
-          id:                  null,
-          opened:              false,
-        },
-        parks: {
-          id:                  null,
-          opened:              false,
-        },
-        schools: {
-          id:                  null,
-          opened:              false,
-        },
-        playgrounds: {
-          id:                  null,
-          opened:              false,
-        },
-        safeplaces: {
-          id:                  null,
-          opened:              false,
-        }
-      },
-      titleAddress:          null,
-      expandedMap:           false,
-      showScrollToTopArrow:  false,
-      topSectionPixels:      680,
-      scrolledFromTopAmount: null,
-      viewingHeight:         null,
-    }
-  },
-  beforeCreate: function() {
-    this.loading = true;
-  },
-  created: function() {
+  async fetch(){
+
+    // let addressQueryParam = this.$route.query.address;
+
+    //   if(addressQueryParam){
+    //     console.log('test', addressQueryParam)
+    //     this.addressSearchAuto = addressQueryParam;
+    //     this.searchSubmit(addressQueryParam);
+    //   } else {
+    //     this.$router.push('index')
+    //   }
+
     this.todaysDate     = moment().format('YYYY-MM-DD');
     this.tomorrowsDate  = moment().add(1, 'days').format('YYYY-MM-DD');
 
-    this.getInRoadsData(this.todaysDate, this.tomorrowsDate)
+    await this.getInRoadsData(this.todaysDate, this.tomorrowsDate)
     .then((res) => {
       this.inRoadsData = res;
 
@@ -1845,18 +1828,9 @@ export default {
       console.log(`getInRoadsData Failed 🛑`,
                   `\n\n ${e} \n\n`);
     });
-    
-    this.$nextTick(() => {
-      this.loading = false;
-      if (process.client) {
-        smoothscroll.polyfill();
-        window.addEventListener("resize", this.calcViewingHeight);
-        window.addEventListener("scroll", this.scrolledFromTop);
-      }
-    });
-    
+
     if(!this.cityBoundary) {
-      this.getCityBoundaryGeoJson()
+      await this.getCityBoundaryGeoJson()
       .then((res) => {
         this.setCityBoundary(res);
         console.log(`%c getCityBoundaryGeoJson 🔌 `,
@@ -1869,7 +1843,7 @@ export default {
     }
 
     if(!this.weather) {
-      this.getWeather()
+      await this.getWeather()
       .then((res) => {
         this.$store.dispatch('setWeatherData', res);
         console.log(`%c getWeather 🔌`,
@@ -1882,7 +1856,7 @@ export default {
       });
     }
 
-    this.getSafePlaces()
+    await this.getSafePlaces()
     .then((res) => {
       this.safePlaceResData = res;
       console.log(`getSafePlaces 🔌`);
@@ -1892,7 +1866,7 @@ export default {
                   `\n\n ${e} \n\n`);
     });
 
-    this.getLocalSchools()
+    await this.getLocalSchools()
     .then((res) => {
       this.schoolsResData = res;
       this.schoolTypeToggle = this.schoolTypes.all;
@@ -1904,7 +1878,7 @@ export default {
                   `\n\n ${e} \n\n`);
     });
 
-    this.getPlaygrounds()
+    await this.getPlaygrounds()
     .then((res) => {
       this.playgroundsResData = res;
       console.log(`getPlaygrounds 🔌`);
@@ -1917,7 +1891,7 @@ export default {
     // We are waiting for GIS to update, so ref
     // this data statically.
     //
-    this.getCityOfBloomingtonParks()
+    await this.getCityOfBloomingtonParks()
     .then((res) => {
       this.parksResData = res;
       console.log(`getCityOfBloomingtonParks 🔌`);
@@ -1927,7 +1901,7 @@ export default {
                   `\n\n ${e} \n\n`);
     });
 
-    this.getCouncilDistrictsGeoJson()
+    await this.getCouncilDistrictsGeoJson()
     .then((res) => {
       this.councilDistrictsGeoJson = res;
       console.log(`getCouncilDistrictsGeoJson 🔌`);
@@ -1937,9 +1911,63 @@ export default {
                   `\n\n ${e} \n\n`);
     });
   },
+  data() {
+    // data shared via: universal-methods.js
+    return {
+      todaysDate:            null,
+      tomorrowsDate:         null,
+      mapRef:                this.$vm0,
+      inRoadsData:           null,
+      inRoadsDataNew:        [],
+      infoWindowVisible:     {
+        inRoads: {
+          id:                  null,
+          opened:              false,
+        },
+        parks: {
+          id:                  null,
+          opened:              false,
+        },
+        schools: {
+          id:                  null,
+          opened:              false,
+        },
+        playgrounds: {
+          id:                  null,
+          opened:              false,
+        },
+        safeplaces: {
+          id:                  null,
+          opened:              false,
+        }
+      },
+      titleAddress:          null,
+      expandedMap:           false,
+      showScrollToTopArrow:  false,
+      topSectionPixels:      680,
+      scrolledFromTopAmount: null,
+      viewingHeight:         null,
+    }
+  },
+  beforeCreate: function() {
+    this.loading = true;
+  },
+  created: function() {
+    
+    
+    this.$nextTick(() => {
+      this.loading = false;
+      if (process.client) {
+        smoothscroll.polyfill();
+        window.addEventListener("resize", this.calcViewingHeight);
+        window.addEventListener("scroll", this.scrolledFromTop);
+      }
+    });
+    
+    
+  },
   mounted: function() {
     this.$nextTick(() => {
-      console.dir('RESULT mounted');
       this.calcViewingHeight();
     });
   },

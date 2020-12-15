@@ -96,7 +96,6 @@ Vue.mixin({
                         `\n\n ${e} \n\n`);
           })
         } else {
-          console.dir('search no val');
           this.autoSuggestRes = null;
           this.searchEnteredWarning = false;
         }
@@ -241,7 +240,6 @@ Vue.mixin({
       }
     },
     searchSubmit(input) {
-      console.dir('searchSubmit()')
       this.locationResDataNew = null;
       this.councilDistrict    = null;
       this.districtRep        = null;
@@ -287,11 +285,6 @@ Vue.mixin({
     locationLookup(id) {
       let lookupID = this.addressResData.id || id;
 
-      if(lookupID){
-        console.dir('HAS -- lookupID');
-        console.dir(lookupID);
-      }
-
       if(lookupID) {
         this.getLocation(lookupID)
         .then((res) => {
@@ -306,12 +299,11 @@ Vue.mixin({
           let addressUrlEncoded = encodeURIComponent(this.locationResDataNew.address.streetAddress).replace(/%20/g, "+");
 
           this.getHANDSHARDData(res.address.location_id)
-          .then((res) => { console.log('getHANDSHARDData Data') })
-          .catch((e) => { console.log('getHANDSHARDData Error', e) })
+          // .then((res) => { console.log('getHANDSHARDData Data') })
+          // .catch((e) => {console.log('getHANDSHARDData Error', e) })
 
-          this.$router.replace({
+          this.$router.push({
             path: '/search',
-            // query: { address: addressUrlEncoded}
             query: { address: this.locationResDataNew.address.streetAddress}
           });
 

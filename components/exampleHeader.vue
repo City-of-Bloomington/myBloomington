@@ -1,63 +1,57 @@
 <template>
   <component :is="type">
-    <div :class="[{ contained: contained }]">
-      <a v-if="logo" :href="logo.url" :title="logo.imageAlt">
+    <div :class="['menu-container', { contained: contained }]">
+      <a v-if="logo" class="logo" :href="logo.url" :title="logo.imageAlt">
         <img v-if="logo" :src="logo.image" :alt="logo.imageAlt" />
-
-        <div>
-          <h1
-            v-if="logoHeadings.topHeading"
-            v-html="logoHeadings.topHeading"></h1>
-          <h2
-            v-if="logoHeadings.subHeading"
-            v-html="logoHeadings.subHeading"></h2>
-        </div>
       </a>
 
       <a
         v-if="application"
+        class="name"
         :href="application.url"
         v-html="application.name"
         :target="application.target"
-        :title="application.name"></a>
+        :title="application.name"
+      ></a>
 
-      <nav
-        v-if="navItems"
-        id="navigation"
-        role="navigation"
-        aria-labelledby="navigation">
-        <ul>
-          <li v-for="(item, index) in navItems" :key="index">
-            <a
-              :href="item.href"
-              :class="item.class"
-              :disabled="item.disabled"
-              :title="item.name"
-              :target="item.target"
-              v-html="item.name"></a>
-          </li>
-        </ul>
-      </nav>
+      <div class="nav-items">
+        <nav v-if="navItems" id="navigation" role="navigation" aria-labelledby="navigation">
+          <ul>
+            <li v-for="(item, index) in navItems" :key="index">
+              <a
+                :href="item.href"
+                :class="item.class"
+                :disabled="item.disabled"
+                :title="item.name"
+                :target="item.target"
+                v-html="item.name"
+              ></a>
+            </li>
+          </ul>
+        </nav>
 
-      <slot name="dropdown"></slot>
+        <slot name="dropdown"></slot>
 
-      <nav
-        v-if="subNavItems"
-        role="navigation"
-        id="sub-navigation"
-        aria-labelledby="sub-navigation">
-        <ul>
-          <li v-for="(item, index) in subNavItems" :key="index">
-            <a
-              :href="item.href"
-              :class="item.class"
-              :disabled="item.disabled"
-              :title="item.name"
-              :target="item.target"
-              v-html="item.name"></a>
-          </li>
-        </ul>
-      </nav>
+        <nav
+          v-if="subNavItems"
+          role="sub navigation"
+          id="sub-navigation"
+          aria-labelledby="sub-navigation"
+        >
+          <ul>
+            <li v-for="(item, index) in subNavItems" :key="index">
+              <a
+                :href="item.href"
+                :class="item.class"
+                :disabled="item.disabled"
+                :title="item.name"
+                :target="item.target"
+                v-html="item.name"
+              ></a>
+            </li>
+          </ul>
+        </nav>
+      </div>
     </div>
   </component>
 </template>
@@ -78,8 +72,8 @@ export default {
     type: {
       type: String,
       default: "header",
-      validator: value => {
-        return value.match(/(header)/)
+      validator: (value) => {
+        return value.match(/(header)/);
       },
     },
     /**
@@ -114,13 +108,6 @@ export default {
       required: true,
     },
     /**
-     * Headings of the logo.
-     */
-    logoHeadings: {
-      type: Object,
-      default: null,
-    },
-    /**
      * Determines if the header should fully expand or be contained.
      */
     contained: {
@@ -128,99 +115,78 @@ export default {
       default: false,
     },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
 header {
+  position: fixed;
   display: flex;
   flex-wrap: wrap;
   font-family: $font-text;
   width: 100%;
   background: white;
   border-top: 4px solid $color-blue;
-  padding: 15px 20px 0 20px;
+  // border-bottom: 1px solid $color-grey;
+  padding: 15px 20px;
 
-  div {
-    &:first-of-type {
-      display: flex;
-      flex-wrap: wrap;
-      width: 100%;
+  .menu-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+
+    &.contained {
       margin: 0 auto;
+      width: 1080px;
 
-      &.contained {
-        margin: 0 auto;
-        width: 1080px;
-
-        nav {
-          &[role="sub navigation"] {
-            margin: 15px 0 0 0;
-          }
+      nav {
+        &[role="sub navigation"] {
+          margin: 15px 0 0 0;
         }
       }
     }
-  }
 
-  a {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    margin: 0 10px;
-    padding: 0;
+    a {
+      text-decoration: none;
 
-    &:first-of-type {
-      margin: 0;
+      &.logo {
+        margin: 0 20px 0 0;
 
-      img {
-        margin: 0 10px 0 0;
-        width: 55px;
-        height: 55px;
+        @media (max-width: 767px) {
+          background-image: url("../assets/images/cob-badge.svg");
+          height: 30px;
+          width: 30px;
+          margin: 0 10px 0 0;
+
+          img {
+            display: none;
+          }
+        }
+
+        img {
+          height: 55px;
+        }
       }
 
-      div {
-        flex-direction: column;
-      }
+      &.name {
+        border-radius: 0;
+        color: $text-color;
+        font-size: 14px;
+        text-transform: uppercase;
+        font-weight: 600;
+        border-left: 2px solid $color-grey;
+        padding: 0 0 0 20px;
 
-      h1,
-      h2 {
-        margin: 0;
-        padding: 0;
-        width: auto;
-      }
-
-      h1 {
-        letter-spacing: $spacing-s;
-        font-size: $size-m + 2px;
-        font-weight: $weight-semi-bold;
-        line-height: $size-m + 5px;
-        color: $color-blue;
-      }
-
-      h2 {
-        letter-spacing: $spacing-s;
-        font-size: $size-m;
-        font-weight: $weight-normal;
-        line-height: $size-m + 5px;
-        color: tint($color-blue, 20%);
+        @media (max-width: 767px) {
+          padding: 0 0 0 10px;
+        }
       }
     }
 
-    &:nth-child(2) {
-      position: relative;
-      margin: 0 0 0 20px;
-      color: tint($color-slate, 20%);
-      letter-spacing: $spacing-s;
-      font-size: $size-m;
-      font-weight: $weight-normal;
-      line-height: $size-m + 5px;
-
-      &:before {
-        position: absolute;
-        content: "";
-        height: $size-l;
-        left: -10px;
-        border-left: 1px solid tint($color-slate, 20%);
-      }
+    .nav-items {
+      display: flex;
+      margin: 0 0 0 auto;
     }
   }
 
@@ -228,30 +194,48 @@ header {
     display: flex;
     align-items: center;
     align-self: center;
-    margin: 0 0 0 auto;
+    // margin: 0 0 0 auto;
 
     &.navigation-dropdown {
       margin: 0 0 0 20px;
+
+      ::v-deep ul {
+        box-shadow: 0 1px 5px 0 rgba(70, 70, 70, 0.164);
+
+        li {
+          padding: 5px 10px;
+
+          a {
+            color: $text-color;
+          }
+        }
+      }
     }
 
     &:not(.navigation-dropdown) {
+      margin: 0 0 0 auto;
+
       ul {
         display: flex;
         align-items: center;
         align-self: center;
-        margin: 0 0 0 auto;
+        margin: 0;
         padding: 0;
         list-style: none;
 
         li {
-          margin: 0 15px 0 0;
+          font-size: 16px;
+          margin: 0 20px 0 0;
 
           &:last-of-type {
             margin: 0;
           }
 
           a {
-            color: tint($color-slate, 20%);
+            font-size: 16px;
+            width: auto;
+            height: auto;
+            color: $text-color;
 
             &:hover {
               text-decoration: underline;
@@ -281,53 +265,3 @@ header {
   }
 }
 </style>
-
-<docs>
-  ```jsx
-    <fn1-header
-      :logo="{
-        url:      'http://google.com',
-        image:    './icons/city-of-bloomington-logo.svg',
-        imageAlt: 'City of Bloomington, IN'
-      }"
-
-      :logoHeadings="{
-        topHeading:   'Bloomington.in.gov',
-        subHeading:   'John Hamilton, Mayor',
-      }"
-
-      :application="{
-        name: 'Time Track',
-        url:  'https://bloomington.in.gov/'
-      }"
-
-      :navItems="[
-        {name: 'Cases',     href: 'https://google.com/', disabled: true},
-        {name: 'Locations', href: '#'},
-        {name: 'Datasets',  href: '#'},
-        {name: 'About',     href: '#'},
-        {name: 'Misc.',     href: '#'}
-      ]"
-
-      :subNavItems="[
-        {name: 'Sub-Cases',     href: 'https://google.com/', disabled: true},
-        {name: 'Sub-Locations', href: '#'},
-        {name: 'Sub-Datasets',  href: '#'},
-        {name: 'Sub-About',     href: '#'},
-        {name: 'Sub-Misc.',     href: '#'}
-      ]">
-
-      <fn1-dropdown
-        slot="dropdown"
-        text="Dropdown"
-        navAlign="right"
-        :navItems="[
-          {name: 'Case',     href: 'https://google.com/', target: '_blank'},
-          {name: 'Location', href: '#'},
-          {name: 'Datasets', href: '#'},
-          {name: 'About',    href: '#'},
-          {name: 'Misc.',    href: '#'}
-        ]"/>
-    </fn1-header>
-  ```
-</docs>
