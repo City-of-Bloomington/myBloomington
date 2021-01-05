@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@nuxtjs/style-resources": "^0.1.2",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "cob-design-system": "git+https://github.com/City-of-Bloomington/design-system.git",
     "cross-env": "^5.2.1",
     "dotenv": "^8.1.0",
