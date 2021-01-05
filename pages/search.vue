@@ -844,6 +844,8 @@
               <blockquote slot="excerpt">
                 <p>Please see <a class="external" target="_blank" alt="Trash &amp; Recycling Pickup" :href="`${baseUrl}trash`">Trash &amp; Recycling Pickup</a> for details.</p>
 
+                <p><fn1-badge variant="success">New!</fn1-badge> Find out more by using <a target="_blank" class="external" href="https://api.recollect.net/r/area/bloomingtonin" title="City of Bloomington, Indian - ReCollect">ReCollect</a>.</p>
+
                 <template v-if="locationResDataNew.locations[0].trash_day || locationResDataNew.locations[0].recycle_week">
                   <p><strong>Note:</strong> Some conditions <strong>may cause delays to the schedule below.</strong></p>
                 </template>
