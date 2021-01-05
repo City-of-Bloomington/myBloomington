@@ -11,6 +11,8 @@ $color-home: #7D83FF;
 $color-prmt: #007FFF;
 $color-shtr: darken(#1AFFD5, 20%);
 
+$border-default: 1px solid $color-grey-light;
+
 [v-cloak] { display: none; }
 
 html,

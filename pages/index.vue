@@ -368,21 +368,11 @@ export default {
       if(addressQueryParam){
         vm.addressSearchAuto = addressQueryParam;
         vm.searchSubmit(addressQueryParam);
-      } else {
-        vm.$router.replace('index')
       }
     });
   },
-  data() {
-    // data shared via: universal-methods.js
-    return {}
-  },
-  created: function() {
-    this.$nextTick(() => {
-      this.loading = true;
-    });
-
-    this.getCityBoundaryGeoJson()
+  async fetch(){
+    await this.getCityBoundaryGeoJson()
     .then((res) => {
       this.setCityBoundary(res);
       console.log(`%c getCityBoundaryGeoJson 🔌`,
@@ -394,7 +384,7 @@ export default {
                   `\n\n ${e} \n\n`);
     });
 
-    this.getWeather()
+    await this.getWeather()
     .then((res) => {
       this.$store.dispatch('setWeatherData', res);
       console.log(`%c getWeather 🔌`,
@@ -405,47 +395,45 @@ export default {
                   this.consoleLog.error
                   `\n\n ${e} \n\n`);
     });
-
-    // this.getHANDSHARDData(17215)
-    // .then((res) => { console.log('getHANDSHARDData', res)})
-    // .catch((e) => { console.log('getHANDSHARDData', e) })
+  },
+  data() {
+    // data shared via: universal-methods.js
+    return {}
+  },
+  created: function() {
+    this.$nextTick(() => {
+      this.loading = true;
+    });
   },
   mounted: function() {
     this.$nextTick(() => {
       this.loading = false;
     });
   },
-  updated: function() {
-    // this.$nextTick(() => {
-    // // this causes woes for tab-accessibility result selection
-    //   this.$refs.addressSearch.$el.children[0].focus();
-    // });
-  },
-  watch:    {
-    $route: function (to, from) {
-      let addressToQueryParam   = to.query.address,
-          addressFromQueryParam = from.query.address;
+  // watch:    {
+  //   $route: function (to, from) {
+  //     let addressToQueryParam   = to.query.address,
+  //         addressFromQueryParam = from.query.address;
 
-      if(addressToQueryParam !== addressFromQueryParam){
-        this.addressSearchAuto = addressToQueryParam;
-        this.searchSubmit(addressToQueryParam);
-      } else {
-        this.$router.replace('index');
-      }
-    }
-  },
-  computed: {},
-  methods:  {}
+  //     if(addressToQueryParam !== addressFromQueryParam){
+  //       this.addressSearchAuto = addressToQueryParam;
+  //       this.searchSubmit(addressToQueryParam);
+  //     } else {
+  //       this.$router.replace('index');
+  //     }
+  //   }
+  // },
 }
 </script>
 
 <style lang="scss" scoped>
   .homepage {
+    top: 100px;
     position: relative;
     display: flex;
     flex-wrap: wrap;
     background-color: $color-blue;
-    height: calc(100vh - 89px); // 89 = header height
+    height: calc(100vh - 100px); // 100 = header height
     padding: 50px 20px 0 20px;
 
     .container {

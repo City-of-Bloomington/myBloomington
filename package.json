@@ -2,7 +2,7 @@
   "name": "myBloomington",
   "prettyName": "My Bloomington",
   "company": "City of Bloomington, Indiana - ITS",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "myBloomington provides information related to a given street address.",
   "author": "adabutch",
   "repository": {
@@ -30,7 +30,7 @@
     "lodash.debounce": "^4.0.8",
     "marker-clusterer-plus": "^2.1.4",
     "moment": "^2.24.0",
-    "nuxt": "^2.10.0",
+    "nuxt": "^2.14.7",
     "proj4": "^2.5.0",
     "smoothscroll-polyfill": "^0.4.4",
     "vue-meta": "^2.3.0",

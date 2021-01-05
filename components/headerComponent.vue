@@ -2,103 +2,74 @@
   <div>
     <example-header
       :logo="{
-        url:          `${baseUrl}`,
-        image:        `${headerLogo}`,
-        imageAlt:     `${cityName}`
+        url: `${cobSiteUrl}`,
+        image: `${headerLogo}`,
+        imageAlt: `${nameOfCity}`
       }"
-
-      :logoHeadings="{
-        topHeading:   `${logoHeading}`,
-        subHeading:   `${logoSubHeading}`,
-      }"
-
-      :application="{
-        name:         `${appName}`,
-        url:          `${baseUrl}${frontEndBase}`
-      }"
-
-      :navItems="[
-        { name:       'Help',
-          href:       'help' },
-        { name:       'Feedback',
-          href:       `${baseUrl}ureport/miscellaneous/53`,
-          target:     '_blank' }
-      ]"
-      :subNavItems="null">
+      :application="showAppUrl"
+      :navItems="showHeaderUrls"
+    >
     </example-header>
   </div>
 </template>
 
 <script>
-import exampleHeader  from '~/components/exampleHeader'
+import exampleHeader from "~/components/exampleHeader.vue";
+import { mapFields } from "vuex-map-fields";
 
 export default {
-  components: {exampleHeader},
+  props: {
+    redirect: {
+      type: Boolean,
+      default: false
+    }
+  },
+  components: { exampleHeader },
   data() {
     return {
-      logoHeading:        process.env.logoHeading,
-      logoSubHeading:     process.env.logoSubHeading,
-      headerLogo:         'city-of-bloomington-logo.svg'
+      headerLogo: require("../assets/images/cob-logo-horizontal.svg")
+    };
+  },
+  computed: {
+    showHeaderUrls() {
+      return [
+        {
+        name: "Help",
+        href: `help`
+      },{
+        name: "Feedback",
+        href: `https://bloomington.in.gov/ureport/miscellaneous/53`
+      }];
+    },
+    showAppUrl() {
+      return {
+          name: `${process.env.appName}`,
+          url: `/${process.env.frontEndBase}`
+        }
+    },
+    cobSiteUrl() {
+      return process.env.baseUrl;
+    },
+    nameOfCity() {
+      return process.env.cityName;
+    },
+    api() {
+      return process.env.apiHost;
+    },
+    client() {
+      return process.env.clientHost;
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
-  header {
-    padding: 15px 20px !important;
-    border-bottom: 1px solid $color-grey;
+header {
+  z-index: 10;
+  border-bottom: $border-default;
 
-    ::v-deep a {
-      &:first-of-type {
-        img {
-          @media (max-width: 575px) {
-            width: 35px !important;
-            height: 35px !important;
-            margin: 0 !important;
-          }
-        }
-      }
-    }
+  .auth {
+    padding: 5px 10px;
   }
-
-  @media (max-width: 575px) {
-    header {
-      ::v-deep div {
-
-        a > :not(nav) {
-        }
-      }
-
-      ::v-deep a {
-
-        h1, h2 {
-          display: none;
-        }
-      }
-    }
-  }
-
-  @media (min-width: 576px) and (max-width: 767px) {
-    header {
-      ::v-deep a {
-        &:first-of-type {
-
-          img {
-            width: 35px !important;
-            height: 35px !important;
-            margin: 0 !important;
-          }
-        }
-
-        h1, h2 {
-          display: none;
-        }
-      }
-    }
-  }
-
-  @media (min-width: 768px) and (max-width: 991px) {
-
-  }
+}
 </style>

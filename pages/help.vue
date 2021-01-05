@@ -72,10 +72,11 @@ export default {
 
 <style lang="scss" scoped>
 .wrapper {
+  position: relative;
+  top: 100px;
   padding: 50px 0 0 0;
-}
 
-h1, h2, h3, h4, p, ul {
+  h1, h2, h3, h4, p, ul {
   margin: 0 0 20px 0;
 }
 
@@ -91,6 +92,9 @@ ul {
     color: $text-color;
   }
 }
+}
+
+
 
 @media (max-width: 575px) {
   .wrapper {
