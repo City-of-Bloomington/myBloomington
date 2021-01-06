@@ -8,6 +8,22 @@ module.exports = {
     base:           `/${process.env.FE_BASE}`,
   },
 
+  pwa: {
+    icon: {
+      iconSrc: './static/logo.png',
+      sizes: [16, 120, 144, 152, 192, 384, 512],
+    },
+
+    manifest: {
+      name: 'myBloomington - City of Bloomington, Indiana',
+      short_name: 'myBloomington',
+      theme_color: '#1e59ae',
+      background_color: '#1e5aae',
+      display: 'standalone',
+      description: 'myBloomington is a service offered by the City of Bloomington, Indiana ITS Department to find local information related to a street address.'
+    },
+  },
+
   head: {
     title:          pkg.name,
     htmlAttrs: {
@@ -28,10 +44,6 @@ module.exports = {
       { src: 'https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.6.0/polyfill.min.js' }
     ],
     link: [
-      { rel:        'icon',
-        type:       'image/x-icon',
-        href:       '/favicon.ico'
-      },
       { rel:        'stylesheet',
         href:       'https://fonts.googleapis.com/css?family=Abel'
       }
@@ -95,10 +107,13 @@ module.exports = {
     ]
   },
 
-  modules: ['@nuxtjs/style-resources'],
+  modules: [
+    '@nuxtjs/style-resources',
+  ],
 
   buildModules: [
-    '@nuxtjs/moment'
+    '@nuxtjs/moment',
+    '@nuxtjs/pwa'
   ],
 
   babel: {
