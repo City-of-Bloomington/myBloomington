@@ -7,100 +7,98 @@ images:
     build:
       disabled: false
 deployments:
-# dev deployment handled by patches
-- name: mybloomington
-  namespace: production
-  helm:
-    chart:
-      name: ./charts/myBloomington
-    values:
-      environment:
-        FE_BASE: mybloomington
-        NODE_ENV: production
-      image:
-        npmscript: build+start
-        tag: ds-${DEVSPACE_TIMESTAMP}-${DEVSPACE_GIT_COMMIT}
-      ingress:
-        hosts:
-        - host: kubeproxy.bloomington.in.gov
-          paths: /mybloomington
-    valuesFiles:
-    - ./charts/myBloomington/cob.values.yaml
-    replaceImageTags: false
-    v2: false
+  # dev deployment handled by patches
+  - name: mybloomington
+    namespace: prod
+    helm:
+      chart:
+        name: ./charts/myBloomington
+      values:
+        environment:
+          FE_BASE: mybloomington
+          NODE_ENV: production
+        image:
+          npmscript: build+start
+          tag: ds-${DEVSPACE_TIMESTAMP}-${DEVSPACE_GIT_COMMIT}
+        ingress:
+          hosts:
+            - host: kubeproxy.bloomington.in.gov
+              paths: /mybloomington
+      valuesFiles:
+        - ./charts/myBloomington/cob.values.yaml
+      replaceImageTags: false
+      v2: false
 
 # options for file sync
 dev:
   sync:
-  - imageName: mybloomington
-    labelSelector:
-      app.kubernetes.io/instance: mybloomington
-      app.kubernetes.io/name: mybloomington
-    localSubPath: .
-    containerPath: /home/node/mybloomington
-    downloadExcludePaths:
-    - .nuxt/
-    - node_modules/
-    - .package.json
-    uploadExcludePaths:
-    - node_modules/
-    - .nuxt/
-    - .devspace/
-    - .package.json
+    - imageName: mybloomington
+      labelSelector:
+        app.kubernetes.io/instance: mybloomington
+        app.kubernetes.io/name: mybloomington
+      localSubPath: .
+      containerPath: /home/node/mybloomington
+      downloadExcludePaths:
+        - .nuxt/
+        - node_modules/
+        - .package.json
+      uploadExcludePaths:
+        - node_modules/
+        - .nuxt/
+        - .devspace/
+        - .package.json
 
 vars:
-- name: BANDIT_USERNAME
-  question: Your username on bandit? (likely the same as your AD username)
-  source: input
-- name: PROD_IMGTAG
-  question: "Please enter the built image tag you wish to use for this production deployment:"
-  source: input
+  - name: BANDIT_USERNAME
+    question: Your username on bandit? (likely the same as your AD username)
+    source: input
+  - name: PROD_IMGTAG
+    question: "Please enter the built image tag you wish to use for this production deployment:"
+    source: input
 
 profiles:
-- name: prod
-  patches:
-  # figure out a way to reset config vars between runs - can't prompt for prod image tag otherwise
-  # not a big deal to have devspace build the prod images as well i guess
-  # - op: remove
-  #   path: images.mybloomington.dockerfile
-  - op: replace
-    path: images.mybloomington.tag
-    value: PROD-${DEVSPACE_GIT_COMMIT}
-  - op: replace
-    path: deployments[0].helm.values.image.tag
-    value: PROD-${DEVSPACE_GIT_COMMIT}
-  # - op: replace
-  #   path: images.mybloomington.build.disabled
-  #   value: true
-  - op: remove
-    path: deployments[0].helm.values.ingress.hosts[0].paths
-  - op: add
-    path: deployments[0].helm.values.ingress.hosts[0].paths
-    value:
-      -  "/mybloomington"
+  - name: prod
+    patches:
+      # figure out a way to reset config vars between runs - can't prompt for prod image tag otherwise
+      # not a big deal to have devspace build the prod images as well i guess
+      # - op: remove
+      #   path: images.mybloomington.dockerfile
+      - op: replace
+        path: images.mybloomington.tag
+        value: PROD-${DEVSPACE_GIT_COMMIT}
+      - op: replace
+        path: deployments[0].helm.values.image.tag
+        value: PROD-${DEVSPACE_GIT_COMMIT}
+      # - op: replace
+      #   path: images.mybloomington.build.disabled
+      #   value: true
+      - op: remove
+        path: deployments[0].helm.values.ingress.hosts[0].paths
+      - op: add
+        path: deployments[0].helm.values.ingress.hosts[0].paths
+        value:
+          - "/mybloomington"
 
-
-
-- name: dev
-  patches:
-  - op: replace
-    path: deployments[0].namespace
-    value: dev
-  - op: replace
-    path: deployments[0].helm.values.environment.NODE_ENV
-    value: development
-  - op: replace
-    path: deployments[0].helm.values.environment.FE_BASE
-    value: mybloomington
-  - op: replace
-    path: deployments[0].helm.values.image.npmscript
-    value: devkube
-  - op: replace
-    path: deployments[0].helm.values.ingress.hosts[0].host
-    value: kubetest.bloomington.in.gov
-  - op: remove
-    path: deployments[0].helm.values.ingress.hosts[0].paths
-  - op: add
-    path: deployments[0].helm.values.ingress.hosts[0].paths
-    value:
-      -  "/mybloomington"
+  - name: dev
+    patches:
+      - op: replace
+        path: deployments[0].namespace
+        value: dev
+      - op: replace
+        path: deployments[0].helm.values.environment.NODE_ENV
+        value: development
+      - op: replace
+        path: deployments[0].helm.values.environment.FE_BASE
+        value: mybloomington
+      - op: replace
+        path: deployments[0].helm.values.image.npmscript
+        value: devkube
+      - op: replace
+        path: deployments[0].helm.values.ingress.hosts[0].host
+        value: kubetest.bloomington.in.gov
+      - op: remove
+        path: deployments[0].helm.values.ingress.hosts[0].paths
+      - op: add
+        path: deployments[0].helm.values.ingress.hosts[0].paths
+        value:
+          - "/mybloomington"
