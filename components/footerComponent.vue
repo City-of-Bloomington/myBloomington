@@ -14,7 +14,8 @@
         
         <p>The information provided comes from the <strong>City of Bloomington’s Master Address Database, Geographic Information System (GIS)</strong> and other related databases unless otherwise noted.</p>
 
-        <p>If you encounter a problem with an address within the City limits or another issues, please let us know by reporting your issue though <a href="https://bloomington.in.gov/ureport/miscellaneous/53" target="_blank">uReport</a>.</p>
+        <p>If you encounter a problem with an address within the City limits or another issue, please let us know by reporting your issue through <a href="https://bloomington.in.gov/ureport/miscellaneous/53" 
+        class="external" target="_blank">uReport</a>.</p>
       </div>
     </div>
   </footer>

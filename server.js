@@ -9,8 +9,8 @@ port                = process.env.NUXT_PORT,
 isProd              = (process.env.NODE_ENV === 'production'),
 nuxt                = new Nuxt(config);
 options             = {
-  key:  fs.readFileSync('certs/server.key', 'utf8'),
-  cert: fs.readFileSync('certs/wildcard.bloomington.in.gov-fullChain.crt', 'utf8')
+  key: fs.readFileSync(process.env.CERT_KEY_PATH, "utf8"),
+  cert: fs.readFileSync(process.env.CERT_CRT_PATH, "utf8")
 },
 envMsg              = config.dev ? 'Development' : 'Production',
 devUrl              = `https://dhcp-cityhall-xxx-xxx.bloomington.in.gov`,
