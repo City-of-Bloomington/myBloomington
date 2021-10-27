@@ -299,7 +299,7 @@
           }">
 
           <GmapPolygon
-            v-if="cityBoundary"
+            v-if="cityBoundary && cityBoundary.length"
             :paths="cityBoundary"
             :options="{
               strokeColor:    'rgb(30, 90, 174)',
@@ -428,12 +428,12 @@ export default {
 
 <style lang="scss" scoped>
   .homepage {
-    top: 100px;
+    top: 94px;
     position: relative;
     display: flex;
     flex-wrap: wrap;
     background-color: $color-blue;
-    height: calc(100vh - 100px); // 100 = header height
+    height: calc(100vh - 94px); // 100 = header height
     padding: 50px 20px 0 20px;
 
     .container {
@@ -576,7 +576,7 @@ export default {
   @media (max-height: 777px) {
     .homepage {
       padding: 20px 0 0 0;
-      height: calc(100vh - 90px) !important; // 69 = header height
+      height: calc(100vh - 65px) !important; // 65 = header height
 
       .container {
         padding: 0 20px;
@@ -630,8 +630,9 @@ export default {
 
   @media (max-width: 575px) {
     .homepage {
+      top: 65px;
       padding: 20px 0 0 0;
-      height: calc(100vh - 90px) !important; // 69 = header height
+      max-height: calc(100vh - 65px) !important; // 65 = header height
 
       .container {
         padding: 0 20px;
@@ -685,14 +686,16 @@ export default {
 
   @media (max-device-width: 575px) {
     .homepage {
-      height: calc(100vh - 70px) !important; // 69 = header height
+      top: 65px;
+      max-height: calc(100vh - 65px) !important; // 69 = header height
     }
   }
 
   @media (min-width: 576px) and (max-width: 767px) {
     .homepage {
+      top: 65px;
       padding: 20px 0 0 0;
-      height: calc(100vh - 69px); // 69 = header height
+      height: calc(100vh - 65px); // 65 = header height
 
       .container {
         padding: 0 20px;
@@ -746,8 +749,9 @@ export default {
 
   @media (min-width: 768px) and (max-width: 991px) {
     .homepage {
+      top: 94px;
       padding: 20px 0 0 0;
-      height: calc(100vh - 69px); // 69 = header height
+      height: calc(100vh - 94px); 
 
       .container {
         padding: 0 20px;
@@ -801,8 +805,6 @@ export default {
 
   @media (min-width: 992px) and (max-width: 1300px) {
     .homepage {
-
-
       .folks {
         .row {
           &:nth-of-type(2) {

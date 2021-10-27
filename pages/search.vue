@@ -47,7 +47,7 @@
         }">
 
         <GmapPolygon
-          v-if="cityBoundary"
+          v-if="cityBoundary && cityBoundary.length"
           :paths="cityBoundary"
           :options="{
             strokeColor:    'rgb(30, 90, 174)',
@@ -144,7 +144,7 @@
           :minimumClusterSize="4">
           <template
             v-for="p, i in nearbyParkMarkers()"
-            v-if="mapMarkerToggle.parks">
+            v-if="parksResData && mapMarkerToggle.parks">
             <GmapMarker
               @click="markerToWindowClick('parks', p.parkid)"
               :animation="2"
@@ -293,24 +293,26 @@
             </GmapInfoWindow>
           </template>
 
+          
+
           <template
             v-for="s, i in nearbySafePlaceMarkers()"
             v-if="mapMarkerToggle.safePlaces">
             <GmapMarker
               @click="markerToWindowClick('safeplaces', s.id)"
               :animation="2"
-              :label="{text: `${s.gsx$name.$t}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: 'white', fontWeight: '600'}"
+              :label="{text: `${s.attributes.Name}`, fontFamily: 'IBM Plex Sans,Helvetica,Arial,sans-serif', fontSize: '18px', color: 'white', fontWeight: '600'}"
               :icon="{url: 'marker-safe-place-alt.svg', labelOrigin: {x: 28, y: 65}, size: {width: 50, height: 50, f: 'px', b: 'px'}, scaledSize: {width: 50, height: 50, f: 'px', b: 'px'}}"
-              :position="{lat: Number(s.gsx$lat.$t), lng: Number(s.gsx$lon.$t)}"
+              :position="{lat: Number(s.attributes.Latitude), lng: Number(s.attributes.Longitude)}"
               :clickable="true"
               :draggable="false"
             />
 
             <GmapInfoWindow
-              v-if="infoWindowVisible.safeplaces.id == s.id"
+              v-if="infoWindowVisible.safeplaces.id == s.attributes.id"
               :opened="infoWindowVisible.safeplaces.opened"
               @closeclick="infoWindowVisible.safeplaces.opened=false"
-              :position="{lat: Number(s.gsx$lat.$t), lng: Number(s.gsx$lon.$t)}"
+              :position="{lat: Number(s.attributes.Latitude), lng: Number(s.attributes.Longitude)}"
               :options="{
                 borderColor: '#f02f02',
               }">
@@ -320,11 +322,11 @@
               </div>
               
               <div class="info-window">
-                <h1>{{ s.gsx$name.$t }}</h1>
+                <h1>{{ s.attributes.Name}}</h1>
                 <ul>
-                  <li v-if="s.gsx$address.$t != ''">
+                  <li v-if="s.attributes.Name != ''">
                     <strong>Address:</strong>&nbsp;
-                    {{ s.gsx$address.$t }}
+                    {{ s.attributes.Name }}
                   </li>
                 </ul>
               </div>
@@ -341,6 +343,7 @@
                 <span>Toggle Map Markers:</span>
                 <legend class="sr-only">Toggle Map Markers:</legend>
                 <div
+                  v-if="parksResData"
                   class="inner-wrapper"
                   @click="mapMarkerToggle.parks = !mapMarkerToggle.parks">
                   <input v-model="mapMarkerToggle.parks"
@@ -352,6 +355,7 @@
                 </div>
 
                 <div
+                  v-if="playgroundsResData"
                   class="inner-wrapper"
                   @click="mapMarkerToggle.playgrounds = !mapMarkerToggle.playgrounds">
                   <input v-model="mapMarkerToggle.playgrounds"
@@ -374,6 +378,7 @@
                 </div>
 
                 <div
+                  v-if="schoolsResData"
                   class="inner-wrapper"
                   @click="mapMarkerToggle.schools = !mapMarkerToggle.schools">
                   <input v-model="mapMarkerToggle.schools"
@@ -384,8 +389,9 @@
                   <label for="schools">Schools</label>
                 </div>
 
-                <div 
-                  lass="inner-wrapper"
+                <div
+                  v-if="inRoadsData" 
+                  class="inner-wrapper"
                   @click="mapMarkerToggle.inRoads = !mapMarkerToggle.inRoads">
                   <input v-model="mapMarkerToggle.inRoads"
                          value="inroads"
@@ -652,7 +658,7 @@
                     v-if="playgroundsResData"
                     value="playgrounds">Playgrounds</option>
                   <option
-                    v-if="safePlaceResData"
+                    v-if="safePlaceResData && safePlaceResData.features.length"
                     value="safe-places">Safe Places</option>
                   <option
                     v-if="schoolsResData"
@@ -902,77 +908,6 @@
               </template>
             </dataSectionComponent>
 
-            <!-- govt online -->
-            <dataSectionComponent
-              v-if="locations"
-              id="govt-online"
-              title="Government Online">
-
-              <div
-                slot="locations"
-                class="locations">
-                <div class="location" v-for="l, i in locations">
-                  <ul>
-                    <li>{{ l.type }}</li>
-                    <li>{{ l.location }}</li>
-                  </ul>
-
-                  <table>
-                    <caption class="sr-only">
-                      Online Government Information
-                    </caption>
-                    <thead class="sr-only">
-                      <tr>
-                        <th scope="col">Key/Value</th>
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      <tr>
-                        <th scope="row">
-                          Web:
-
-                          <a
-                            class="external"
-                            :href="l.website.url"
-                            target="_blank"
-                            :alt="l.website.text">
-                           {{ l.website.text }}
-                         </a>
-                        </th>
-                      </tr>
-
-                      <tr>
-                        <th scope="row">
-                          Socials:
-                          <template v-for="s, i in l.socials">
-                            <a
-                              class="external"
-                              target="_blank"
-                              :href="s.url"
-                              :alt="s.text">
-                              <template v-if="s.type === 'instagram'">
-                                <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="instagram" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-instagram fa-w-14 fa-3x"><path fill="currentColor" d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z" class=""></path></svg>
-                              </template>
-                              <template v-if="s.type === 'twitter'">
-                                <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-twitter fa-w-16 fa-3x"><path fill="currentColor" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z" class=""></path></svg>
-                              </template>
-                              <template v-if="s.type === 'facebook'">
-                                <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="facebook-f" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="svg-inline--fa fa-facebook-f fa-w-10 fa-3x"><path fill="currentColor" d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z" class=""></path></svg>
-                              </template>
-                              <template v-if="s.type === 'youtube'">
-                                <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="youtube" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="svg-inline--fa fa-youtube fa-w-18 fa-3x"><path fill="currentColor" d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z" class=""></path></svg>
-                              </template>
-                            </a>
-                          </template>
-                        </th>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </dataSectionComponent>
-
             <!-- officials -->
             <dataSectionComponent
               v-if="!cityLimitsCheck"
@@ -993,7 +928,6 @@
               <div
                 slot="officials"
                 class="contacts">
-
                 <div class="row">
 
                   <!-- Mayor -->
@@ -1065,6 +999,7 @@
                       }">
 
                       <GmapMap
+                        v-if="districtRepGeoCoords"
                         slot="map"
                         ref="districtMap"
                         map-type-id="roadmap"
@@ -1203,8 +1138,7 @@
                 <fn1-tab
                   v-if="parksResData"
                   name="Parks"
-                  id="parks"
-                  :selected="true">
+                  id="parks">
                   <section class="parks">
                     <header>
                       <div>
@@ -1353,8 +1287,9 @@
                 <!-- safe places -->
                 <fn1-tab
                   id="safe-places"
-                  v-if="safePlaceResData"
-                  name="Safe Places">
+                  v-if="safePlaceResData && safePlaceResData.features.length"
+                  name="Safe Places"
+                  selected>
                   <section class="safe-places">
                     <header>
                       <div>
@@ -1391,12 +1326,12 @@
 
                       <tbody>
                         <template
-                          v-for="p, i in viaDistance(safePlaceResData.feed.entry)"
+                          v-for="p, i in viaDistance(safePlaceResData.features)"
                           v-if="i <= 10">
-                          <template v-if="p.gsx$lat.$t && p.gsx$lon.$t">
+                          <template v-if="p.attributes.Latitude,p.attributes.Longitude">
                             <tr
                               :class="[{'clickable': p}]"
-                              @click="goToAddress(p.gsx$lat.$t, p.gsx$lon.$t)">
+                              @click="goToAddress(p.attributes.Latitude,p.attributes.Longitude)">
                               <td>
                                 {{ p.dist }} mi *
                               </td>
@@ -1405,7 +1340,7 @@
                                   href="#"
                                   class="external"
                                   @click.prevent>
-                                  {{ p.gsx$name.$t }}
+                                  {{ p.attributes.Name }}
                                 </a>
                               </td>
                               <td>
@@ -1417,7 +1352,7 @@
                           <template v-else>
                             <tr>
                               <td>{{ p.dist }} mi *</td>
-                              <td>{{ p.gsx$name.$t }}</td>
+                              <td>{{ p.attributes.Name }}</td>
                               <td>- - -</td>
                             </tr>
                           </template>
@@ -1628,6 +1563,77 @@
                   </tr>
                 </tbody>
               </table>
+            </dataSectionComponent>
+
+             <!-- govt online -->
+            <dataSectionComponent
+              v-if="locations"
+              id="govt-online"
+              title="Government Online">
+
+              <div
+                slot="locations"
+                class="locations">
+                <div class="location" v-for="l, i in locations">
+                  <ul>
+                    <li>{{ l.type }}</li>
+                    <li>{{ l.location }}</li>
+                  </ul>
+
+                  <table>
+                    <caption class="sr-only">
+                      Online Government Information
+                    </caption>
+                    <thead class="sr-only">
+                      <tr>
+                        <th scope="col">Key/Value</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      <tr>
+                        <th scope="row">
+                          Web:
+
+                          <a
+                            class="external"
+                            :href="l.website.url"
+                            target="_blank"
+                            :alt="l.website.text">
+                           {{ l.website.text }}
+                         </a>
+                        </th>
+                      </tr>
+
+                      <tr>
+                        <th scope="row">
+                          Socials:
+                          <template v-for="s, i in l.socials">
+                            <a
+                              class="external"
+                              target="_blank"
+                              :href="s.url"
+                              :alt="s.text">
+                              <template v-if="s.type === 'instagram'">
+                                <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="instagram" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-instagram fa-w-14 fa-3x"><path fill="currentColor" d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z" class=""></path></svg>
+                              </template>
+                              <template v-if="s.type === 'twitter'">
+                                <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-twitter fa-w-16 fa-3x"><path fill="currentColor" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z" class=""></path></svg>
+                              </template>
+                              <template v-if="s.type === 'facebook'">
+                                <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="facebook-f" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="svg-inline--fa fa-facebook-f fa-w-10 fa-3x"><path fill="currentColor" d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z" class=""></path></svg>
+                              </template>
+                              <template v-if="s.type === 'youtube'">
+                                <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="youtube" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="svg-inline--fa fa-youtube fa-w-18 fa-3x"><path fill="currentColor" d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z" class=""></path></svg>
+                              </template>
+                            </a>
+                          </template>
+                        </th>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </dataSectionComponent>
           </template>
         </div>
@@ -1853,7 +1859,6 @@ export default {
       })
       .catch((e) => {
         console.log(`getWeather Failed 🛑`,
-                    this.consoleLog.error
                     `\n\n ${e} \n\n`);
       });
     }
@@ -2131,16 +2136,16 @@ export default {
       });
     },
     nearbyParkMarkers(){
-      return this.nearbyMarkers(this.parksResData)
+      if(this.parksResData) return this.nearbyMarkers(this.parksResData)
     },
     nearbySchoolMarkers(){
-      return this.nearbyMarkers(this.schoolsResData)
+      if(this.schoolsResData) return this.nearbyMarkers(this.schoolsResData)
     },
     nearbyPlaygroundMarkers(){
-      return this.nearbyMarkers(this.playgroundsResData)
+      if(this.playgroundsResData) return this.nearbyMarkers(this.playgroundsResData)
     },
     nearbySafePlaceMarkers(){
-      return this.nearbyMarkers(this.safePlaceResData)
+      if(this.safePlaceResData) return this.nearbyMarkers(this.safePlaceResData)
     },
   }
 }
@@ -2151,6 +2156,8 @@ export default {
     display: flex;
     min-height: 100vh;
     flex-direction: column;
+    position: relative;
+    top: 94px;
   }
 
   .content-wrapper {
@@ -2832,6 +2839,10 @@ export default {
   }
 
   @media (max-width: 575px) {
+    .top-wrapper {
+      top: 65px;
+    }
+
     .vue-map-container {
       height: 200px;
 
@@ -3080,6 +3091,10 @@ export default {
   }
 
   @media (min-width: 576px) and (max-width: 767px) {
+    .top-wrapper {
+      top: 65px;
+    }
+
     .vue-map-container {
       height: 200px;
 

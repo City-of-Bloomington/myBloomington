@@ -293,7 +293,7 @@ Vue.mixin({
           this.addressResChoices = null;
           this.districtRepGeoCoords = null;
 
-          this.locationResDataNew   = res;
+          // this.locationResDataNew   = res;
           this.$store.dispatch('setLocationData', res);
 
           let addressUrlEncoded = encodeURIComponent(this.locationResDataNew.address.streetAddress).replace(/%20/g, "+");
@@ -474,16 +474,19 @@ Vue.mixin({
     },
     nearbyMarkers(data){
       if(data === this.safePlaceResData) {
-        let markerData  = data,
+        if(data.features) {
+          let markerData  = data.features,
           arrayName   = [];
 
-        if(markerData){
-          markerData.feed.entry.filter((p) => {
-            var addDist = {dist: this.nearbyDistance(p.gsx$lat.$t,p.gsx$lon.$t)};
-            arrayName.push({...p, ...addDist})
-          })
-          return arrayName
+          if(markerData.length){
+            markerData.filter((p) => {
+              var addDist = {dist: this.nearbyDistance(p.attributes.Latitude,p.attributes.Longitude)};
+              arrayName.push({...p, ...addDist})
+            })
+            return arrayName
+          }
         }
+        
       } else {
         let markerData  = data,
           arrayName   = [];
@@ -512,8 +515,8 @@ Vue.mixin({
             }
             
             newArray.push({...p.properties, ...addDist})
-          } else if(p.gsx$lat.$t && p.gsx$lon.$t) {
-            var addDist = { dist: self.nearbyDistance(p.gsx$lat.$t,p.gsx$lon.$t)}
+          } else if(p.attributes.Latitude,p.attributes.Longitude) {
+            var addDist = { dist: self.nearbyDistance(p.attributes.Latitude,p.attributes.Longitude)}
             newArray.push({...p, ...addDist})
           } else {
             console.log(`%c viaDistance 🛑 `,

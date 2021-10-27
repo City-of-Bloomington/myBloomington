@@ -212,7 +212,7 @@ export default {
 
       h4 {
         color: lighten($text-color, 20%);
-        font-size: 20px;
+        font-size: 16px;
         letter-spacing: 1px;
         text-transform: uppercase;
       }
