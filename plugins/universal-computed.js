@@ -63,5 +63,16 @@ Vue.mixin({
         return newNewnew;
       }
     },
+    findCurrentLocation() {
+      console.log('this.locationResDataNew', this.locationResDataNew)
+      // return true
+      if(this.locationResDataNew.locations.length) {
+        let activeLocation = this.locationResDataNew.locations.find(l => l.address_status === 'current');
+
+        return activeLocation
+      } else {
+        return false
+      }
+    }
   },
 });

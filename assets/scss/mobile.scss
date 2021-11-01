@@ -5,6 +5,10 @@
 
   .show-viewport-small {
     display: block !important;
+
+    &.badge-legend{
+      display: flex !important;
+    }
   }
 
   .badge {

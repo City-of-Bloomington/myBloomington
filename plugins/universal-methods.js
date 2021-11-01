@@ -69,6 +69,7 @@ Vue.mixin({
     },
 
     modals: {
+      addressRetiredError: false,
       addressMappedError: false,
       schoolDistrict:     false,
     },
@@ -177,6 +178,9 @@ Vue.mixin({
       } else if (modalRef === 'addressMappedErrorModal') {
         this.modals.addressMappedError = true;
         this.$refs.addressMappedErrorModal.showModal = true;
+      } else if (modalRef === 'addressRetiredErrorModal') {
+        this.modals.addressRetiredError = true;
+        this.$refs.addressRetiredErrorModal.showModal = true;
       }
     },
     confirmModal(modalRef, i) {
@@ -216,12 +220,16 @@ Vue.mixin({
         this.$refs.addressMappedErrorModal.showModal = false;
         this.errors.addressNotMapped = null;
         this.autoSuggestRes = null;
+      } else if (modalRef == 'addressRetiredErrorModal') {
+        this.modals.addressRetiredError = false;
+        this.$refs.addressRetiredErrorModal.showModal = false;
       }
     },
     isObjEmpty(obj) {
       return !obj || Object.keys(obj).length === 0;
     },
     addressChoice(address) {
+
       this.autoSuggestRes       = null;
       this.searchEnteredWarning = false;
       this.addressSearchAuto    = address.streetAddress;
@@ -299,6 +307,9 @@ Vue.mixin({
           let addressUrlEncoded = encodeURIComponent(this.locationResDataNew.address.streetAddress).replace(/%20/g, "+");
 
           this.getHANDSHARDData(res.address.location_id)
+
+
+          // this.findCurrentLocation();
           // .then((res) => { console.log('getHANDSHARDData Data') })
           // .catch((e) => {console.log('getHANDSHARDData Error', e) })
 

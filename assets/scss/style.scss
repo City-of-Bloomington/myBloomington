@@ -123,7 +123,8 @@ pre, code {
   }
 }
 
-#address-mapped-error-modal {
+#address-mapped-error-modal,
+#address-retired-error-modal {
   ::v-deep .modal-wrapper {
     .modal-container {
       width: 500px;
@@ -190,10 +191,18 @@ pre, code {
 
 .badge-legend {
   display: none;
+  flex-wrap: wrap;
+  flex-direction: column;
+
+  .badge {
+    width: fit-content;
+    margin: 0 0 5px 0;
+  }
 }
 
 .badge {
   padding: 2px 8px 0 8px;
+  margin: 0 8px 0 0;
 
   &.legend {
     font-size: 14px;
@@ -217,6 +226,17 @@ pre, code {
 
     &.outside {
       background-color: $color-vermilion;
+    }
+  }
+
+  &.retired-check {
+    background-color: #FCC324;
+    color: darken(#FCC324, 45%);
+
+    svg {
+      width: 15px;
+      height: 15px;
+      margin: 0 10px 0 0;
     }
   }
 }
@@ -384,6 +404,7 @@ a {
         padding: 15px 20px;
         display: flex;
         align-items: center;
+        justify-content: space-between;
         border-radius: 0;
         border: 3px solid transparent;
 
@@ -394,7 +415,7 @@ a {
       }
 
       .badge {
-        margin-left: auto;
+        margin: 0 0 0 auto;
       }
 
       &:hover {
