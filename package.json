@@ -2,7 +2,7 @@
   "name": "myBloomington",
   "prettyName": "My Bloomington",
   "company": "City of Bloomington, Indiana - ITS",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "myBloomington provides information related to a given street address.",
   "author": "adabutch",
   "repository": {
