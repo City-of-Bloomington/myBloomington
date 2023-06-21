@@ -30,7 +30,7 @@
     "lodash.debounce": "^4.0.8",
     "marker-clusterer-plus": "^2.1.4",
     "moment": "^2.24.0",
-    "nuxt": "^2.15.8",
+    "nuxt": "^3.4.3",
     "proj4": "^2.5.0",
     "smoothscroll-polyfill": "^0.4.4",
     "vue-meta": "^2.3.0",
